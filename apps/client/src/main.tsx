@@ -23,13 +23,14 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean
   }
   render() {
     return this.state.failed ? (
-      <div className="fatal-error">
+      <main className="fatal-error">
+        <h1>Something went wrong</h1>
         <Empty
           title="We hit a snag."
           description="Your stories are safe. Reload to get back to the water."
         />
         <Button onClick={() => location.reload()}>Reload LureLog</Button>
-      </div>
+      </main>
     ) : (
       this.props.children
     );
@@ -50,7 +51,8 @@ if (
   (!localStorage.getItem('lurelog-theme') && matchMedia('(prefers-color-scheme: dark)').matches)
 )
   document.documentElement.classList.add('dark');
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+root.render(
   <React.StrictMode>
     <ErrorBoundary>
       <QueryClientProvider client={client}>
@@ -77,7 +79,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route
                   path="*"
                   element={
-                    <div className="not-found">
+                    <main className="not-found">
+                      <h1>Page not found</h1>
                       <Empty
                         title="A little off the beaten path."
                         description="This page isn’t here, but your next adventure is."
@@ -85,7 +88,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                       <Button asChild>
                         <Link to="/">Find your way home</Link>
                       </Button>
-                    </div>
+                    </main>
                   }
                 />
               </Routes>
@@ -97,3 +100,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </ErrorBoundary>
   </React.StrictMode>,
 );
+
+// Dispose the previous tree before Vite reevaluates the entry module.
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => root.unmount());
+}

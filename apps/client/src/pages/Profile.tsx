@@ -59,6 +59,19 @@ export default function Profile() {
         title="Account settings"
         description="A few details about the angler behind the stories."
       />
+      <div className="account-identity">
+        <span className="avatar">
+          {user?.avatar ? <img src={user.avatar.url} alt="" /> : user?.name.slice(0, 1)}
+        </span>
+        <div>
+          <strong>{user?.name}</strong>
+          <span>{user?.email}</span>
+        </div>
+        <span className="account-private">
+          <ShieldCheck size={16} />
+          Private workspace
+        </span>
+      </div>
       <div className="profile-grid">
         <section className="panel form-section">
           <div className="form-section-heading">
