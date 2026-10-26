@@ -175,6 +175,6 @@ Live Cloudinary requires your account credentials and must be smoke-tested in th
 
 ### Daily catch activity
 
-On Overview, choose a month under Catch activity and select **Explore month** to see daily catch counts, including days with no catches. Use the arrows or month picker to explore other months; **Monthly view** returns to the overview. Expand **View daily catch totals** for exact counts. All activity dates use UTC.
+On Overview, select **Explore month** under Catch activity to see the current month’s daily catch counts, including days with no catches. Use the arrows beside the centered month heading to explore other months; **Monthly view** returns to the overview. Expand **View daily catch totals** for exact counts. All activity dates use UTC.
 
 The authenticated `GET /api/v1/dashboard/activity?month=YYYY-MM` endpoint returns `{ data: { month, total, days: [{ date, count }] } }`. Counts are scoped to the current user and bounded to that month; invalid or missing months return 422.

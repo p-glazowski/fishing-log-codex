@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ActivityChart } from './ActivityChart';
 import { DailyCatchActivity } from './DailyCatchActivity';
 import { Button } from '../ui/button';
-import { activityMonthSchema } from '@lurelog/shared';
 import type { Stats } from '@lurelog/shared';
 export function CatchActivity({ stats }: { stats: Stats }) {
   const [daily, setDaily] = useState(false);
@@ -44,31 +43,17 @@ export function CatchActivity({ stats }: { stats: Stats }) {
         </select>
       </div>
       <ActivityChart points={chart} />
-      <form
-        className="activity-explore"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (activityMonthSchema.safeParse(month).success) setDaily(true);
-        }}
-      >
-        <label htmlFor="activity-month">
-          Look closer at a month
-          <input
-            id="activity-month"
-            type="month"
-            required
-            value={month}
-            onChange={(event) => setMonth(event.target.value)}
-          />
-        </label>
+      <div className="activity-explore">
         <Button
-          type="submit"
           variant="outline"
-          disabled={!activityMonthSchema.safeParse(month).success}
+          onClick={() => {
+            setMonth(new Date().toISOString().slice(0, 7));
+            setDaily(true);
+          }}
         >
           Explore month
         </Button>
-      </form>
+      </div>
       {!stats.totalCatches && (
         <p className="chart-empty-note">Log your first catch to start your activity record.</p>
       )}

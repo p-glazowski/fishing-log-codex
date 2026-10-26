@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, within, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, within, waitFor } from '@testing-library/react';
 import axe from 'axe-core';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -28,6 +28,8 @@ function mount() {
   );
 }
 beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(new Date('2024-02-15T12:00:00Z'));
   vi.mocked(api.activity).mockImplementation(async (month) => ({
     month,
     total: 3,
@@ -43,13 +45,12 @@ afterEach(() => {
   clients.forEach((client) => client.clear());
   clients.length = 0;
   vi.resetAllMocks();
+  vi.useRealTimers();
 });
-it('drills into a chosen month and exposes exact daily counts including zero days', async () => {
+it('opens the current month and exposes exact daily counts including zero days', async () => {
   const user = userEvent.setup();
   const { container } = mount();
-  fireEvent.change(screen.getByLabelText('Look closer at a month'), {
-    target: { value: '2024-02' },
-  });
+  expect(screen.queryByLabelText('Look closer at a month')).not.toBeInTheDocument();
   await user.click(screen.getByRole('button', { name: 'Explore month' }));
   expect(await screen.findByRole('status')).toHaveTextContent('3 catches in February 2024');
   expect(api.activity).toHaveBeenCalledWith('2024-02');
@@ -71,21 +72,18 @@ it('drills into a chosen month and exposes exact daily counts including zero day
   expect(accessibility.violations.map((item) => item.id)).toEqual([]);
   await user.click(screen.getByRole('button', { name: 'Monthly view' }));
   expect(screen.getByRole('button', { name: 'Explore month' })).toBeVisible();
-  expect(screen.getByLabelText('Look closer at a month')).toHaveValue('2024-02');
 });
-it('navigates across year boundaries and supports direct month selection', async () => {
+it('drills down through the data table and navigates across year boundaries', async () => {
   const user = userEvent.setup();
   mount();
-  fireEvent.change(screen.getByLabelText('Look closer at a month'), {
-    target: { value: '2024-01' },
-  });
-  await user.click(screen.getByRole('button', { name: 'Explore month' }));
+  await user.click(screen.getByText('View activity data'));
+  await user.click(screen.getByRole('button', { name: 'Jan' }));
   await user.click(screen.getByRole('button', { name: 'Previous month' }));
-  expect(screen.getByLabelText('Activity month')).toHaveValue('2023-12');
+  expect(screen.getByText('December 2023', { exact: true })).toBeVisible();
   expect(await screen.findByRole('status')).toHaveTextContent('December 2023');
   await user.click(screen.getByRole('button', { name: 'Next month' }));
-  expect(screen.getByLabelText('Activity month')).toHaveValue('2024-01');
-  fireEvent.change(screen.getByLabelText('Activity month'), { target: { value: '2024-02' } });
+  expect(screen.getByText('January 2024', { exact: true })).toBeVisible();
+  await user.click(screen.getByRole('button', { name: 'Next month' }));
   await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('February 2024'));
 });
 it('shows loading, retryable errors, and an empty month without stale totals', async () => {
@@ -101,9 +99,14 @@ it('shows loading, retryable errors, and an empty month without stale totals', a
   await user.click(screen.getByRole('button', { name: 'Try again' }));
   expect(await screen.findByText(/No catches recorded in/)).toBeVisible();
 });
-it('does not request activity for an empty or malformed month', async () => {
+it('opens the current month again after returning from a different month', async () => {
+  const user = userEvent.setup();
   mount();
-  fireEvent.change(screen.getByLabelText('Look closer at a month'), { target: { value: '' } });
-  expect(screen.getByRole('button', { name: 'Explore month' })).toBeDisabled();
-  expect(api.activity).not.toHaveBeenCalled();
+  await user.click(screen.getByRole('button', { name: 'Explore month' }));
+  await user.click(screen.getByRole('button', { name: 'Previous month' }));
+  expect(screen.getByText('January 2024', { exact: true })).toBeVisible();
+  await user.click(screen.getByRole('button', { name: 'Monthly view' }));
+  await user.click(screen.getByRole('button', { name: 'Explore month' }));
+  expect(screen.getByText('February 2024', { exact: true })).toBeVisible();
+  expect(api.activity).toHaveBeenLastCalledWith('2024-02');
 });

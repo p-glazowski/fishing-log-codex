@@ -58,18 +58,9 @@ export function DailyCatchActivity({
         >
           <ChevronLeft size={18} />
         </Button>
-        <label>
-          <span className="sr-only">Activity month</span>
-          <input
-            type="month"
-            aria-label="Activity month"
-            value={month}
-            onChange={(event) => {
-              if (activityMonthSchema.safeParse(event.target.value).success)
-                onMonthChange(event.target.value);
-            }}
-          />
-        </label>
+        <span className="activity-month-title" aria-live="polite">
+          {title}
+        </span>
         <Button
           variant="outline"
           size="icon"
