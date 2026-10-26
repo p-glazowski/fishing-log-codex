@@ -53,6 +53,7 @@ function mount(element: React.ReactNode, path = '/') {
 beforeEach(() => {
   vi.mocked(api.me).mockRejectedValue(new ApiError(401, 'Please sign in'));
   vi.mocked(api.lures).mockResolvedValue({ data: [lure], total: 1, page: 1, pages: 1 });
+  vi.mocked(api.lure).mockResolvedValue(lure);
   vi.mocked(data).mockResolvedValue([]);
 });
 afterEach(() => {
@@ -145,11 +146,13 @@ describe('record forms', () => {
     vi.mocked(data).mockResolvedValue({ _id: 'saved' });
     const user = userEvent.setup();
     mount(<Forms kind="catch" />, '/catches/new');
+    await user.click(screen.getByRole('combobox', { name: /Lure used/ }));
     await screen.findByRole('option', { name: /Rapala Original Floater/ });
     await user.click(screen.getByRole('button', { name: 'Save catch' }));
     expect(await screen.findByText('Species is required')).toBeVisible();
     expect(data).not.toHaveBeenCalled();
-    await user.selectOptions(screen.getByLabelText(/Lure used/), lure._id);
+    await user.click(screen.getByRole('combobox', { name: /Lure used/ }));
+    await user.click(await screen.findByRole('option', { name: /Rapala Original Floater/ }));
     await user.type(screen.getByLabelText(/Fish species/), 'Wild River Char');
     await user.click(screen.getByRole('button', { name: 'Save catch' }));
     expect(await screen.findByText('Catch saved')).toBeVisible();

@@ -1950,9 +1950,15 @@ form > label {
   gap: 20px;
 }
 .steps > div > span {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
   font-size: 11px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
   color: var(--primary);
-  padding: 10px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 50%;
@@ -3226,5 +3232,148 @@ form > label {
   }
   .sidebar.mobile-open {
     visibility: visible;
+  }
+}
+
+/* Search and selection share one picker so filtering never changes the saved lure. */
+.picker-help {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 7px 0 10px;
+}
+.picker-input {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.picker-input > svg {
+  position: absolute;
+  left: 13px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.picker-input input {
+  margin: 0;
+  padding: 13px 42px;
+  min-height: 46px;
+}
+.picker-input > button {
+  position: absolute;
+  right: 3px;
+  padding: 11px;
+  display: flex;
+  border-radius: 7px;
+}
+.picker-dropdown {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  margin-top: 7px;
+  padding: 5px;
+  box-shadow: var(--shadow);
+}
+.picker-dropdown [role='listbox'] {
+  max-height: 280px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+button.picker-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  text-align: left;
+  border-radius: 7px;
+}
+button.picker-option.highlighted,
+button.picker-option:hover {
+  background: var(--soft);
+}
+.picker-option > span:nth-child(2),
+.picker-selection > div {
+  flex: 1;
+  min-width: 0;
+}
+.picker-option strong,
+.picker-selection strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.picker-option small,
+.picker-selection small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+.picker-option > svg {
+  color: var(--primary);
+}
+.picker-thumb {
+  width: 56px;
+  height: 42px;
+  flex: 0 0 56px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--soft);
+}
+.picker-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.picker-selection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--subtle);
+  margin-top: 12px;
+}
+.picker-selection .brand {
+  font-size: 8px;
+}
+.picker-selection > button {
+  padding: 10px;
+  display: flex;
+  border-radius: 7px;
+}
+.picker-message {
+  padding: 14px 10px;
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.picker-notice {
+  color: var(--danger);
+  font-size: 11px;
+  margin-top: 10px;
+}
+.picker-empty {
+  border-radius: 8px;
+  background: var(--soft);
+  padding: 15px;
+  margin-top: 12px;
+}
+.picker-empty strong {
+  font-size: 12px;
+}
+.picker-empty p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 6px 0 10px;
+}
+
+@media (max-width: 700px) {
+  .record-form[data-kind='catch'] .fields-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -38,10 +38,10 @@ export async function data<T>(path: string, options?: RequestInit) {
 export const json = (body: unknown) => JSON.stringify(body);
 export const api = {
   me: () => data<User>('/auth/me'),
-  lure: (id: string) => data<Lure>(`/lures/${id}`),
+  lure: (id: string, options?: RequestInit) => data<Lure>(`/lures/${id}`, options),
   catch: (id: string) => data<FishCatch>(`/catches/${id}`),
   stats: () => data<Stats>('/dashboard/stats'),
-  lures: (query = '') => request<Page<Lure>>(`/lures?${query}`),
+  lures: (query = '', options?: RequestInit) => request<Page<Lure>>(`/lures?${query}`, options),
   catches: (query = '') => request<Page<FishCatch>>(`/catches?${query}`),
 };
 export async function upload(path: string, file: File) {

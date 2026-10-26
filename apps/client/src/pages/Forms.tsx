@@ -1,5 +1,5 @@
 import { useState, useRef, type ReactNode } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   FormProvider,
@@ -19,9 +19,10 @@ import {
 } from '@lurelog/shared';
 import { ArrowLeft, Check, Info } from 'lucide-react';
 import { toast } from 'sonner';
-import { api, data, json, errorMessage, upload, lureOf } from '../lib/api';
+import { api, ApiError, data, json, errorMessage, upload, lureOf } from '../lib/api';
 import { Button } from '../components/ui/button';
-import { PageHeading, ImageUpload, Loading, Failure, Empty } from '../components/common';
+import LurePicker from '../components/lures/LurePicker';
+import { PageHeading, ImageUpload, Loading, Failure } from '../components/common';
 export function Field({
   name,
   label,
@@ -115,26 +116,25 @@ function RecordForm({
     resolver: zodResolver(schema) as unknown as Resolver<FieldValues>,
     defaultValues: initialValues,
   });
-  const lures = useQuery({
-    queryKey: ['lure-options'],
-    queryFn: () => api.lures('limit=100&sort=name'),
-    enabled: !isLure,
-  });
-  const selectedLure = useQuery({
-    queryKey: ['lure', lureId],
-    queryFn: () => api.lure(lureId!),
-    enabled: !isLure && !!lureId,
-  });
-  const [lureSearch, setLureSearch] = useState('');
-  const options = useQuery({
-    queryKey: ['lure-search', lureSearch],
-    queryFn: () => api.lures(`limit=100&search=${encodeURIComponent(lureSearch)}`),
-    enabled: !isLure && !!lureSearch,
-  });
   async function submit(values: FieldValues) {
     setSaving(true);
     setError('');
     try {
+      if (!isLure) {
+        try {
+          await api.lure(String(values.lureId));
+        } catch (error) {
+          if (error instanceof ApiError && error.status === 404) {
+            form.setValue('lureId', '', { shouldDirty: true });
+            form.setError('lureId', {
+              message: 'That lure is no longer in your collection. Choose another lure.',
+            });
+            await client.invalidateQueries({ queryKey: ['lure-options'] });
+            return;
+          }
+          throw error;
+        }
+      }
       const base = isLure ? '/lures' : '/catches';
       let recordId = initial?._id ?? savedId.current;
       if (!isLure && typeof values.caughtAt === 'string' && !values.caughtAt.endsWith('Z'))
@@ -159,7 +159,12 @@ function RecordForm({
   const image = isLure ? (initial as Lure)?.image?.url : (initial as FishCatch)?.photo?.url;
   return (
     <FormProvider {...form}>
-      <form noValidate onSubmit={form.handleSubmit(submit)} className="record-form">
+      <form
+        noValidate
+        onSubmit={form.handleSubmit(submit)}
+        className="record-form"
+        data-kind={kind}
+      >
         <div className="form-main">
           <section className="panel form-section">
             <div className="form-section-heading">
@@ -200,35 +205,7 @@ function RecordForm({
                 </>
               ) : (
                 <>
-                  <div className="field field-wide">
-                    <label htmlFor="lure-option-search">
-                      Find a lure
-                      <input
-                        id="lure-option-search"
-                        value={lureSearch}
-                        placeholder="Search your entire collection…"
-                        onChange={(e) => setLureSearch(e.target.value)}
-                      />
-                    </label>
-                  </div>
-                  <Field name="lureId" label="Lure used" required>
-                    <option value="">Choose a lure</option>
-                    {selectedLure.data && (
-                      <option value={selectedLure.data._id}>
-                        {selectedLure.data.brand} {selectedLure.data.name}
-                      </option>
-                    )}
-                    {initial && !isLure && lureOf(initial as FishCatch) && (
-                      <option value={lureOf(initial as FishCatch)!._id}>
-                        {lureOf(initial as FishCatch)!.brand} {lureOf(initial as FishCatch)!.name}
-                      </option>
-                    )}
-                    {(lureSearch ? options : lures).data?.data.map((l) => (
-                      <option key={l._id} value={l._id}>
-                        {l.brand} {l.name} · {l.lengthMm} mm
-                      </option>
-                    ))}
-                  </Field>
+                  <LurePicker />
                   <div className="field">
                     <label htmlFor="species">
                       Fish species <span className="required">*</span>
@@ -371,17 +348,13 @@ function RecordForm({
 }
 export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
   const { id } = useParams();
+  const location = useLocation();
   const edit = location.pathname.endsWith('/edit');
   const isLure = kind === 'lure';
   const query = useQuery<Lure | FishCatch>({
     queryKey: [kind, id],
     queryFn: () => (isLure ? api.lure(id!) : api.catch(id!)),
     enabled: edit && !!id,
-  });
-  const lures = useQuery({
-    queryKey: ['lure-options'],
-    queryFn: () => api.lures('limit=100&sort=name'),
-    enabled: !isLure && !edit,
   });
   if (edit && query.isLoading) return <Loading />;
   if (edit && query.isError) return <Failure error={query.error} />;
@@ -408,21 +381,12 @@ export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
             : 'Keep the details of a day well spent.'
         }
       />
-      {!isLure && !edit && lures.isSuccess && !lures.data.total ? (
-        <Empty
-          title="First, a lure for your story."
-          description="Add a lure to your collection before logging a catch."
-          to="/lures/new"
-          label="Add a lure"
-        />
-      ) : (
-        <RecordForm
-          key={`${kind}-${id ?? 'new'}`}
-          kind={kind}
-          initial={edit ? query.data : undefined}
-          lureId={!isLure && !edit ? id : undefined}
-        />
-      )}
+      <RecordForm
+        key={`${kind}-${id ?? 'new'}`}
+        kind={kind}
+        initial={edit ? query.data : undefined}
+        lureId={!isLure && !edit ? id : undefined}
+      />
     </>
   );
 }

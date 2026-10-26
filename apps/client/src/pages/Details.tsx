@@ -2,7 +2,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, ArrowLeft, Pencil, Fish, Ruler, MapPin, Calendar, Weight } from 'lucide-react';
 import { toast } from 'sonner';
-import { api, data, errorMessage, dateLabel, lureOf } from '../lib/api';
+import { api, request, errorMessage, dateLabel, lureOf } from '../lib/api';
 import { Button } from '../components/ui/button';
 import {
   PageHeading,
@@ -17,11 +17,14 @@ function useDelete(path: string, back: string) {
   const client = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: () => data(path, { method: 'DELETE' }),
+    mutationFn: () => request<void>(path, { method: 'DELETE' }),
     onSuccess: async () => {
-      await client.invalidateQueries({ predicate: (q) => q.queryKey[0] !== 'session' });
+      await client.invalidateQueries({
+        predicate: (q) => q.queryKey[0] !== 'session',
+        refetchType: 'none',
+      });
       toast.success('Deleted successfully');
-      navigate(back);
+      navigate(back, { replace: true });
     },
     onError: (e) => toast.error(errorMessage(e)),
   });
