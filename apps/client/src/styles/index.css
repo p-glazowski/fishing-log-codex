@@ -1911,37 +1911,15 @@ button.picker-option:hover {
   border-bottom: 1px solid var(--border);
 }
 .field-guide-art {
-  height: 272px;
+  aspect-ratio: 3 / 2;
   background: var(--paper);
-  position: relative;
-  padding: 24px;
+  overflow: hidden;
 }
-.field-guide-art .lure-art {
-  transform: scale(1.12);
-}
-.guide-type {
-  position: absolute;
-  top: 20px;
-  left: 24px;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--text);
-}
-.guide-measure {
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text);
-  border-top: 1px solid var(--control-border);
-  padding-top: 12px;
+.hero-tackle-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .field-guide figcaption {
   padding: 28px;
@@ -2330,9 +2308,6 @@ button.picker-option:hover {
   }
   .hero h1 {
     font-size: 64px;
-  }
-  .field-guide-art {
-    height: 240px;
   }
   .hero-actions {
     gap: 16px;
@@ -2850,9 +2825,6 @@ button.picker-option:hover {
     max-width: 480px;
     width: 100%;
   }
-  .field-guide-art {
-    height: 240px;
-  }
   .field-guide-heading {
     padding: 16px 20px;
     font-size: 8px;
@@ -3207,9 +3179,6 @@ button.picker-option:hover {
   }
   .field-guide .eyebrow {
     font-size: 8px;
-  }
-  .field-guide-art {
-    height: 216px;
   }
   .features-section {
     padding: 48px 20px;

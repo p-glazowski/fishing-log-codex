@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Ruler, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { Button } from '../ui/button';
-import { LureArt } from '../common';
 export function LandingHero() {
   const { user, loading, error } = useAuth();
   return (
@@ -50,12 +49,16 @@ export function LandingHero() {
           <span>FIELD GUIDE / 01</span>
         </div>
         <div className="field-guide-art">
-          <span className="guide-type">MINNOW</span>
-          <LureArt type="Minnow" />
-          <span className="guide-measure">
-            <Ruler size={16} />
-            Know every detail.
-          </span>
+          <img
+            className="hero-tackle-image"
+            src="/images/tackle-box-hero.webp"
+            srcSet="/images/tackle-box-hero-640.webp 640w, /images/tackle-box-hero.webp 1280w"
+            sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1023px) 480px, 50vw"
+            width={1280}
+            height={853}
+            alt="An open tackle box filled with silver minnows, colorful crankbaits, and soft plastic fishing lures."
+            fetchPriority="high"
+          />
         </div>
         <figcaption>
           <span className="eyebrow">FROM YOUR TACKLE BOX TO YOUR JOURNAL</span>
@@ -65,7 +68,6 @@ export function LandingHero() {
             Better memories.
           </h2>
           <p>Keep the lure, the conditions, and the catch connected.</p>
-          <span className="guide-caption">Lure illustration · Your own photos take its place.</span>
         </figcaption>
       </figure>
     </section>
