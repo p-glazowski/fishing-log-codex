@@ -43,8 +43,10 @@ export function CatchCard({
   item,
   list = false,
   headingLevel = 2,
+  datePlacement = 'photo',
 }: {
   item: FishCatch;
+  datePlacement?: 'photo' | 'footer';
   list?: boolean;
   headingLevel?: 2 | 3;
 }) {
@@ -65,7 +67,11 @@ export function CatchCard({
             <span>No photo added</span>
           </div>
         )}
-        <span className="image-tag">{dateLabel(item.caughtAt)}</span>
+        {datePlacement === 'photo' && (
+          <time className="image-tag" dateTime={item.caughtAt}>
+            {dateLabel(item.caughtAt)}
+          </time>
+        )}
       </Link>
       <div className="catch-body">
         <span className="brand">{item.location || 'On the water'}</span>
@@ -82,6 +88,11 @@ export function CatchCard({
             {lure.brand} {lure.name}
             <ArrowUpRight size={14} />
           </Link>
+        )}
+        {datePlacement === 'footer' && (
+          <time className="catch-date" dateTime={item.caughtAt}>
+            {dateLabel(item.caughtAt)}
+          </time>
         )}
       </div>
     </article>

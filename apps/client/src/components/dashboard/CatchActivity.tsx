@@ -1,22 +1,19 @@
 import { useState } from 'react';
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+import { ActivityChart } from './ActivityChart';
+import { DailyCatchActivity } from './DailyCatchActivity';
+import { Button } from '../ui/button';
 import type { Stats } from '@lurelog/shared';
 export function CatchActivity({ stats }: { stats: Stats }) {
+  const [daily, setDaily] = useState(false);
+  const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [period, setPeriod] = useState('year');
   const year = new Date().getUTCFullYear();
   const chart = Array.from({ length: period === 'year' ? 12 : 24 }, (_, i) => {
     const date = new Date(Date.UTC(year - (period === 'year' ? 0 : 1), i, 1));
     const key = date.toISOString().slice(0, 7);
     return {
-      month: date.toLocaleDateString(undefined, {
+      key,
+      label: date.toLocaleDateString(undefined, {
         month: 'short',
         ...(period === 'year' ? {} : { year: '2-digit' }),
         timeZone: 'UTC',
@@ -24,13 +21,17 @@ export function CatchActivity({ stats }: { stats: Stats }) {
       count: stats.activity.find((point) => point.month === key)?.count ?? 0,
     };
   });
+  if (daily)
+    return (
+      <DailyCatchActivity month={month} onMonthChange={setMonth} onBack={() => setDaily(false)} />
+    );
   return (
     <section className="panel activity-panel">
       <div className="panel-heading">
         <div>
           <span className="eyebrow">YOUR SEASON, AT A GLANCE</span>
           <h2>Catch activity</h2>
-          <p>Recorded catches by month · UTC</p>
+          <p>Recorded catches by month</p>
         </div>
         <select
           aria-label="Chart period"
@@ -41,42 +42,17 @@ export function CatchActivity({ stats }: { stats: Stats }) {
           <option value="two">Last 2 calendar years</option>
         </select>
       </div>
-      <div className="chart-container" aria-hidden="true">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chart} margin={{ left: -16, right: 16, top: 16, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 6" vertical={false} stroke="var(--border)" />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tick={{ fill: 'var(--muted)', fontSize: 12 }}
-              minTickGap={24}
-            />
-            <YAxis
-              allowDecimals={false}
-              tickLine={false}
-              axisLine={false}
-              tick={{ fill: 'var(--muted)', fontSize: 12 }}
-            />
-            <Tooltip
-              contentStyle={{
-                background: 'var(--surface)',
-                color: 'var(--text)',
-                border: '1px solid var(--border)',
-                borderRadius: 8,
-              }}
-            />
-            <Area
-              isAnimationActive={false}
-              type="monotone"
-              dataKey="count"
-              name="Catches"
-              stroke="var(--chart-primary)"
-              fill="var(--chart-fill)"
-              strokeWidth={2.5}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+      <ActivityChart points={chart} />
+      <div className="activity-explore">
+        <Button
+          variant="outline"
+          onClick={() => {
+            setMonth(new Date().toISOString().slice(0, 7));
+            setDaily(true);
+          }}
+        >
+          Explore month
+        </Button>
       </div>
       {!stats.totalCatches && (
         <p className="chart-empty-note">Log your first catch to start your activity record.</p>
@@ -93,8 +69,18 @@ export function CatchActivity({ stats }: { stats: Stats }) {
           </thead>
           <tbody>
             {chart.map((point) => (
-              <tr key={point.month}>
-                <th scope="row">{point.month}</th>
+              <tr key={point.key}>
+                <th scope="row">
+                  <button
+                    className="activity-month-link"
+                    onClick={() => {
+                      setMonth(point.key);
+                      setDaily(true);
+                    }}
+                  >
+                    {point.label}
+                  </button>
+                </th>
                 <td>{point.count}</td>
               </tr>
             ))}

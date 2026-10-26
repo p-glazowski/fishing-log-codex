@@ -55,7 +55,13 @@ export default function Dashboard() {
           {stats.recentCatches.length ? (
             <div className="journal-list recent-list">
               {stats.recentCatches.map((item) => (
-                <CatchCard headingLevel={3} key={item._id} item={item} list />
+                <CatchCard
+                  datePlacement="footer"
+                  headingLevel={3}
+                  key={item._id}
+                  item={item}
+                  list
+                />
               ))}
             </div>
           ) : (

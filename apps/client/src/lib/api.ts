@@ -1,4 +1,4 @@
-import type { User, Lure, FishCatch, Stats, Page } from '@lurelog/shared';
+import type { User, Lure, FishCatch, Stats, Page, DailyActivity } from '@lurelog/shared';
 let csrfToken = '';
 export class ApiError extends Error {
   constructor(
@@ -41,6 +41,8 @@ export const api = {
   lure: (id: string, options?: RequestInit) => data<Lure>(`/lures/${id}`, options),
   catch: (id: string) => data<FishCatch>(`/catches/${id}`),
   stats: () => data<Stats>('/dashboard/stats'),
+  activity: (month: string) =>
+    data<DailyActivity>(`/dashboard/activity?month=${encodeURIComponent(month)}`),
   lures: (query = '', options?: RequestInit) => request<Page<Lure>>(`/lures?${query}`, options),
   catches: (query = '') => request<Page<FishCatch>>(`/catches?${query}`),
 };
