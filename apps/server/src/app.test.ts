@@ -148,6 +148,42 @@ describe('private fishing workspace', () => {
       422,
     );
   });
+  it('deduplicates brand casing and filters all variants without leaking other users’ brands', async () => {
+    const records: { agent: typeof alice; id: string; token: string }[] = [];
+    try {
+      for (const brand of ['Savage Gear', 'savage gear', 'Savage Gear Pro']) {
+        const result = await write(alice, 'post', '/lures').send({ ...lure, brand });
+        expect(result.status).toBe(201);
+        records.push({ agent: alice, id: result.body.data._id, token: aToken });
+      }
+      const privateLure = await write(bob, 'post', '/lures', bToken).send({
+        ...lure,
+        brand: 'Private Brand',
+      });
+      records.push({ agent: bob, id: privateLure.body.data._id, token: bToken });
+      const brands = (await alice.get('/api/v1/lure-filters')).body.data as string[];
+      expect(brands.filter((brand) => brand.toLowerCase() === 'savage gear')).toHaveLength(1);
+      expect(brands).not.toContain('Private Brand');
+      for (const brand of ['Savage Gear', 'savage gear', 'SAVAGE GEAR']) {
+        const response = await alice.get('/api/v1/lures').query({ brand });
+        expect(response.body.total).toBe(2);
+        expect(
+          response.body.data.map((item: { brand: string }) => item.brand.toLowerCase()),
+        ).toEqual(['savage gear', 'savage gear']);
+      }
+      expect((await alice.get('/api/v1/lures').query({ brand: 'Savage' })).body.total).toBe(0);
+      expect((await bob.get('/api/v1/lures').query({ brand: 'SAVAGE GEAR' })).body.total).toBe(0);
+      await write(alice, 'patch', `/lures/${records[1].id}`).send({ brand: 'SAVAGE GEAR' });
+      const updatedBrands = (await alice.get('/api/v1/lure-filters')).body.data as string[];
+      expect(updatedBrands.filter((brand) => brand.toLowerCase() === 'savage gear')).toHaveLength(
+        1,
+      );
+      expect((await alice.get('/api/v1/lures').query({ brand: 'savage gear' })).body.total).toBe(2);
+    } finally {
+      for (const record of records)
+        await write(record.agent, 'delete', `/lures/${record.id}`, record.token);
+    }
+  });
   it('blocks cross-user lure CRUD, photos and catch association', async () => {
     expect((await bob.get(`/api/v1/lures/${lureId}`)).status).toBe(404);
     expect(
