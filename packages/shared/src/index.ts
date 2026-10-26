@@ -124,3 +124,12 @@ export interface Stats {
   activity: { month: string; count: number }[];
   species: { name: string; count: number }[];
 }
+
+export const activityMonthSchema = z
+  .string()
+  .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Choose a valid month');
+export interface DailyActivity {
+  month: string;
+  total: number;
+  days: { date: string; count: number }[];
+}

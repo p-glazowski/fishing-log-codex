@@ -172,3 +172,9 @@ For multiple Node replicas, replace in-process rate-limit storage with a shared 
 The repository includes real backend integration tests for authentication, guards, lure/catch CRUD, validation, image content and size checks, image privacy, cross-user access, dashboard counts, profile/password changes, and cascade/cleanup. Frontend tests exercise login/registration validation, session synchronization, lure/catch forms, custom species, filters, async/error states, and photo validation.
 
 Live Cloudinary requires your account credentials and must be smoke-tested in that environment. Mobile camera behavior requires a physical device. Password recovery and email verification are outside the requested scope; there is no email delivery integration. Prices intentionally use your own currency without conversion; timestamps are entered in UTC and displayed in your browser’s locale.
+
+### Daily catch activity
+
+On Overview, choose a month under Catch activity and select **Explore month** to see daily catch counts, including days with no catches. Use the arrows or month picker to explore other months; **Monthly view** returns to the overview. Expand **View daily catch totals** for exact counts. All activity dates use UTC.
+
+The authenticated `GET /api/v1/dashboard/activity?month=YYYY-MM` endpoint returns `{ data: { month, total, days: [{ date, count }] } }`. Counts are scoped to the current user and bounded to that month; invalid or missing months return 422.

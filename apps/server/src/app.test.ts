@@ -167,6 +167,47 @@ describe('private fishing workspace', () => {
     ).toBe(1);
     expect((await bob.get('/api/v1/dashboard/stats')).body.data.totalCatches).toBe(0);
   });
+  it('returns exact daily totals, UTC boundaries, empty days and private month activity', async () => {
+    const created = await write(alice, 'post', '/lures').send(lure);
+    const activityLure = created.body.data._id;
+    try {
+      for (const caughtAt of [
+        '2024-01-31T23:59:59Z',
+        '2024-02-01T00:00:00Z',
+        '2024-02-01T18:00:00Z',
+        '2024-02-29T23:59:59Z',
+        '2024-03-01T00:00:00Z',
+      ]) {
+        expect(
+          (await write(alice, 'post', '/catches').send({ ...catchBody(activityLure), caughtAt }))
+            .status,
+        ).toBe(201);
+      }
+      const response = await alice.get('/api/v1/dashboard/activity?month=2024-02');
+      expect(response.status).toBe(200);
+      expect(response.body.data.total).toBe(3);
+      expect(response.body.data.days).toHaveLength(29);
+      expect(response.body.data.days[0]).toEqual({ date: '2024-02-01', count: 2 });
+      expect(response.body.data.days[1]).toEqual({ date: '2024-02-02', count: 0 });
+      expect(response.body.data.days[28]).toEqual({ date: '2024-02-29', count: 1 });
+      const otherUser = (await bob.get('/api/v1/dashboard/activity?month=2024-02')).body.data;
+      expect(otherUser.total).toBe(0);
+      expect(otherUser.days.every((day: { count: number }) => day.count === 0)).toBe(true);
+      const empty = (await alice.get('/api/v1/dashboard/activity?month=2023-02')).body.data;
+      expect(empty.days).toHaveLength(28);
+      expect(empty.total).toBe(0);
+      const monthly = (await alice.get('/api/v1/dashboard/stats')).body.data.activity;
+      expect(monthly.find((point: { month: string }) => point.month === '2024-02').count).toBe(3);
+      for (const query of ['', '?month=2024-13', '?month=bad', '?month=2024-02&month=2024-03']) {
+        expect((await alice.get('/api/v1/dashboard/activity' + query)).status).toBe(422);
+      }
+      expect((await supertest(app).get('/api/v1/dashboard/activity?month=2024-02')).status).toBe(
+        401,
+      );
+    } finally {
+      await write(alice, 'delete', `/lures/${activityLure}`);
+    }
+  });
   it('rejects fake files by content and oversized uploads', async () => {
     expect(
       (

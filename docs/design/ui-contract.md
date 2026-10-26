@@ -39,3 +39,7 @@ Verify 320, 768, 1024, and 1440px. Small screens use a keyboard-accessible modal
 ## States and finish gate
 
 Preserve real API persistence and ownership enforcement. Keep loading skeletons, empty/search-empty, recoverable errors, validation, success toasts, deletion confirmation, and permission errors. Verify session navigation for guest/loading/error/user; keyboard operation of menus, forms, and lure picker; reduced motion; heading order; contrast; axe structural checks; existing regression tests; lint, typecheck, and production build. No synthetic statistics or nonfunctional buttons.
+
+## Daily catch activity
+
+Keep the existing overview chart and semantic theme tokens. The primary action is Explore month: choose any month, view daily counts with zero days included, and navigate to adjacent months or back to the monthly overview. Offer the same drill-down through month names in the monthly data table. Keep UTC date boundaries consistent between monthly and daily statistics. Exact counts must be accessible in a labeled table, with explicit loading, retry, and empty-month states. Month navigation must fit mobile widths without horizontal scrolling. Fetch one user-owned month at a time and invalidate with the dashboard stats cache after catch mutations.

@@ -1,3 +1,4 @@
+import { activityMonthSchema } from '@lurelog/shared';
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import { LureModel, CatchModel } from '../models/index.js';
@@ -54,4 +55,32 @@ dashboardRouter.get('/dashboard/stats', async (req, res) => {
     topLures,
     recentCatches,
   });
+});
+
+dashboardRouter.get('/dashboard/activity', async (req, res) => {
+  const month = activityMonthSchema.parse(req.query.month);
+  const start = new Date(`${month}-01T00:00:00.000Z`);
+  const end = new Date(start);
+  end.setUTCMonth(end.getUTCMonth() + 1);
+  const counts = await CatchModel.aggregate<{ _id: string; count: number }>([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(req.userId),
+        caughtAt: { $gte: start, $lt: end },
+      },
+    },
+    {
+      $group: {
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$caughtAt', timezone: 'UTC' } },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+  const byDate = new Map(counts.map((point) => [point._id, point.count]));
+  const dayCount = new Date(end.getTime() - 86400000).getUTCDate();
+  const days = Array.from({ length: dayCount }, (_, index) => {
+    const date = `${month}-${String(index + 1).padStart(2, '0')}`;
+    return { date, count: byDate.get(date) ?? 0 };
+  });
+  send(res, { month, total: counts.reduce((sum, point) => sum + point.count, 0), days });
 });
