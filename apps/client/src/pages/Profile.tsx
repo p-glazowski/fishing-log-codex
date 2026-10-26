@@ -9,6 +9,7 @@ import { useAuth } from '../lib/auth';
 import { data, json, errorMessage, upload } from '../lib/api';
 import { PageHeading, ImageUpload } from '../components/common';
 import { Button } from '../components/ui/button';
+import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 export default function Profile() {
   const { user, refresh } = useAuth();
   const [file, setFile] = useState<File | null>(null);
@@ -59,6 +60,19 @@ export default function Profile() {
         title="Account settings"
         description="A few details about the angler behind the stories."
       />
+      <div className="account-identity">
+        <span className="avatar">
+          {user?.avatar ? <img src={user.avatar.url} alt="" /> : user?.name.slice(0, 1)}
+        </span>
+        <div>
+          <strong>{user?.name}</strong>
+          <span>{user?.email}</span>
+        </div>
+        <span className="account-private">
+          <ShieldCheck size={16} />
+          Private workspace
+        </span>
+      </div>
       <div className="profile-grid">
         <section className="panel form-section">
           <div className="form-section-heading">
@@ -100,6 +114,7 @@ export default function Profile() {
             </Button>
           )}
         </section>
+        <AppearanceSettings />
         <section className="panel form-section">
           <div className="form-section-heading">
             <ShieldCheck />

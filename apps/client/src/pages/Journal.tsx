@@ -33,9 +33,9 @@ export default function Journal() {
   return (
     <>
       <PageHeading
-        eyebrow="MEMORIES FROM THE WATER"
+        eyebrow="FIELD NOTES"
         title="Your fishing journal"
-        description="The early starts, the one-more-casts, the catches worth remembering."
+        description="Every catch, the lure behind it, and the details worth keeping."
       >
         <Button asChild>
           <Link to="/catches/new">
@@ -44,10 +44,6 @@ export default function Journal() {
           </Link>
         </Button>
       </PageHeading>
-      <div className="journal-note">
-        <span>FIELD NOTES</span>
-        <p>Every catch has a story. This is where yours live.</p>
-      </div>
       <div className="filter-bar">
         <div className="search-field">
           <Search size={18} />

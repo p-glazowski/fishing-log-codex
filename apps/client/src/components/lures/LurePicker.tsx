@@ -1,107 +1,32 @@
-import { useEffect, useId, useState, type KeyboardEvent } from 'react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { useController, useFormContext } from 'react-hook-form';
-import { Check, ChevronDown, LoaderCircle, Search, X } from 'lucide-react';
+import { ChevronDown, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { Lure } from '@lurelog/shared';
-import { api, ApiError, errorMessage } from '../../lib/api';
-import { Photo } from '../common';
+import { ApiError } from '../../lib/api';
+import { Photo } from '../media/LureArt';
 import { Button } from '../ui/button';
-
+import { useLurePicker } from './useLurePicker';
+import { LurePickerResults } from './LurePickerResults';
 export default function LurePicker() {
-  const id = useId();
-  const { control } = useFormContext();
-  const { field, fieldState } = useController({ name: 'lureId', control });
-  const selectedId = String(field.value ?? '');
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [notice, setNotice] = useState('');
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search.trim()), 250);
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  const results = useInfiniteQuery({
-    queryKey: ['lure-options', debouncedSearch],
-    initialPageParam: 1,
-    queryFn: ({ pageParam, signal }) =>
-      api.lures(
-        new URLSearchParams({
-          limit: '20',
-          sort: 'name',
-          search: debouncedSearch,
-          page: String(pageParam),
-        }).toString(),
-        { signal },
-      ),
-    getNextPageParam: (page) => (page.page < page.pages ? page.page + 1 : undefined),
-    staleTime: 0,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
-  });
-  const selected = useQuery({
-    queryKey: ['lure', selectedId],
-    queryFn: ({ signal }) => api.lure(selectedId, { signal }),
-    enabled: !!selectedId,
-    staleTime: 0,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
-    retry: false,
-  });
-  useEffect(() => {
-    if (selectedId && selected.error instanceof ApiError && selected.error.status === 404) {
-      field.onChange('');
-      setNotice('That lure is no longer in your collection. Choose another lure.');
-      setSearch('');
-      setOpen(true);
-      void results.refetch();
-    }
-  }, [selectedId, selected.error, field.onChange, results.refetch]);
-
-  const waiting =
-    search.trim() !== debouncedSearch ||
-    results.isLoading ||
-    (results.isFetching && !results.isFetchingNextPage);
-  // A previous search or cached page must never masquerade as fresh results.
-  const lures =
-    waiting || results.isError
-      ? []
-      : Array.from(
-          new Map(
-            results.data?.pages.flatMap((page) => page.data).map((lure) => [lure._id, lure]) ?? [],
-          ).values(),
-        );
-  const current = selected.isSuccess && !selected.isFetching ? selected.data : undefined;
-  const highlighted = Math.min(activeIndex, Math.max(0, lures.length - 1));
-  function choose(lure: Lure) {
-    field.onChange(lure._id);
-    field.onBlur();
-    setNotice('');
-    setOpen(false);
-    setSearch('');
-    setActiveIndex(0);
-  }
-  function keyboard(event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      setOpen(true);
-      setActiveIndex((index) =>
-        !open
-          ? 0
-          : Math.max(0, Math.min(lures.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1))),
-      );
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      if (!open) setOpen(true);
-      else if (lures[highlighted]) choose(lures[highlighted]);
-    } else if (event.key === 'Escape') {
-      event.preventDefault();
-      setOpen(false);
-      setSearch('');
-    }
-  }
+  const picker = useLurePicker();
+  const {
+    id,
+    field,
+    fieldState,
+    selectedId,
+    open,
+    setOpen,
+    search,
+    debouncedSearch,
+    setSearch,
+    setActiveIndex,
+    notice,
+    results,
+    selected,
+    waiting,
+    lures,
+    current,
+    highlighted,
+    keyboard,
+  } = picker;
   return (
     <div
       className="field field-wide lure-picker"
@@ -162,76 +87,7 @@ export default function LurePicker() {
           <ChevronDown size={17} />
         </button>
       </div>
-      {open && (
-        <div className="picker-dropdown">
-          {waiting && (
-            <p role="status" className="picker-message">
-              <LoaderCircle size={16} />
-              Searching your collection…
-            </p>
-          )}
-          {results.isError && (
-            <div role="alert" className="picker-message">
-              <p>{errorMessage(results.error)}</p>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => void results.refetch()}
-              >
-                Try again
-              </Button>
-            </div>
-          )}
-          <div id={`${id}-results`} role="listbox" aria-label="Your lures" aria-busy={waiting}>
-            {lures.map((lure, index) => (
-              <button
-                key={lure._id}
-                id={`${id}-${lure._id}`}
-                type="button"
-                role="option"
-                tabIndex={-1}
-                aria-selected={selectedId === lure._id}
-                className={`picker-option ${index === highlighted ? 'highlighted' : ''}`}
-                onMouseDown={(event) => event.preventDefault()}
-                onMouseEnter={() => setActiveIndex(index)}
-                onClick={() => choose(lure)}
-              >
-                <span className="picker-thumb">
-                  <Photo src={lure.image?.url} alt="" type={lure.type} />
-                </span>
-                <span>
-                  <strong>
-                    {lure.brand} {lure.name}
-                  </strong>
-                  <small>
-                    {lure.type} · {lure.lengthMm} mm{lure.color ? ` · ${lure.color}` : ''}
-                  </small>
-                </span>
-                {selectedId === lure._id && <Check size={17} />}
-              </button>
-            ))}
-          </div>
-          {!waiting && !results.isError && !lures.length && (
-            <p className="picker-message" role="status">
-              {debouncedSearch
-                ? 'No lures match your search. Try another name or brand.'
-                : 'Your collection is empty.'}
-            </p>
-          )}
-          {!waiting && results.hasNextPage && (
-            <Button
-              type="button"
-              variant="ghost"
-              className="full-width"
-              disabled={results.isFetchingNextPage}
-              onClick={() => void results.fetchNextPage()}
-            >
-              {results.isFetchingNextPage ? 'Loading more…' : 'Load more lures'}
-            </Button>
-          )}
-        </div>
-      )}
+      <LurePickerResults picker={picker} />
       {current && (
         <div className="picker-selection">
           <span className="picker-thumb">

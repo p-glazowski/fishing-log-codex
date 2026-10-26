@@ -70,7 +70,13 @@ Integration tests start their own isolated MongoDB replica set, require no runni
 - Photo picker, drag/drop, camera picker on supported devices, previews, loading/error feedback, and recoverable photo upload retries.
 - Gallery/list journal with species search, lure/date filters, date/length/weight sorting, and catch details/editing.
 - Real dashboard totals, top five lures, recent catches, monthly activity, and species breakdown.
-- Public landing page, route splitting, protected routes, 404 and error boundaries, loading skeletons, useful empty states, confirmations, toasts, keyboard focus states, desktop sidebar, mobile navigation, and persistent light/dark appearance.
+- Public landing page, route splitting, protected routes, 404 and error boundaries, loading skeletons, useful empty states, confirmations, toasts, keyboard focus states, desktop sidebar, mobile navigation, and system-aware appearance. Theme follows device settings by default; System, Light, and Dark preferences are available only in Account settings and saved on the current browser/device.
+
+## Interface design
+
+The app follows the repository's [Frontend UI Engineering skill](.agents/skills/frontend-ui-engineering/SKILL.md). The [design contract](docs/design/ui-contract.md) records the visual direction, references, responsive rules, and session-aware navigation. The [verification report](docs/design/verification.md) records automated and browser checks, including accessibility checks and their boundaries.
+
+Shared interface elements are split into focused branding, navigation, media, feedback, card, form, and dashboard components. Record forms and detail views compose those components while keeping the existing API workflows. Signed-in landing-page visitors see their profile and workspace instead of registration/sign-in actions.
 
 ## Architecture
 

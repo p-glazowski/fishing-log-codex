@@ -8,7 +8,7 @@ import { registerSchema, loginSchema } from '@lurelog/shared';
 import { ArrowRight, Fish, ShieldCheck } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { data, json, errorMessage } from '../lib/api';
-import { Logo } from '../components/Layout';
+import { Logo } from '../components/branding/Logo';
 import { Button } from '../components/ui/button';
 export default function Auth({ register = false }: { register?: boolean }) {
   const schema = register ? registerSchema : loginSchema;
@@ -40,11 +40,11 @@ export default function Auth({ register = false }: { register?: boolean }) {
         <Logo />
         <div>
           <span className="eyebrow">A LIFE WELL CAST</span>
-          <h1>
+          <p className="auth-visual-title">
             There’s a story
             <br />
             behind every catch.
-          </h1>
+          </p>
           <p>
             Keep your favorite lures, unforgettable catches,
             <br />

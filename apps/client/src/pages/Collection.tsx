@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Plus, Search, SlidersHorizontal, Fish, Grid2X2 } from 'lucide-react';
+import { Plus, Search, SlidersHorizontal } from 'lucide-react';
 import { lureTypes } from '@lurelog/shared';
 import { api, data } from '../lib/api';
 import { Button } from '../components/ui/button';
@@ -38,9 +38,9 @@ export default function Collection() {
   return (
     <>
       <PageHeading
-        eyebrow="GOOD DAYS START HERE"
+        eyebrow="YOUR TACKLE BOX"
         title="Your lure collection"
-        description="Your trusted favorites. Your next lucky find. All in one place."
+        description="Find the right lure. Keep the details that make a difference."
       >
         <Button asChild>
           <Link to="/lures/new">
@@ -49,22 +49,10 @@ export default function Collection() {
           </Link>
         </Button>
       </PageHeading>
-      <div className="collection-banner">
-        <div className="banner-icon">
-          <Fish size={30} />
-        </div>
-        <div>
-          <span className="eyebrow">A WELL-KEPT TACKLE BOX</span>
-          <h2>A lure for every possibility.</h2>
-          <p>Keep the details close. Let the adventure take you further.</p>
-        </div>
-        <div className="banner-decoration">
-          <LureDecoration />
-        </div>
-      </div>
       <div className="collection-toolbar">
         <div className="tabs">
           <button
+            aria-pressed={!params.get('type')}
             className={!params.get('type') ? 'active' : ''}
             onClick={() => filter('type', '')}
           >
@@ -73,15 +61,13 @@ export default function Collection() {
           {['Crankbait', 'Soft Plastic', 'Jerkbait', 'Topwater'].map((t) => (
             <button
               key={t}
+              aria-pressed={params.get('type') === t}
               className={params.get('type') === t ? 'active' : ''}
               onClick={() => filter('type', t)}
             >
               {t}
             </button>
           ))}
-        </div>
-        <div className="toolbar-tools">
-          <Grid2X2 size={18} />
         </div>
       </div>
       <div className="filter-bar">
@@ -163,7 +149,7 @@ export default function Collection() {
       )}
       <div className="results-label">
         <span>{query.data?.total ?? 0} lures in view</span>
-        <span>Your next favorite is in here.</span>
+        <span>Select a lure to explore its catch history.</span>
       </div>
       {query.isLoading ? (
         <Loading />
@@ -199,19 +185,5 @@ export default function Collection() {
         }}
       />
     </>
-  );
-}
-function LureDecoration() {
-  return (
-    <svg viewBox="0 0 300 100" aria-hidden="true">
-      <path d="M5 80 Q90 -40 170 50 T300 30" stroke="currentColor" strokeWidth="1" fill="none" />
-      <path
-        d="M135 35 Q155 5 215 29 L235 17 L235 45 L215 36 Q160 60 135 35Z"
-        fill="currentColor"
-        opacity=".4"
-      />
-      <path d="M170 45 v20 q0 13 -9 6 m9 -6 q0 13 9 6" stroke="currentColor" fill="none" />
-      <circle cx="147" cy="29" r="3" fill="var(--primary)" />
-    </svg>
   );
 }
