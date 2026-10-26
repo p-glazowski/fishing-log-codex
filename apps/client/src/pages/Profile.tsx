@@ -9,6 +9,7 @@ import { useAuth } from '../lib/auth';
 import { data, json, errorMessage, upload } from '../lib/api';
 import { PageHeading, ImageUpload } from '../components/common';
 import { Button } from '../components/ui/button';
+import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 export default function Profile() {
   const { user, refresh } = useAuth();
   const [file, setFile] = useState<File | null>(null);
@@ -113,6 +114,7 @@ export default function Profile() {
             </Button>
           )}
         </section>
+        <AppearanceSettings />
         <section className="panel form-section">
           <div className="form-section-heading">
             <ShieldCheck />

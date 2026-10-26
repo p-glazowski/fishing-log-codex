@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import axe from 'axe-core';
@@ -25,7 +25,7 @@ function mount() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/profile" element={<h1>Your account</h1>} />
-        <Route path="/dashboard" element={<h1>Your workspace</h1>} />
+        <Route path="/dashboard" element={<h1>Your fishing log</h1>} />
       </Routes>
     </MemoryRouter>,
   );
@@ -60,8 +60,15 @@ describe('session-aware landing page', () => {
       '/profile',
     );
     expect(screen.getByText('Alex Fisher')).toBeVisible();
+    const profile = screen.getByRole('link', { name: 'Your profile, Alex Fisher' });
+    expect(within(screen.getByRole('banner')).getAllByRole('link').at(-1)).toBe(profile);
+    expect(profile.lastElementChild).toHaveClass('avatar');
+    expect(screen.getByRole('link', { name: 'Your fishing log' })).toHaveAttribute(
+      'href',
+      '/dashboard',
+    );
     expect(document.querySelector('a[href="/login"],a[href="/register"]')).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Open your workspace' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Open your fishing log' })).toHaveAttribute(
       'href',
       '/dashboard',
     );
@@ -87,17 +94,14 @@ describe('session-aware landing page', () => {
     expect(refresh).toHaveBeenCalledOnce();
     expect(document.querySelector('a[href="/login"],a[href="/register"]')).not.toBeInTheDocument();
   });
-  it('provides keyboard navigation and a persistent appearance toggle', async () => {
+  it('provides keyboard navigation without header appearance controls', async () => {
     const interaction = userEvent.setup();
     mount();
     await interaction.tab();
     expect(screen.getByRole('link', { name: 'Skip to content' })).toHaveFocus();
     await interaction.tab();
     expect(screen.getAllByRole('link', { name: 'LureLog home' })[0]).toHaveFocus();
-    await interaction.click(screen.getByRole('button', { name: 'Switch to dark appearance' }));
-    expect(document.documentElement).toHaveClass('dark');
-    expect(localStorage.getItem('lurelog-theme')).toBe('dark');
-    expect(screen.getByRole('button', { name: 'Switch to light appearance' })).toBeVisible();
+    expect(screen.queryByRole('button', { name: /appearance/i })).not.toBeInTheDocument();
   });
   it.each([false, true])(
     'has no axe structural accessibility violations (signed in: %s)',

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { AuthProvider, useAuth } from './lib/auth';
+import { initializeTheme } from './lib/theme';
 import { Loading, Failure, Empty } from './components/common';
 import { Button } from './components/ui/button';
 import './styles/index.css';
@@ -46,11 +47,7 @@ function Protected() {
 const client = new QueryClient({
   defaultOptions: { queries: { staleTime: 30000, retry: 1, refetchOnWindowFocus: false } },
 });
-if (
-  localStorage.getItem('lurelog-theme') === 'dark' ||
-  (!localStorage.getItem('lurelog-theme') && matchMedia('(prefers-color-scheme: dark)').matches)
-)
-  document.documentElement.classList.add('dark');
+const stopThemeSync = initializeTheme();
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
   <React.StrictMode>
@@ -103,5 +100,8 @@ root.render(
 
 // Dispose the previous tree before Vite reevaluates the entry module.
 if (import.meta.hot) {
-  import.meta.hot.dispose(() => root.unmount());
+  import.meta.hot.dispose(() => {
+    stopThemeSync();
+    root.unmount();
+  });
 }

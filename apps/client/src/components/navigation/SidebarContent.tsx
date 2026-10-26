@@ -14,7 +14,6 @@ import { toast } from 'sonner';
 import { useAuth } from '../../lib/auth';
 import { data, errorMessage } from '../../lib/api';
 import { Logo } from '../branding/Logo';
-import { ThemeToggle } from './ThemeToggle';
 import { ProfileLink } from './ProfileLink';
 import { Button } from '../ui/button';
 export const mainNavigation = [
@@ -66,7 +65,6 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <Settings size={18} />
           Account settings
         </NavLink>
-        <ThemeToggle />
         <button onClick={logout}>
           <LogOut size={18} />
           Sign out

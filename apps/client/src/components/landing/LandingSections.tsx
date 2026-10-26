@@ -119,7 +119,7 @@ export function LandingCallToAction() {
       {!loading && !error && (
         <Button asChild>
           <Link to={user ? '/dashboard' : '/register'}>
-            {user ? 'Back to your fishing space' : 'Create your free account'}
+            {user ? 'Back to your fishing log' : 'Create your free account'}
             <ArrowRight size={18} />
           </Link>
         </Button>

@@ -4,7 +4,6 @@ import { useAuth } from '../../lib/auth';
 import { Logo } from '../branding/Logo';
 import { Button } from '../ui/button';
 import { ProfileLink } from './ProfileLink';
-import { ThemeToggle } from './ThemeToggle';
 export function LandingNavigation() {
   const { user, loading, error, refresh } = useAuth();
   return (
@@ -19,7 +18,6 @@ export function LandingNavigation() {
         </a>
       </nav>
       <div className="landing-account">
-        <ThemeToggle compact />
         {loading ? (
           <span className="session-placeholder" role="status" aria-label="Checking your session" />
         ) : error ? (
@@ -29,13 +27,13 @@ export function LandingNavigation() {
           </Button>
         ) : user ? (
           <>
-            <ProfileLink user={user} />
             <Button asChild size="sm">
               <Link to="/dashboard">
-                Your workspace
+                Your fishing log
                 <ArrowUpRight size={16} />
               </Link>
             </Button>
+            <ProfileLink user={user} avatarLast />
           </>
         ) : (
           <>

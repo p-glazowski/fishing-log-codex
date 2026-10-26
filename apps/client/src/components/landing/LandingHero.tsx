@@ -24,7 +24,7 @@ export function LandingHero() {
           {!loading && !error && (
             <Button asChild>
               <Link to={user ? '/dashboard' : '/register'}>
-                {user ? 'Open your workspace' : 'Start your fishing story'}
+                {user ? 'Open your fishing log' : 'Start your fishing story'}
                 <ArrowRight size={18} />
               </Link>
             </Button>

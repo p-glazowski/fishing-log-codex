@@ -70,7 +70,7 @@ Integration tests start their own isolated MongoDB replica set, require no runni
 - Photo picker, drag/drop, camera picker on supported devices, previews, loading/error feedback, and recoverable photo upload retries.
 - Gallery/list journal with species search, lure/date filters, date/length/weight sorting, and catch details/editing.
 - Real dashboard totals, top five lures, recent catches, monthly activity, and species breakdown.
-- Public landing page, route splitting, protected routes, 404 and error boundaries, loading skeletons, useful empty states, confirmations, toasts, keyboard focus states, desktop sidebar, mobile navigation, and persistent light/dark appearance.
+- Public landing page, route splitting, protected routes, 404 and error boundaries, loading skeletons, useful empty states, confirmations, toasts, keyboard focus states, desktop sidebar, mobile navigation, and system-aware appearance. Theme follows device settings by default; System, Light, and Dark preferences are available only in Account settings and saved on the current browser/device.
 
 ## Interface design
 
