@@ -30,7 +30,7 @@ export function RecordForm({
   const initialValues: FieldValues = initial
     ? Object.fromEntries(Object.entries(initial).filter(([key]) => key in schema.shape))
     : isLure
-      ? { type: 'Crankbait' }
+      ? { type: 'Hard Bait' }
       : { caughtAt: new Date().toISOString().slice(0, 16), lureId: lureId ?? '' };
   if (initial && !isLure) {
     const fish = initial as FishCatch;

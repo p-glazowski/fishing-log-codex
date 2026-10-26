@@ -58,7 +58,7 @@ export default function Collection() {
           >
             All lures <span>{query.data?.total ?? '–'}</span>
           </button>
-          {['Crankbait', 'Soft Plastic', 'Jerkbait', 'Topwater'].map((t) => (
+          {lureTypes.map((t) => (
             <button
               key={t}
               aria-pressed={params.get('type') === t}

@@ -18,7 +18,7 @@ const first: Lure = {
   _id: '507f1f77bcf86cd799439011',
   name: 'Original Floater',
   brand: 'Rapala',
-  type: 'Minnow',
+  type: 'Hard Bait',
   lengthMm: 90,
   catchCount: 0,
   createdAt: '2026-10-01',
@@ -28,7 +28,7 @@ const second: Lure = {
   _id: '507f1f77bcf86cd799439012',
   name: 'Slider 10',
   brand: 'Salmo',
-  type: 'Jerkbait',
+  type: 'Hard Bait',
   lengthMm: 100,
 };
 const page = (items: Lure[], current = 1, pages = 1) => ({

@@ -3,6 +3,7 @@ import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import supertest from 'supertest';
 import sharp from 'sharp';
+import { lureTypes } from '@lurelog/shared';
 import { app } from './app.js';
 import { CatchModel, CleanupModel, UserModel } from './models/index.js';
 import { drainCleanup } from './services/storage.js';
@@ -16,7 +17,7 @@ let aToken = '',
   lureId = '',
   catchId = '',
   imageUrl = '';
-const lure = { name: 'Original Floater', brand: 'Rapala', type: 'Minnow', lengthMm: 90 };
+const lure = { name: 'Original Floater', brand: 'Rapala', type: 'Hard Bait', lengthMm: 90 };
 const catchBody = (id: string) => ({
   species: 'Northern Pike',
   lureId: id,
@@ -125,14 +126,27 @@ describe('private fishing workspace', () => {
     const result = await write(alice, 'post', '/lures').send(lure);
     expect(result.status).toBe(201);
     lureId = result.body.data._id;
-    expect((await alice.get('/api/v1/lures?search=Rapala&type=Minnow&minSize=80')).body.total).toBe(
-      1,
-    );
+    expect(
+      (await alice.get('/api/v1/lures?search=Rapala&type=Hard%20Bait&minSize=80')).body.total,
+    ).toBe(1);
     expect((await alice.get('/api/v1/lures?search=%5B')).body.total).toBe(0);
     expect(
       (await write(alice, 'patch', `/lures/${lureId}`).send({ color: 'Silver' })).body.data.color,
     ).toBe('Silver');
     expect((await alice.get('/api/v1/lures/not-an-id')).status).toBe(400);
+  });
+  it('uses the six shared lure categories and rejects removed categories', async () => {
+    expect(lureTypes).toEqual(['Hard Bait', 'Soft Lure', 'Spinner', 'Spoon', 'Fly', 'Other']);
+    expect((await alice.get('/api/v1/config')).body.data.lureTypes).toEqual(lureTypes);
+    for (const type of lureTypes) {
+      const result = await write(alice, 'post', '/lures').send({ ...lure, type });
+      expect(result.status).toBe(201);
+      expect(result.body.data.type).toBe(type);
+      expect((await write(alice, 'delete', `/lures/${result.body.data._id}`)).status).toBe(204);
+    }
+    expect((await write(alice, 'post', '/lures').send({ ...lure, type: 'Crankbait' })).status).toBe(
+      422,
+    );
   });
   it('blocks cross-user lure CRUD, photos and catch association', async () => {
     expect((await bob.get(`/api/v1/lures/${lureId}`)).status).toBe(404);

@@ -19,14 +19,14 @@ const user = await UserModel.create({
   passwordHash: await bcrypt.hash(password, 12),
 });
 const specs = [
-  ['Rapala', 'Original Floater', 'Minnow', 90, 5, 'Silver', 'floating'],
-  ['Salmo', 'Slider 10', 'Jerkbait', 100, 46, 'Real Perch', 'sinking'],
-  ['Westin', 'ShadTeez', 'Soft Plastic', 120, 15, 'Fireflake', 'sinking'],
-  ['Megabass', 'Vision Oneten', 'Jerkbait', 110, 14, 'Mat Tiger', 'suspending'],
-  ['Duo', 'Realis Crank', 'Crankbait', 55, 12, 'Blue Gill', 'floating'],
-  ['Savage Gear', '3D Suicide Duck', 'Topwater', 105, 28, 'Yellow Duckling', 'floating'],
+  ['Rapala', 'Original Floater', 'Hard Bait', 90, 5, 'Silver', 'floating'],
+  ['Salmo', 'Slider 10', 'Hard Bait', 100, 46, 'Real Perch', 'sinking'],
+  ['Westin', 'ShadTeez', 'Soft Lure', 120, 15, 'Fireflake', 'sinking'],
+  ['Megabass', 'Vision Oneten', 'Hard Bait', 110, 14, 'Mat Tiger', 'suspending'],
+  ['Duo', 'Realis Crank', 'Hard Bait', 55, 12, 'Blue Gill', 'floating'],
+  ['Savage Gear', '3D Suicide Duck', 'Hard Bait', 105, 28, 'Yellow Duckling', 'floating'],
   ['Mepps', 'Aglia No. 3', 'Spinner', 60, 6.5, 'Gold', 'sinking'],
-  ['Keitech', 'Easy Shiner', 'Swimbait', 100, 6, 'Electric Shad', 'sinking'],
+  ['Keitech', 'Easy Shiner', 'Soft Lure', 100, 6, 'Electric Shad', 'sinking'],
   ['Abu Garcia', 'Toby', 'Spoon', 75, 18, 'Copper', 'sinking'],
 ];
 const lures = await LureModel.insertMany(

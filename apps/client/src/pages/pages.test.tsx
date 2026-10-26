@@ -22,7 +22,7 @@ const lure = {
   _id: '507f1f77bcf86cd799439011',
   name: 'Original Floater',
   brand: 'Rapala',
-  type: 'Minnow' as const,
+  type: 'Hard Bait' as const,
   lengthMm: 90,
   catchCount: 2,
   createdAt: '2026-10-01T00:00:00Z',
@@ -173,10 +173,14 @@ describe('collection synchronization', () => {
     const user = userEvent.setup();
     mount(<Collection />, '/lures');
     expect(await screen.findByText('Original Floater')).toBeVisible();
-    await user.click(screen.getByRole('button', { name: 'Crankbait' }));
-    await waitFor(() => expect(api.lures).toHaveBeenCalledWith('type=Crankbait'));
+    for (const type of ['Hard Bait', 'Soft Lure', 'Spinner', 'Spoon', 'Fly', 'Other']) {
+      expect(screen.getByRole('button', { name: type })).toBeVisible();
+    }
+    expect(screen.queryByRole('button', { name: 'Crankbait' })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Hard Bait' }));
+    await waitFor(() => expect(api.lures).toHaveBeenCalledWith('type=Hard+Bait'));
     await user.type(screen.getByRole('textbox', { name: 'Search lures' }), 'Rapala');
-    await waitFor(() => expect(api.lures).toHaveBeenCalledWith('type=Crankbait&search=Rapala'));
+    await waitFor(() => expect(api.lures).toHaveBeenCalledWith('type=Hard+Bait&search=Rapala'));
   });
   it('exposes loading and server failure states', async () => {
     vi.mocked(api.lures).mockImplementationOnce(() => new Promise(() => {}));
