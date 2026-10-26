@@ -31,7 +31,7 @@ export function CatchActivity({ stats }: { stats: Stats }) {
         <div>
           <span className="eyebrow">YOUR SEASON, AT A GLANCE</span>
           <h2>Catch activity</h2>
-          <p>Recorded catches by month · UTC</p>
+          <p>Recorded catches by month</p>
         </div>
         <select
           aria-label="Chart period"
