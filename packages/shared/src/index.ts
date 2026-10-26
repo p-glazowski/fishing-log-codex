@@ -1,17 +1,5 @@
 import { z } from 'zod';
-export const lureTypes = [
-  'Crankbait',
-  'Jerkbait',
-  'Minnow',
-  'Soft Plastic',
-  'Spinner',
-  'Spinnerbait',
-  'Spoon',
-  'Jig',
-  'Topwater',
-  'Swimbait',
-  'Other',
-] as const;
+export const lureTypes = ['Hard Bait', 'Soft Lure', 'Spinner', 'Spoon', 'Fly', 'Other'] as const;
 export const fishSpecies = [
   'Northern Pike',
   'European Perch',

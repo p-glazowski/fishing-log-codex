@@ -3,6 +3,7 @@ import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import supertest from 'supertest';
 import sharp from 'sharp';
+import { lureTypes } from '@lurelog/shared';
 import { app } from './app.js';
 import { CatchModel, CleanupModel, UserModel } from './models/index.js';
 import { drainCleanup } from './services/storage.js';
@@ -16,7 +17,7 @@ let aToken = '',
   lureId = '',
   catchId = '',
   imageUrl = '';
-const lure = { name: 'Original Floater', brand: 'Rapala', type: 'Minnow', lengthMm: 90 };
+const lure = { name: 'Original Floater', brand: 'Rapala', type: 'Hard Bait', lengthMm: 90 };
 const catchBody = (id: string) => ({
   species: 'Northern Pike',
   lureId: id,
@@ -125,14 +126,63 @@ describe('private fishing workspace', () => {
     const result = await write(alice, 'post', '/lures').send(lure);
     expect(result.status).toBe(201);
     lureId = result.body.data._id;
-    expect((await alice.get('/api/v1/lures?search=Rapala&type=Minnow&minSize=80')).body.total).toBe(
-      1,
-    );
+    expect(
+      (await alice.get('/api/v1/lures?search=Rapala&type=Hard%20Bait&minSize=80')).body.total,
+    ).toBe(1);
     expect((await alice.get('/api/v1/lures?search=%5B')).body.total).toBe(0);
     expect(
       (await write(alice, 'patch', `/lures/${lureId}`).send({ color: 'Silver' })).body.data.color,
     ).toBe('Silver');
     expect((await alice.get('/api/v1/lures/not-an-id')).status).toBe(400);
+  });
+  it('uses the six shared lure categories and rejects removed categories', async () => {
+    expect(lureTypes).toEqual(['Hard Bait', 'Soft Lure', 'Spinner', 'Spoon', 'Fly', 'Other']);
+    expect((await alice.get('/api/v1/config')).body.data.lureTypes).toEqual(lureTypes);
+    for (const type of lureTypes) {
+      const result = await write(alice, 'post', '/lures').send({ ...lure, type });
+      expect(result.status).toBe(201);
+      expect(result.body.data.type).toBe(type);
+      expect((await write(alice, 'delete', `/lures/${result.body.data._id}`)).status).toBe(204);
+    }
+    expect((await write(alice, 'post', '/lures').send({ ...lure, type: 'Crankbait' })).status).toBe(
+      422,
+    );
+  });
+  it('deduplicates brand casing and filters all variants without leaking other users’ brands', async () => {
+    const records: { agent: typeof alice; id: string; token: string }[] = [];
+    try {
+      for (const brand of ['Savage Gear', 'savage gear', 'Savage Gear Pro']) {
+        const result = await write(alice, 'post', '/lures').send({ ...lure, brand });
+        expect(result.status).toBe(201);
+        records.push({ agent: alice, id: result.body.data._id, token: aToken });
+      }
+      const privateLure = await write(bob, 'post', '/lures', bToken).send({
+        ...lure,
+        brand: 'Private Brand',
+      });
+      records.push({ agent: bob, id: privateLure.body.data._id, token: bToken });
+      const brands = (await alice.get('/api/v1/lure-filters')).body.data as string[];
+      expect(brands.filter((brand) => brand.toLowerCase() === 'savage gear')).toHaveLength(1);
+      expect(brands).not.toContain('Private Brand');
+      for (const brand of ['Savage Gear', 'savage gear', 'SAVAGE GEAR']) {
+        const response = await alice.get('/api/v1/lures').query({ brand });
+        expect(response.body.total).toBe(2);
+        expect(
+          response.body.data.map((item: { brand: string }) => item.brand.toLowerCase()),
+        ).toEqual(['savage gear', 'savage gear']);
+      }
+      expect((await alice.get('/api/v1/lures').query({ brand: 'Savage' })).body.total).toBe(0);
+      expect((await bob.get('/api/v1/lures').query({ brand: 'SAVAGE GEAR' })).body.total).toBe(0);
+      await write(alice, 'patch', `/lures/${records[1].id}`).send({ brand: 'SAVAGE GEAR' });
+      const updatedBrands = (await alice.get('/api/v1/lure-filters')).body.data as string[];
+      expect(updatedBrands.filter((brand) => brand.toLowerCase() === 'savage gear')).toHaveLength(
+        1,
+      );
+      expect((await alice.get('/api/v1/lures').query({ brand: 'savage gear' })).body.total).toBe(2);
+    } finally {
+      for (const record of records)
+        await write(record.agent, 'delete', `/lures/${record.id}`, record.token);
+    }
   });
   it('blocks cross-user lure CRUD, photos and catch association', async () => {
     expect((await bob.get(`/api/v1/lures/${lureId}`)).status).toBe(404);

@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Plus, Search, SlidersHorizontal } from 'lucide-react';
 import { lureTypes } from '@lurelog/shared';
 import { api, data } from '../lib/api';
+import { FilterSelect } from '../components/ui/filter-select';
 import { Button } from '../components/ui/button';
 import { Empty, Failure, Loading, LureCard, PageHeading, Pagination } from '../components/common';
 export default function Collection() {
@@ -58,7 +59,7 @@ export default function Collection() {
           >
             All lures <span>{query.data?.total ?? '–'}</span>
           </button>
-          {['Crankbait', 'Soft Plastic', 'Jerkbait', 'Topwater'].map((t) => (
+          {lureTypes.map((t) => (
             <button
               key={t}
               aria-pressed={params.get('type') === t}
@@ -80,7 +81,7 @@ export default function Collection() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <select
+        <FilterSelect
           aria-label="Filter by brand"
           value={params.get('brand') ?? ''}
           onChange={(e) => filter('brand', e.target.value)}
@@ -89,8 +90,8 @@ export default function Collection() {
           {brands.data?.map((b) => (
             <option key={b}>{b}</option>
           ))}
-        </select>
-        <select
+        </FilterSelect>
+        <FilterSelect
           aria-label="Sort lures"
           value={params.get('sort') ?? 'newest'}
           onChange={(e) => filter('sort', e.target.value)}
@@ -98,7 +99,7 @@ export default function Collection() {
           <option value="newest">Recently added</option>
           <option value="name">Name A–Z</option>
           <option value="catches">Most catches</option>
-        </select>
+        </FilterSelect>
         <Button variant="outline" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>
           <SlidersHorizontal size={17} />
           Filters

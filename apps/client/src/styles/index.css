@@ -798,7 +798,7 @@ form > label {
 .search-field input {
   padding-left: 44px;
 }
-.filter-bar > select {
+.filter-bar > :is(select, .filter-select) {
   width: 172px;
 }
 .extra-filters {
@@ -2272,7 +2272,7 @@ button.picker-option:hover {
   .filter-bar .search-field {
     flex-basis: 100%;
   }
-  .filter-bar > select {
+  .filter-bar > :is(select, .filter-select) {
     flex: 1;
     min-width: 120px;
   }
@@ -2504,7 +2504,7 @@ button.picker-option:hover {
   .filter-bar {
     gap: 8px;
   }
-  .filter-bar > select {
+  .filter-bar > :is(select, .filter-select) {
     font-size: 12px;
     min-width: 96px;
     width: 100px;
@@ -2999,7 +2999,7 @@ button.picker-option:hover {
   .results-label {
     font-size: 12px;
   }
-  .filter-bar > select {
+  .filter-bar > :is(select, .filter-select) {
     min-width: 100px;
   }
   .filter-bar > .btn {
@@ -3380,4 +3380,31 @@ button.picker-option:hover {
   color: var(--muted);
   font-size: 11px;
   line-height: 1.5;
+}
+
+.filter-select {
+  position: relative;
+  min-width: 0;
+  font-size: 14px;
+}
+.filter-select select {
+  appearance: none;
+  padding-right: 40px;
+  font-size: inherit;
+}
+.filter-select > svg {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+@media (forced-colors: active) {
+  .filter-select select {
+    appearance: auto;
+  }
+  .filter-select > svg {
+    display: none;
+  }
 }

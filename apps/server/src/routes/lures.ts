@@ -5,6 +5,7 @@ import { LureModel, CatchModel } from '../models/index.js';
 import { send, owned, notFound, queueImage } from '../utils/http.js';
 import { querySchema, escape } from '../validators/query.js';
 export const lureRouter = Router();
+const brandCollation = { locale: 'en', strength: 2 };
 async function lureWithCount(lure: Record<string, unknown>) {
   return {
     ...lure,
@@ -60,12 +61,17 @@ lureRouter.get('/lures', async (req, res) => {
         total: [{ $count: 'value' }],
       },
     },
-  ]);
+  ]).collation(brandCollation);
   const total = result.total[0]?.value ?? 0;
   res.json({ data: result.data, total, page: q.page, pages: Math.ceil(total / q.limit) });
 });
 lureRouter.get('/lure-filters', async (req, res) =>
-  send(res, await LureModel.distinct('brand', { userId: req.userId })),
+  send(
+    res,
+    (await LureModel.distinct('brand', { userId: req.userId }).collation(brandCollation)).sort(
+      (a, b) => a.localeCompare(b, 'en', { sensitivity: 'accent' }),
+    ),
+  ),
 );
 lureRouter.post('/lures', async (req, res) =>
   send(res, await LureModel.create({ ...lureSchema.parse(req.body), userId: req.userId }), 201),

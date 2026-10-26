@@ -9,7 +9,7 @@ export function LureArt({
   decorative?: boolean;
 }) {
   const gradientId = useId();
-  const soft = type === 'Soft Plastic' || type === 'Swimbait';
+  const soft = type === 'Soft Lure';
   return (
     <svg
       className={`lure-art ${className}`}
