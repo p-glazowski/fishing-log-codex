@@ -18,6 +18,7 @@ export default function Layout() {
     else dialog.current?.close();
   }, [open]);
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     document.getElementById('main-content')?.focus({ preventScroll: true });
   }, [location.pathname]);
   const section = location.pathname.startsWith('/lures')
@@ -89,7 +90,7 @@ export default function Layout() {
       </div>
       <nav className="bottom-nav" aria-label={t('Mobile navigation')}>
         {mainNavigation.map(([to, label, Icon]) => (
-          <NavLink to={to} key={to} end={to === '/catches' && location.pathname === '/catches/new'}>
+          <NavLink to={to} key={to} end={to === '/catches'}>
             <Icon size={20} />
             <span>
               {label === 'Lure collection'
@@ -100,7 +101,7 @@ export default function Layout() {
             </span>
           </NavLink>
         ))}
-        <NavLink to="/catches/new">
+        <NavLink to="/catches/new" className="mobile-log-action">
           <Plus size={20} />
           <span>{t('Log catch')}</span>
         </NavLink>

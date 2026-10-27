@@ -16,7 +16,7 @@ export function LandingHero() {
           <br />
           {t('has a story.')}
           <br />
-          <em>{t('Track yours.')}</em>
+          {t('Track yours.')}
         </h1>
         <p>
           {t(
