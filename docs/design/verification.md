@@ -37,9 +37,3 @@ Browser checks verified Polish landing and sign-in pages at 320/768/1024/1440px 
 Photo-position coverage verifies portrait/landscape drag calculations, keyboard-accessible range controls and reset, editing an existing catch without re-uploading, preview restoration after removing a pending replacement, replacement-file re-selection, saved crop/upload payloads, legacy centered fallback, server range validation, ownership, and persisted positions in catch/list/dashboard responses and after a real image upload. All **65 frontend tests and 20 API tests** pass, as do lint, typecheck and production builds.
 
 The editor was visually checked with the project's generated sample image in a temporary development fixture at 320/768/1024/1440px, with no document overflow. The browser slider and center-reset controls updated both preview sizes. The fixture was removed after verification and no user records were created or changed for browser QA. Physical-device touch dragging has not been tested; pointer drag calculations are covered by component tests.
-
-## Profile dropdown and focused sidebar
-
-Six new frontend tests cover avatar/account actions, popup accessibility, arrow-key selection and Escape focus return, outside dismissal, settings navigation, sign-out API/cached-data cleanup, retry on failure, and removal of duplicate sidebar account actions. The signed-in landing test now verifies opening the account menu before navigating to settings. All **73 frontend tests**, lint, typecheck and production builds pass.
-
-A temporary navigation fixture using the actual sidebar/profile-menu components verified menu placement without overflow at 320/768/1024/1440px, keyboard opening/focus, and Escape return in the browser. The fixture was removed afterward. Browser QA used a sample identity and did not change any user records or issue a sign-out request.

@@ -196,7 +196,3 @@ Keep your phone and Mac on the same Wi-Fi. Set `CLIENT_ORIGIN=http://<your-Mac-L
 When adding or editing a catch with a photo, select **Adjust preview**. Drag the image or use the horizontal/vertical sliders, check the journal card and Recent catches thumbnail previews, then save the catch. **Center photo** resets the crop. Positioning changes only the preview: the full photo remains available in catch details. New/replacement photos start centered; older catches without saved positioning also use the center.
 
 The catch API accepts an optional `photoPosition: { x, y }` object, with both coordinates between 0 and 100. This is stored with the catch and returned by detail/list/dashboard endpoints. Existing records require no migration. Journal cards and the editor share a 3:2 frame so the chosen journal crop stays consistent at different screen widths.
-
-### Account navigation
-
-Open the profile picture at the end of the header to access **Account settings** and **Sign out**. The same menu is available on the public landing page when signed in. The sidebar and mobile drawer focus on Overview, Lure collection, Fishing journal, and Add lure.

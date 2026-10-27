@@ -1,11 +1,11 @@
-import type { ComponentPropsWithRef } from 'react';
+import type { SelectHTMLAttributes } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-export function FilterSelect(props: ComponentPropsWithRef<'select'>) {
+export function FilterSelect(props: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <span className="filter-select">
+    <div className="filter-select">
       <select {...props} />
       <ChevronDown size={16} aria-hidden="true" />
-    </span>
+    </div>
   );
 }
