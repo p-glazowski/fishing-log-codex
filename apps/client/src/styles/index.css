@@ -472,48 +472,6 @@ form > label {
 .sidebar-add:hover {
   background: #f0f5e8;
 }
-.sidebar-bottom {
-  margin-top: auto;
-  padding-top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.sidebar-bottom > a,
-.sidebar-bottom > button {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  min-height: 44px;
-  border-radius: var(--radius);
-  text-align: left;
-  font-size: 12px;
-  color: var(--sidebar-muted);
-}
-.sidebar-bottom > a:hover,
-.sidebar-bottom > button:hover {
-  background: #ffffff12;
-  color: var(--sidebar-text);
-}
-.sidebar-profile {
-  border-top: 1px solid #ffffff24;
-  margin-top: 20px;
-  padding: 20px 8px 0;
-}
-.sidebar-profile .avatar {
-  background: #e0ead6;
-  color: #183c30;
-  border-color: transparent;
-}
-.sidebar-profile > span {
-  display: block;
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 1px;
-  margin: 8px 0 0 44px;
-  color: var(--sidebar-muted);
-}
 .main-wrap {
   margin-left: 232px;
   min-height: 100vh;
@@ -545,6 +503,48 @@ form > label {
   display: flex;
   align-items: center;
   gap: 24px;
+}
+.profile-menu {
+  position: relative;
+}
+.profile-menu-trigger {
+  display: flex;
+  border-radius: 50%;
+}
+.profile-menu-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  z-index: 50;
+  min-width: 200px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 8px 24px #00000018;
+}
+.profile-menu-name {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.profile-menu-panel a,
+.profile-menu-panel button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  text-align: left;
+}
+.profile-menu-panel a:hover,
+.profile-menu-panel button:hover {
+  background: var(--soft);
 }
 .main-content {
   width: 100%;
