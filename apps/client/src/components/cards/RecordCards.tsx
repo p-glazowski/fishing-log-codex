@@ -106,8 +106,20 @@ export function CatchCard({
         {lure && (
           <Link className="lure-link" to={`/lures/${lure._id}`}>
             <Fish size={14} />
-            {lure.brand} {lure.name}
-            {recent && lure.lengthMm != null ? ` · ${numberLabel(lure.lengthMm)} mm` : ''}
+            {recent ? (
+              <span className="recent-lure-details">
+                <span>
+                  {lure.brand} {lure.name}
+                </span>
+                {lure.lengthMm != null && (
+                  <span className="recent-lure-size">{numberLabel(lure.lengthMm)} mm</span>
+                )}
+              </span>
+            ) : (
+              <>
+                {lure.brand} {lure.name}
+              </>
+            )}
             <ArrowUpRight size={14} />
           </Link>
         )}

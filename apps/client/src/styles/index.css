@@ -1240,26 +1240,6 @@ form > label {
 .dashboard-bottom .section-heading {
   margin: 0 0 20px;
 }
-.recent-list .catch-row .catch-image {
-  width: 144px;
-  min-height: 180px;
-}
-.recent-list .catch-body {
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-}
-.recent-list .catch-body :is(h2, h3) {
-  font-size: 17px;
-}
-.recent-list .image-tag {
-  font-size: 8px;
-  padding: 4px;
-  left: auto;
-  top: auto;
-  right: 8px;
-  bottom: 8px;
-}
 .ranking-list {
   list-style: none;
   margin: 0;
@@ -2253,18 +2233,6 @@ button.picker-option:hover {
   .dashboard-bottom {
     grid-template-columns: 1fr;
   }
-  .recent-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .recent-list .catch-row {
-    display: block;
-  }
-  .recent-list .catch-row .catch-image {
-    width: 100%;
-    height: 168px;
-    min-height: 0;
-  }
   .filter-bar {
     flex-wrap: wrap;
   }
@@ -2672,17 +2640,6 @@ button.picker-option:hover {
   .donut-container {
     height: 196px;
   }
-  .recent-list {
-    grid-template-columns: 1fr;
-  }
-  .recent-list .catch-row {
-    display: flex;
-  }
-  .recent-list .catch-row .catch-image {
-    width: 128px;
-    height: auto;
-    min-height: 180px;
-  }
   .ranking-list {
     padding: 0 20px 8px;
   }
@@ -3023,28 +2980,6 @@ button.picker-option:hover {
   .pagination .btn {
     padding: 8px 12px;
   }
-  .recent-list .catch-row .catch-image {
-    width: 104px;
-  }
-  .recent-list .catch-body {
-    padding: 16px;
-  }
-  .recent-list .catch-body :is(h2, h3) {
-    font-size: 16px;
-  }
-  .recent-list .brand {
-    font-size: 8px;
-  }
-  .recent-list .lure-link {
-    font-size: 10px;
-    gap: 4px;
-  }
-  .recent-list .lure-link > svg:first-child {
-    display: none;
-  }
-  .recent-list .catch-measure {
-    font-size: 11px;
-  }
   .catch-row .catch-image {
     width: 104px;
   }
@@ -3062,12 +2997,6 @@ button.picker-option:hover {
     left: 4px;
     top: 8px;
     padding: 4px;
-  }
-  .recent-list .catch-row .image-tag {
-    left: auto;
-    top: auto;
-    right: 8px;
-    bottom: 8px;
   }
   .catch-row .lure-link {
     font-size: 11px;
@@ -3711,5 +3640,76 @@ button.picker-option:hover {
   }
   .feature-row {
     grid-template-columns: 24px minmax(0, 1fr);
+  }
+}
+
+/* Compact recent catches keep the photo and record together on small screens. */
+.recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.recent-list .catch-row {
+  display: flex;
+}
+.recent-list .catch-row .catch-image {
+  width: 112px;
+  height: auto;
+  min-height: 128px;
+}
+.recent-list .catch-row .image-tag {
+  top: auto;
+  left: auto;
+  right: 6px;
+  bottom: 6px;
+  padding: 4px;
+  font-size: 9px;
+}
+.recent-list .catch-body {
+  justify-content: center;
+  gap: 4px;
+  padding: 12px;
+}
+.recent-list .catch-body :is(h2, h3) {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.3;
+}
+.recent-list .brand {
+  font-size: 10px;
+  line-height: 1.3;
+}
+.recent-list .catch-measure {
+  font-size: 12px;
+}
+.recent-list .lure-link {
+  margin-top: 4px;
+  padding-top: 0;
+  border-top: 0;
+  font-size: 12px;
+  gap: 8px;
+  line-height: 1.4;
+}
+.recent-list .lure-link > svg:first-child {
+  display: none;
+}
+.recent-list .lure-link > svg:last-child {
+  flex-shrink: 0;
+}
+.recent-lure-details {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.recent-lure-size {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+@media (min-width: 768px) {
+  .recent-list .catch-row .catch-image {
+    width: 128px;
+  }
+  .recent-list .catch-body {
+    padding: 16px;
   }
 }
