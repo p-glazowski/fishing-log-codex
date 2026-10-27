@@ -1,3 +1,4 @@
+import { t, canonicalSpecies, useTranslation } from '../../lib/i18n';
 import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -19,6 +20,8 @@ export function RecordForm({
   initial?: Lure | FishCatch;
   lureId?: string;
 }) {
+  useTranslation();
+
   const isLure = kind === 'lure';
   const schema = isLure ? lureSchema : catchSchema;
   const client = useQueryClient();
@@ -54,7 +57,7 @@ export function RecordForm({
           if (error instanceof ApiError && error.status === 404) {
             form.setValue('lureId', '', { shouldDirty: true });
             form.setError('lureId', {
-              message: 'That lure is no longer in your collection. Choose another lure.',
+              message: t('That lure is no longer in your collection. Choose another lure.'),
             });
             await client.invalidateQueries({ queryKey: ['lure-options'] });
             return;
@@ -62,6 +65,8 @@ export function RecordForm({
           throw error;
         }
       }
+      if (!isLure && typeof values.species === 'string')
+        values.species = canonicalSpecies(values.species);
       const base = isLure ? '/lures' : '/catches';
       let recordId = initial?._id ?? savedId.current;
       if (!isLure && typeof values.caughtAt === 'string' && !values.caughtAt.endsWith('Z'))
@@ -73,11 +78,16 @@ export function RecordForm({
       } else await data(`${base}/${recordId}`, { method: 'PATCH', body: json(values) });
       if (file) await upload(`${base}/${recordId}/${isLure ? 'image' : 'photo'}`, file);
       await client.invalidateQueries({ predicate: (q) => q.queryKey[0] !== 'session' });
-      toast.success(`${isLure ? 'Lure' : 'Catch'} ${initial ? 'updated' : 'added'} to your story`);
+      toast.success(t('Record saved'));
       navigate(`${base}/${recordId}`);
     } catch (e) {
       setError(
-        `${errorMessage(e)}${savedId.current ? ' Your record is saved. Retry to finish the photo upload.' : ''}`,
+        [
+          t(errorMessage(e)),
+          savedId.current ? t('Your record is saved. Retry to finish the photo upload.') : '',
+        ]
+          .filter(Boolean)
+          .join(' '),
       );
     } finally {
       setSaving(false);
@@ -97,11 +107,11 @@ export function RecordForm({
             <div className="form-section-heading">
               <span className="step-number">01</span>
               <div>
-                <h2>{isLure ? 'The essentials' : 'The catch'}</h2>
+                <h2>{isLure ? t('The essentials') : t('The catch')}</h2>
                 <p>
                   {isLure
-                    ? 'A few details to give your lure a home.'
-                    : 'Start with the fish and the lure that made it happen.'}
+                    ? t('A few details to give your lure a home.')
+                    : t('Start with the fish and the lure that made it happen.')}
                 </p>
               </div>
             </div>
@@ -111,8 +121,8 @@ export function RecordForm({
             <div className="form-section-heading">
               <span className="step-number">02</span>
               <div>
-                <h2>{isLure ? 'A little more detail' : 'Set the scene'}</h2>
-                <p>Optional details you’ll be glad you kept.</p>
+                <h2>{isLure ? t('A little more detail') : t('Set the scene')}</h2>
+                <p>{t('Optional details you’ll be glad you kept.')}</p>
               </div>
             </div>
             <RecordAdditional kind={kind} />
@@ -120,11 +130,11 @@ export function RecordForm({
         </div>
         <aside className="form-aside">
           <section className="panel form-section">
-            <h2>{isLure ? 'Lure photo' : 'Keep the moment'}</h2>
+            <h2>{isLure ? t('Lure photo') : t('Keep the moment')}</h2>
             <p className="muted">
               {isLure
-                ? 'Make it easy to spot your favorite.'
-                : 'A photo brings the story back to life.'}
+                ? t('Make it easy to spot your favorite.')
+                : t('A photo brings the story back to life.')}
             </p>
             <ImageUpload file={file} onChange={setFile} existing={image} />
           </section>
@@ -132,8 +142,8 @@ export function RecordForm({
             <Info size={19} />
             <p>
               {isLure
-                ? 'Start with the basics. You can add more details anytime.'
-                : 'Every catch counts. Photos and measurements are optional.'}
+                ? t('Start with the basics. You can add more details anytime.')
+                : t('Every catch counts. Photos and measurements are optional.')}
             </p>
           </div>
           {error && (
@@ -144,12 +154,12 @@ export function RecordForm({
           <Button className="full-width" disabled={saving}>
             <Check size={18} />
             {saving
-              ? 'Saving your story…'
+              ? t('Saving your story…')
               : initial
-                ? 'Save changes'
+                ? t('Save changes')
                 : isLure
-                  ? 'Add to collection'
-                  : 'Save catch'}
+                  ? t('Add to collection')
+                  : t('Save catch')}
           </Button>
           <Button variant="ghost" asChild className="full-width">
             <Link
@@ -161,7 +171,7 @@ export function RecordForm({
                     : '/catches'
               }
             >
-              Cancel
+              {t('Cancel')}
             </Link>
           </Button>
         </aside>

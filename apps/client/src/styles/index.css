@@ -3408,3 +3408,33 @@ button.picker-option:hover {
     display: none;
   }
 }
+
+.language-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+}
+.language-select > svg {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.language-select select {
+  width: auto;
+  min-width: 116px;
+  margin: 0;
+}
+.auth-panel > .language-select {
+  align-self: flex-end;
+  margin-bottom: 24px;
+}
+.landing-footer .language-select {
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.language-settings .language-select {
+  display: flex;
+}
+.language-settings .language-select select {
+  flex: 1;
+}

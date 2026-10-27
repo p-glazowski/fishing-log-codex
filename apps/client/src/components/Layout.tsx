@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../lib/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Menu, X, Plus, ChevronRight } from 'lucide-react';
@@ -6,6 +7,8 @@ import { SidebarContent, mainNavigation } from './navigation/SidebarContent';
 import { ProfileLink } from './navigation/ProfileLink';
 export { Logo } from './branding/Logo';
 export default function Layout() {
+  useTranslation();
+
   const { user } = useAuth();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -18,16 +21,16 @@ export default function Layout() {
     document.getElementById('main-content')?.focus({ preventScroll: true });
   }, [location.pathname]);
   const section = location.pathname.startsWith('/lures')
-    ? 'Lure collection'
+    ? t('Lure collection')
     : location.pathname.startsWith('/catches')
-      ? 'Fishing journal'
+      ? t('Fishing journal')
       : location.pathname === '/profile'
-        ? 'Account settings'
-        : 'Overview';
+        ? t('Account settings')
+        : t('Overview');
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">
-        Skip to content
+        {t('Skip to content')}
       </a>
       <aside className="sidebar">
         <SidebarContent />
@@ -36,7 +39,7 @@ export default function Layout() {
         ref={dialog}
         id="workspace-navigation"
         className="mobile-drawer"
-        aria-label="Workspace navigation"
+        aria-label={t('Workspace navigation')}
         onCancel={() => setOpen(false)}
         onClose={() => setOpen(false)}
         onClick={(event) => {
@@ -45,7 +48,7 @@ export default function Layout() {
       >
         <button
           className="drawer-close icon-control"
-          aria-label="Close navigation"
+          aria-label={t('Close navigation')}
           onClick={() => setOpen(false)}
         >
           <X size={20} />
@@ -57,21 +60,21 @@ export default function Layout() {
           <div className="breadcrumb">
             <button
               className="mobile-menu icon-control"
-              aria-label="Open navigation"
+              aria-label={t('Open navigation')}
               aria-expanded={open}
               aria-controls="workspace-navigation"
               onClick={() => setOpen(true)}
             >
               <Menu size={21} />
             </button>
-            <Link to="/dashboard">Workspace</Link>
+            <Link to="/dashboard">{t('Workspace')}</Link>
             <ChevronRight size={14} />
-            <span>{section}</span>
+            <span>{t(section)}</span>
           </div>
           <div className="topbar-right">
             <Link className="topbar-log text-action" to="/catches/new">
               <Plus size={16} />
-              Log a catch
+              {t('Log a catch')}
             </Link>
             {user && <ProfileLink user={user} compact />}
           </div>
@@ -80,26 +83,26 @@ export default function Layout() {
           <Outlet />
         </main>
         <footer className="app-footer">
-          <span>LureLog — your personal fishing journal.</span>
-          <span>Private by default.</span>
+          <span>{t('LureLog — your personal fishing journal.')}</span>
+          <span>{t('Private by default.')}</span>
         </footer>
       </div>
-      <nav className="bottom-nav" aria-label="Mobile navigation">
+      <nav className="bottom-nav" aria-label={t('Mobile navigation')}>
         {mainNavigation.map(([to, label, Icon]) => (
           <NavLink to={to} key={to} end={to === '/catches' && location.pathname === '/catches/new'}>
             <Icon size={20} />
             <span>
               {label === 'Lure collection'
-                ? 'Collection'
+                ? t('Collection')
                 : label === 'Fishing journal'
-                  ? 'Journal'
-                  : label}
+                  ? t('Journal')
+                  : t(label)}
             </span>
           </NavLink>
         ))}
         <NavLink to="/catches/new">
           <Plus size={20} />
-          <span>Log catch</span>
+          <span>{t('Log catch')}</span>
         </NavLink>
       </nav>
     </div>

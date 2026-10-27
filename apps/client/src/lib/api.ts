@@ -1,3 +1,4 @@
+import { getLocale, canonicalSpecies } from './i18n';
 import type { User, Lure, FishCatch, Stats, Page, DailyActivity } from '@lurelog/shared';
 let csrfToken = '';
 export class ApiError extends Error {
@@ -44,7 +45,11 @@ export const api = {
   activity: (month: string) =>
     data<DailyActivity>(`/dashboard/activity?month=${encodeURIComponent(month)}`),
   lures: (query = '', options?: RequestInit) => request<Page<Lure>>(`/lures?${query}`, options),
-  catches: (query = '') => request<Page<FishCatch>>(`/catches?${query}`),
+  catches: (query = '') => {
+    const params = new URLSearchParams(query);
+    if (params.has('search')) params.set('search', canonicalSpecies(params.get('search')!));
+    return request<Page<FishCatch>>(`/catches?${params}`);
+  },
 };
 export async function upload(path: string, file: File) {
   const form = new FormData();
@@ -54,7 +59,7 @@ export async function upload(path: string, file: File) {
 export const errorMessage = (e: unknown) =>
   e instanceof Error ? e.message : 'Something went wrong';
 export const dateLabel = (value: string) =>
-  new Date(value).toLocaleDateString(undefined, {
+  new Date(value).toLocaleDateString(getLocale(), {
     day: 'numeric',
     month: 'short',
     year: 'numeric',

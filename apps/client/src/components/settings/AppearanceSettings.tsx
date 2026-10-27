@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../../lib/i18n';
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { useThemePreference } from '../../lib/theme';
 const choices = [
@@ -21,18 +22,20 @@ const choices = [
   },
 ] as const;
 export function AppearanceSettings() {
+  useTranslation();
+
   const { preference, resolved, setPreference } = useThemePreference();
   return (
     <section className="panel form-section appearance-settings" aria-labelledby="appearance-title">
       <div className="form-section-heading">
         <Monitor aria-hidden="true" />
         <div>
-          <h2 id="appearance-title">Appearance</h2>
-          <p>Choose how LureLog looks on this device.</p>
+          <h2 id="appearance-title">{t('Appearance')}</h2>
+          <p>{t('Choose how LureLog looks on this device.')}</p>
         </div>
       </div>
       <fieldset>
-        <legend className="sr-only">Color theme</legend>
+        <legend className="sr-only">{t('Color theme')}</legend>
         {choices.map(({ value, label, description, Icon }) => (
           <label key={value} className="appearance-option">
             <input
@@ -46,17 +49,19 @@ export function AppearanceSettings() {
             />
             <Icon size={20} aria-hidden="true" />
             <span>
-              <strong id={`theme-${value}-label`}>{label}</strong>
-              <small id={`theme-${value}-description`}>{description}</small>
+              <strong id={`theme-${value}-label`}>{t(label)}</strong>
+              <small id={`theme-${value}-description`}>{t(description)}</small>
             </span>
           </label>
         ))}
       </fieldset>
       <p className="appearance-status" role="status">
-        Currently using {resolved} mode.{' '}
+        {t('Currently using {{mode}} mode.', {
+          mode: t(resolved === 'dark' ? 'Dark' : 'Light').toLowerCase(),
+        })}{' '}
         {preference === 'system'
-          ? 'Updates automatically when your system changes.'
-          : 'Your preference is saved on this device.'}
+          ? t('Updates automatically when your system changes.')
+          : t('Your preference is saved on this device.')}
       </p>
     </section>
   );

@@ -178,3 +178,9 @@ Live Cloudinary requires your account credentials and must be smoke-tested in th
 On Overview, select **Explore month** under Catch activity to see the current month’s daily catch counts, including days with no catches. Use the arrows beside the centered month heading to explore other months; **Monthly view** returns to the overview. Expand **View daily catch totals** for exact counts. All activity dates use UTC.
 
 The authenticated `GET /api/v1/dashboard/activity?month=YYYY-MM` endpoint returns `{ data: { month, total, days: [{ date, count }] } }`. Counts are scoped to the current user and bounded to that month; invalid or missing months return 422.
+
+### Languages
+
+LureLog supports English and Polish. Choose **Language** in Account settings, on the sign-in/registration screen, or in the public landing-page footer. The preference is saved in this browser, survives reloads, and synchronizes between tabs. It does not sync between devices. English is the default.
+
+UI copy and known API/validation errors use the catalog in `apps/client/src/lib/i18n/pl.json`; English source strings provide the fallback. Use `useTranslation()` in components to subscribe to language changes, and `t()` for translated strings with named interpolation. Date, number, and plural helpers use the selected locale. Keep route paths, form field names, API values, and user-written names/notes untranslated. Lure category labels are translated while their API values remain canonical; common Polish fish-species names resolve to their canonical values on save, and custom species remain unchanged.

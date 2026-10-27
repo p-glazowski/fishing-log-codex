@@ -1,3 +1,4 @@
+import { t } from '../../lib/i18n';
 import { useEffect, useId, useState, type KeyboardEvent } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useController, useFormContext } from 'react-hook-form';
@@ -48,7 +49,7 @@ export function useLurePicker() {
   useEffect(() => {
     if (selectedId && selected.error instanceof ApiError && selected.error.status === 404) {
       field.onChange('');
-      setNotice('That lure is no longer in your collection. Choose another lure.');
+      setNotice(t('That lure is no longer in your collection. Choose another lure.'));
       setSearch('');
       setOpen(true);
       void results.refetch();

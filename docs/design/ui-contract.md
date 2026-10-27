@@ -43,3 +43,7 @@ Preserve real API persistence and ownership enforcement. Keep loading skeletons,
 ## Daily catch activity
 
 Keep the existing overview chart and semantic theme tokens. The primary action is Explore month: open the current month, view daily counts with zero days included, and navigate to adjacent months or back to the monthly overview. Offer the same drill-down through month names in the monthly data table. Keep UTC date boundaries consistent between monthly and daily statistics. Exact counts must be accessible in a labeled table, with explicit loading, retry, and empty-month states. Center the month label between previous/next arrows, with no month picker on either view. Month navigation must fit mobile widths without horizontal scrolling. Fetch one user-owned month at a time and invalidate with the dashboard stats cache after catch mutations.
+
+## English and Polish
+
+Offer a persistent, device-local English/Polish preference in Account settings and on public authentication screens and the landing footer. Switching must update UI text and document language without remounting forms or discarding typed values. Preserve LureLog branding, user-entered names/notes, and stable API enum values. Localize date/number presentation, Polish plural forms, labels, status messages, validation, and destructive-action dialogs. Keep controls accessible with translated names and ensure longer Polish copy fits at 320, 768, 1024, and 1440px.

@@ -1,106 +1,162 @@
+import { t as translate, useTranslation, validationMessage } from '../../lib/i18n';
 import { useFormContext } from 'react-hook-form';
 import { lureTypes, fishSpecies } from '@lurelog/shared';
 import { Field } from '../../components/forms/Field';
 import LurePicker from '../../components/lures/LurePicker';
 export function RecordEssentials({ kind }: { kind: 'lure' | 'catch' }) {
+  useTranslation();
+
   const isLure = kind === 'lure';
   const form = useFormContext();
   return (
     <div className="fields-grid">
       {isLure ? (
         <>
-          <Field name="name" label="Model / name" required placeholder="e.g. Original Floater" />
-          <Field name="brand" label="Brand" required placeholder="e.g. Rapala" />
-          <Field name="type" label="Lure type" required>
+          <Field
+            name="name"
+            label={translate('Model / name')}
+            required
+            placeholder={translate('e.g. Original Floater')}
+          />
+          <Field
+            name="brand"
+            label={translate('Brand')}
+            required
+            placeholder={translate('e.g. Rapala')}
+          />
+          <Field name="type" label={translate('Lure type')} required>
             {lureTypes.map((t) => (
-              <option key={t}>{t}</option>
+              <option key={t} value={t}>
+                {translate(t)}
+              </option>
             ))}
           </Field>
-          <Field name="lengthMm" label="Length (mm)" type="number" required placeholder="90" />
-          <Field name="weightGrams" label="Weight (g)" type="number" placeholder="12" />
-          <Field name="color" label="Color / pattern" placeholder="e.g. Firetiger" />
+          <Field
+            name="lengthMm"
+            label={translate('Length (mm)')}
+            type="number"
+            required
+            placeholder="90"
+          />
+          <Field
+            name="weightGrams"
+            label={translate('Weight (g)')}
+            type="number"
+            placeholder="12"
+          />
+          <Field
+            name="color"
+            label={translate('Color / pattern')}
+            placeholder={translate('e.g. Firetiger')}
+          />
         </>
       ) : (
         <>
           <LurePicker />
           <div className="field">
             <label htmlFor="species">
-              Fish species <span className="required">*</span>
+              {translate('Fish species')}
+              <span className="required">*</span>
               <input
                 id="species"
                 list="species-list"
                 aria-required="true"
                 aria-invalid={!!form.formState.errors.species}
                 aria-describedby={form.formState.errors.species ? 'species-error' : undefined}
-                placeholder="Select or enter a species"
+                placeholder={translate('Select or enter a species')}
                 {...form.register('species')}
               />
               <datalist id="species-list">
                 {fishSpecies.map((s) => (
-                  <option key={s} value={s} />
+                  <option key={s} value={translate(s)} />
                 ))}
               </datalist>
               {form.formState.errors.species && (
                 <span id="species-error" role="alert" className="field-error">
-                  {String(form.formState.errors.species.message)}
+                  {validationMessage(String(form.formState.errors.species.message))}
                 </span>
               )}
             </label>
           </div>
-          <Field name="caughtAt" label="Date & time (UTC)" type="datetime-local" required />
+          <Field
+            name="caughtAt"
+            label={translate('Date & time (UTC)')}
+            type="datetime-local"
+            required
+          />
           <Field
             name="location"
-            label="Fishing location"
-            placeholder="Your favorite stretch of water"
+            label={translate('Fishing location')}
+            placeholder={translate('Your favorite stretch of water')}
           />
-          <Field name="lengthCm" label="Fish length (cm)" type="number" placeholder="65" />
-          <Field name="weightKg" label="Fish weight (kg)" type="number" placeholder="2.4" />
+          <Field
+            name="lengthCm"
+            label={translate('Fish length (cm)')}
+            type="number"
+            placeholder="65"
+          />
+          <Field
+            name="weightKg"
+            label={translate('Fish weight (kg)')}
+            type="number"
+            placeholder="2.4"
+          />
         </>
       )}
     </div>
   );
 }
 export function RecordAdditional({ kind }: { kind: 'lure' | 'catch' }) {
+  useTranslation();
+
   const isLure = kind === 'lure';
   return (
     <div className="fields-grid">
       {isLure ? (
         <>
-          <Field name="buoyancy" label="Floating behavior">
-            <option value="">Not specified</option>
+          <Field name="buoyancy" label={translate('Floating behavior')}>
+            <option value="">{translate('Not specified')}</option>
             {['floating', 'sinking', 'suspending'].map((b) => (
               <option key={b} value={b}>
-                {b[0].toUpperCase() + b.slice(1)}
+                {translate(b)}
               </option>
             ))}
           </Field>
           <Field
             name="technique"
-            label="Fishing technique"
-            placeholder="e.g. Twitching, steady retrieve"
+            label={translate('Fishing technique')}
+            placeholder={translate('e.g. Twitching, steady retrieve')}
           />
-          <Field name="purchaseDate" label="Purchase date" type="date" />
-          <Field name="purchasePrice" label="Purchase price (your currency)" type="number" />
+          <Field name="purchaseDate" label={translate('Purchase date')} type="date" />
+          <Field
+            name="purchasePrice"
+            label={translate('Purchase price (your currency)')}
+            type="number"
+          />
           <Field
             name="description"
-            label="Notes"
+            label={translate('Notes')}
             type="textarea"
-            placeholder="What makes this lure special?"
+            placeholder={translate('What makes this lure special?')}
           />
         </>
       ) : (
         <>
-          <Field name="weather" label="Weather" placeholder="e.g. Overcast, light wind" />
+          <Field
+            name="weather"
+            label={translate('Weather')}
+            placeholder={translate('e.g. Overcast, light wind')}
+          />
           <Field
             name="waterConditions"
-            label="Water conditions"
-            placeholder="e.g. Clear water, 14°C"
+            label={translate('Water conditions')}
+            placeholder={translate('e.g. Clear water, 14°C')}
           />
           <Field
             name="notes"
-            label="Your story"
+            label={translate('Your story')}
             type="textarea"
-            placeholder="The spot, the retrieve, that moment on the line…"
+            placeholder={translate('The spot, the retrieve, that moment on the line…')}
           />
         </>
       )}

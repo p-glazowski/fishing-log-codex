@@ -59,7 +59,7 @@ it('opens the current month and exposes exact daily counts including zero days',
   expect(rows).toHaveLength(4);
   expect(within(rows[1]).getByRole('cell')).toHaveTextContent(/^2$/);
   expect(within(rows[1]).getByRole('rowheader')).toHaveTextContent(
-    new Date('2024-02-01T00:00:00Z').toLocaleDateString(undefined, {
+    new Date('2024-02-01T00:00:00Z').toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'short',
       timeZone: 'UTC',

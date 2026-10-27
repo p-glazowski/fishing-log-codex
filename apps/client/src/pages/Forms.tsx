@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../lib/i18n';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import type { Lure, FishCatch } from '@lurelog/shared';
@@ -7,6 +8,8 @@ import { Loading, Failure, PageHeading } from '../components/common';
 import { RecordForm } from '../features/records/RecordForm';
 export { Field } from '../components/forms/Field';
 export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
+  useTranslation();
+
   const { id } = useParams();
   const location = useLocation();
   const edit = location.pathname.endsWith('/edit');
@@ -22,23 +25,29 @@ export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
     <>
       <Link className="back-link" to={isLure ? '/lures' : '/catches'}>
         <ArrowLeft size={16} />
-        Back to {isLure ? 'collection' : 'journal'}
+        {isLure ? t('Back to collection') : t('Back to journal')}
       </Link>
       <PageHeading
         eyebrow={
           edit
-            ? 'REFINE THE DETAILS'
+            ? t('REFINE THE DETAILS')
             : isLure
-              ? 'MAKE ROOM IN THE TACKLE BOX'
-              : 'ANOTHER STORY TO TELL'
+              ? t('MAKE ROOM IN THE TACKLE BOX')
+              : t('ANOTHER STORY TO TELL')
         }
         title={
-          edit ? `Edit ${isLure ? 'lure' : 'catch'}` : isLure ? 'Add a new lure' : 'Log a new catch'
+          edit
+            ? isLure
+              ? t('Edit lure')
+              : t('Edit catch')
+            : isLure
+              ? t('Add a new lure')
+              : t('Log a new catch')
         }
         description={
           isLure
-            ? 'The details today. The possibilities tomorrow.'
-            : 'Keep the details of a day well spent.'
+            ? t('The details today. The possibilities tomorrow.')
+            : t('Keep the details of a day well spent.')
         }
       />
       <RecordForm

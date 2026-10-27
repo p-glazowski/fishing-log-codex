@@ -1,3 +1,4 @@
+import { t, countLabel, useTranslation } from '../lib/i18n';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -6,6 +7,8 @@ import { api } from '../lib/api';
 import { Button } from '../components/ui/button';
 import { PageHeading, Loading, Failure, Empty, CatchCard, Pagination } from '../components/common';
 export default function Journal() {
+  useTranslation();
+
   const [urlParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [lure, setLure] = useState(urlParams.get('lure') ?? '');
@@ -33,14 +36,14 @@ export default function Journal() {
   return (
     <>
       <PageHeading
-        eyebrow="FIELD NOTES"
-        title="Your fishing journal"
-        description="Every catch, the lure behind it, and the details worth keeping."
+        eyebrow={t('FIELD NOTES')}
+        title={t('Your fishing journal')}
+        description={t('Every catch, the lure behind it, and the details worth keeping.')}
       >
         <Button asChild>
           <Link to="/catches/new">
             <Plus size={18} />
-            Log a catch
+            {t('Log a catch')}
           </Link>
         </Button>
       </PageHeading>
@@ -48,8 +51,8 @@ export default function Journal() {
         <div className="search-field">
           <Search size={18} />
           <input
-            aria-label="Search fish species"
-            placeholder="Search fish species…"
+            aria-label={t('Search fish species')}
+            placeholder={t('Search fish species…')}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -58,14 +61,14 @@ export default function Journal() {
           />
         </div>
         <select
-          aria-label="Filter by lure"
+          aria-label={t('Filter by lure')}
           value={lure}
           onChange={(e) => {
             setLure(e.target.value);
             setPage(1);
           }}
         >
-          <option value="">All lures</option>
+          <option value="">{t('All lures')}</option>
           {lures.data?.data.map((l) => (
             <option key={l._id} value={l._id}>
               {l.brand} {l.name}
@@ -73,22 +76,22 @@ export default function Journal() {
           ))}
         </select>
         <select
-          aria-label="Sort catches"
+          aria-label={t('Sort catches')}
           value={sort}
           onChange={(e) => {
             setSort(e.target.value);
             setPage(1);
           }}
         >
-          <option value="date">Newest catches</option>
-          <option value="length">Longest fish</option>
-          <option value="weight">Heaviest fish</option>
+          <option value="date">{t('Newest catches')}</option>
+          <option value="length">{t('Longest fish')}</option>
+          <option value="weight">{t('Heaviest fish')}</option>
         </select>
         <div className="view-toggle">
           <Button
             variant={!list ? 'default' : 'ghost'}
             size="icon"
-            aria-label="Gallery view"
+            aria-label={t('Gallery view')}
             aria-pressed={!list}
             onClick={() => setList(false)}
           >
@@ -97,7 +100,7 @@ export default function Journal() {
           <Button
             variant={list ? 'default' : 'ghost'}
             size="icon"
-            aria-label="List view"
+            aria-label={t('List view')}
             aria-pressed={list}
             onClick={() => setList(true)}
           >
@@ -107,9 +110,9 @@ export default function Journal() {
       </div>
       <div className="date-filters">
         <label>
-          From
+          {t('From')}
           <input
-            aria-label="From date"
+            aria-label={t('From date')}
             type="date"
             value={from}
             onChange={(e) => {
@@ -119,9 +122,9 @@ export default function Journal() {
           />
         </label>
         <label>
-          To
+          {t('To')}
           <input
-            aria-label="To date"
+            aria-label={t('To date')}
             type="date"
             value={to}
             onChange={(e) => {
@@ -130,7 +133,7 @@ export default function Journal() {
             }}
           />
         </label>
-        <span>{query.data?.total ?? 0} recorded catches</span>
+        <span>{countLabel(query.data?.total ?? 0, 'catch')}</span>
       </div>
       {query.isLoading ? (
         <Loading />
@@ -146,12 +149,14 @@ export default function Journal() {
         <Empty
           title={
             search || lure || from || to
-              ? 'No catches match your filters.'
-              : 'The best stories are still ahead.'
+              ? t('No catches match your filters.')
+              : t('The best stories are still ahead.')
           }
-          description="Log a catch, add a photo, and keep the moment long after the day is over."
+          description={t(
+            'Log a catch, add a photo, and keep the moment long after the day is over.',
+          )}
           to="/catches/new"
-          label="Log your first catch"
+          label={t('Log your first catch')}
         />
       )}
       <Pagination page={page} pages={query.data?.pages ?? 0} setPage={setPage} />

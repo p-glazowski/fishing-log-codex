@@ -1,3 +1,4 @@
+import { t, numberLabel, useTranslation } from '../../lib/i18n';
 import {
   AreaChart,
   Area,
@@ -15,6 +16,8 @@ export function ActivityChart({
   points: { label: string; count: number }[];
   daily?: boolean;
 }) {
+  useTranslation();
+
   return (
     <div className="chart-container" aria-hidden="true">
       <ResponsiveContainer width="100%" height="100%">
@@ -34,6 +37,7 @@ export function ActivityChart({
             tick={{ fill: 'var(--muted)', fontSize: 12 }}
           />
           <Tooltip
+            formatter={(value) => numberLabel(Number(value))}
             contentStyle={{
               background: 'var(--surface)',
               color: 'var(--text)',
@@ -45,7 +49,7 @@ export function ActivityChart({
             isAnimationActive={false}
             type={daily ? 'linear' : 'monotone'}
             dataKey="count"
-            name="Catches"
+            name={t('Catches')}
             stroke="var(--chart-primary)"
             fill="var(--chart-fill)"
             strokeWidth={2.5}
