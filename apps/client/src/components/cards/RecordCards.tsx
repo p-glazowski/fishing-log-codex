@@ -86,13 +86,18 @@ export function CatchCard({
             <span>{t('No photo added')}</span>
           </div>
         )}
-        {datePlacement === 'photo' && (
+        {!recent && datePlacement === 'photo' && (
           <time className="image-tag" dateTime={item.caughtAt}>
             {dateLabel(item.caughtAt)}
           </time>
         )}
       </Link>
       <div className="catch-body">
+        {recent && (
+          <time className="recent-catch-date" dateTime={item.caughtAt}>
+            {dateLabel(item.caughtAt)}
+          </time>
+        )}
         {(!recent || item.location) && (
           <span className="brand">{item.location || t('On the water')}</span>
         )}

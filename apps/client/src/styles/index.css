@@ -3666,6 +3666,7 @@ button.picker-option:hover {
   font-size: 9px;
 }
 .recent-list .catch-body {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -3714,4 +3715,12 @@ button.picker-option:hover {
   .recent-list .catch-body {
     padding: 16px;
   }
+}
+
+.recent-list .recent-catch-date {
+  align-self: flex-end;
+  margin: -2px 0 2px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.3;
 }
