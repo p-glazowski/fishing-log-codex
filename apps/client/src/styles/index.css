@@ -3736,3 +3736,11 @@ button.picker-option:hover {
   font-size: 10px;
   line-height: 1.3;
 }
+
+.recent-catch-card {
+  cursor: pointer;
+}
+.recent-catch-card:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}

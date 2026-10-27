@@ -62,7 +62,33 @@ export function CatchCard({
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const lure = lureOf(item);
   return (
-    <article className={`catch-card ${list ? 'catch-row' : ''}`}>
+    <article
+      className={`catch-card ${list ? 'catch-row' : ''} ${recent ? 'recent-catch-card' : ''}`}
+      onClick={recent ? () => (window.location.href = `/catches/${item._id}`) : undefined}
+      onKeyDown={
+        recent
+          ? (event) => {
+              if (
+                event.target === event.currentTarget &&
+                (event.key === 'Enter' || event.key === ' ')
+              ) {
+                event.preventDefault();
+                window.location.href = `/catches/${item._id}`;
+              }
+            }
+          : undefined
+      }
+      tabIndex={recent ? 0 : undefined}
+      role={recent ? 'link' : undefined}
+      aria-label={
+        recent
+          ? t('View {{species}} catch from {{date}}', {
+              species: speciesLabel(item.species),
+              date: dateLabel(item.caughtAt),
+            })
+          : undefined
+      }
+    >
       <Link
         className="catch-image"
         to={`/catches/${item._id}`}
@@ -125,7 +151,7 @@ export function CatchCard({
                 {lure.brand} {lure.name}
               </>
             )}
-            <ArrowUpRight size={14} />
+            {!recent && <ArrowUpRight size={14} />}
           </Link>
         )}
         {datePlacement === 'footer' && (
