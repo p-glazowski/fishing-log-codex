@@ -1245,6 +1245,7 @@ form > label {
 }
 .top-lures .panel-heading {
   align-items: flex-start;
+  padding-bottom: 8px;
 }
 .top-lures .panel-heading .text-action {
   flex-shrink: 0;
