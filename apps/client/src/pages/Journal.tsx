@@ -2,7 +2,7 @@ import { t, countLabel, useTranslation } from '../lib/i18n';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Plus, Search, Grid2X2, List } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { api } from '../lib/api';
 import { JournalLureFilter } from '../components/lures/JournalLureFilter';
 import { Button } from '../components/ui/button';
@@ -17,7 +17,6 @@ export default function Journal() {
   const [to, setTo] = useState('');
   const [sort, setSort] = useState('date');
   const [page, setPage] = useState(1);
-  const [list, setList] = useState(false);
   const params = new URLSearchParams({
     search,
     sort,
@@ -76,26 +75,6 @@ export default function Journal() {
           <option value="length">{t('Longest fish')}</option>
           <option value="weight">{t('Heaviest fish')}</option>
         </select>
-        <div className="view-toggle">
-          <Button
-            variant={!list ? 'default' : 'ghost'}
-            size="icon"
-            aria-label={t('Gallery view')}
-            aria-pressed={!list}
-            onClick={() => setList(false)}
-          >
-            <Grid2X2 size={18} />
-          </Button>
-          <Button
-            variant={list ? 'default' : 'ghost'}
-            size="icon"
-            aria-label={t('List view')}
-            aria-pressed={list}
-            onClick={() => setList(true)}
-          >
-            <List size={18} />
-          </Button>
-        </div>
       </div>
       <div className="date-filters">
         <label>
@@ -129,9 +108,9 @@ export default function Journal() {
       ) : query.isError ? (
         <Failure error={query.error} retry={() => void query.refetch()} />
       ) : query.data?.data.length ? (
-        <div className={list ? 'journal-list' : 'catch-grid'}>
+        <div className="catch-grid">
           {query.data.data.map((item) => (
-            <CatchCard key={item._id} item={item} list={list} />
+            <CatchCard key={item._id} item={item} />
           ))}
         </div>
       ) : (
