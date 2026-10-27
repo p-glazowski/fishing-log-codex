@@ -818,6 +818,14 @@ form > label {
 .extra-filters label {
   font-size: 12px;
 }
+.extra-filters label > .filter-select {
+  margin-top: 8px;
+}
+.extra-filters input,
+.extra-filters select {
+  height: 50px;
+}
+
 .results-label {
   display: flex;
   justify-content: space-between;
