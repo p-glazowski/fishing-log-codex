@@ -116,6 +116,19 @@ export default function Journal() {
                   }}
                 />
               </label>
+              <Button
+                type="button"
+                variant="ghost"
+                className="journal-reset-dates"
+                disabled={!from && !to}
+                onClick={() => {
+                  setFrom('');
+                  setTo('');
+                  setPage(1);
+                }}
+              >
+                {t('Reset dates')}
+              </Button>
             </div>
           )}
           <div

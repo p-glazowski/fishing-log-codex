@@ -1012,6 +1012,10 @@ button.journal-date-toggle {
   gap: 12px;
   width: min(100%, 400px);
 }
+.journal-reset-dates {
+  grid-column: 1 / -1;
+  justify-self: end;
+}
 .date-filters .journal-date-range label {
   display: flex;
   flex-direction: column;
