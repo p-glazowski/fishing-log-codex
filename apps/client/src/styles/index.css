@@ -3587,15 +3587,16 @@ button.picker-option:hover {
   gap: 12px;
   margin-left: auto;
   padding: 12px 20px;
-  min-height: 76px;
+  min-height: 52px;
   background: var(--soft);
   border: 1px solid var(--control-border);
   border-radius: var(--radius);
   color: var(--primary);
 }
 .journal-catch-total > div {
-  display: grid;
-  gap: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .journal-catch-total strong {
   font-family: 'Manrope', sans-serif;
