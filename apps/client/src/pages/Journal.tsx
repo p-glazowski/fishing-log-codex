@@ -2,7 +2,7 @@ import { t, countLabel, numberLabel, useTranslation } from '../lib/i18n';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Plus, Search, Fish, CalendarDays, ChevronDown } from 'lucide-react';
+import { Plus, Search, Fish, ChevronDown } from 'lucide-react';
 import { api } from '../lib/api';
 import { JournalLureFilter } from '../components/lures/JournalLureFilter';
 import { FilterSelect } from '../components/ui/filter-select';
@@ -83,14 +83,14 @@ export default function Journal() {
           type="button"
           className="journal-date-toggle"
           aria-expanded={showDateFilters}
+          aria-controls="journal-date-range"
           onClick={() => setShowDateFilters(!showDateFilters)}
         >
-          <CalendarDays size={17} />
-          <span>{from || to ? t('Custom dates') : t('Lifetime')}</span>
+          <span>{t('Date filter')}</span>
           <ChevronDown size={16} className={showDateFilters ? 'is-open' : ''} />
         </button>
         {showDateFilters && (
-          <>
+          <div id="journal-date-range" className="journal-date-range">
             <label>
               {t('From')}
               <input
@@ -115,7 +115,7 @@ export default function Journal() {
                 }}
               />
             </label>
-          </>
+          </div>
         )}
         <div
           className="journal-catch-total"
