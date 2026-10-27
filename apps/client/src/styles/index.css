@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -40,7 +40,7 @@
   --radius: 8px;
   --radius-lg: 12px;
   --shadow: 0 4px 16px #142e2110;
-  --mono: 'Source Sans 3', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
 }
 :root.dark {
   color-scheme: dark;
@@ -119,7 +119,7 @@ dl {
 h1,
 h2,
 h3 {
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Manrope', sans-serif;
   line-height: 1.25;
   font-weight: 700;
 }
@@ -337,7 +337,7 @@ form > label {
   align-items: center;
   gap: 8px;
   white-space: nowrap;
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 24px;
   font-weight: 800;
   line-height: 1;
@@ -1087,7 +1087,7 @@ form > label {
   color: var(--primary);
 }
 .stat-card dd {
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 36px;
   font-weight: 700;
   margin: 20px 0 12px;
@@ -1169,7 +1169,7 @@ form > label {
   display: block;
   font-size: 32px;
   line-height: 1.3;
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Manrope', sans-serif;
 }
 .donut-label small {
   font-size: 12px;
@@ -1645,7 +1645,7 @@ button.picker-option:hover {
 .lure-detail-stats strong {
   font-size: 28px;
   line-height: 1.2;
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Manrope', sans-serif;
 }
 .lure-detail-stats span {
   color: var(--muted);
@@ -1724,7 +1724,7 @@ button.picker-option:hover {
   gap: 4px;
 }
 .account-identity strong {
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 19px;
 }
 .account-identity > div > span {
@@ -3604,7 +3604,7 @@ button.picker-option:hover {
   gap: 8px;
 }
 .journal-catch-total strong {
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 28px;
   font-weight: 700;
   line-height: 1;

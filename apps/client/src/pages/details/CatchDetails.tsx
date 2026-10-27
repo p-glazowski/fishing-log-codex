@@ -26,7 +26,14 @@ export function CatchDetails() {
         eyebrow={t('A MEMORY FROM THE WATER')}
         title={speciesLabel(item.species)}
         description={dateLabel(item.caughtAt)}
-      />
+      >
+        <Button variant="outline" asChild>
+          <Link to={`/catches/${id}/edit`}>
+            <Pencil size={17} />
+            {t('Edit catch')}
+          </Link>
+        </Button>
+      </PageHeading>
       <div className="detail-grid catch-detail">
         <div className="detail-image">
           {item.photo ? (
@@ -72,14 +79,6 @@ export function CatchDetails() {
             </Link>
           )}
         </section>
-      </div>
-      <div className="catch-detail-actions">
-        <Button variant="outline" asChild>
-          <Link to={`/catches/${id}/edit`}>
-            <Pencil size={17} />
-            {t('Edit catch')}
-          </Link>
-        </Button>
       </div>
       {(item.notes || item.weather || item.waterConditions) && (
         <section className="panel notes">

@@ -9,7 +9,6 @@ import { initializeTheme } from './lib/theme';
 import { Loading, Failure, Empty } from './components/common';
 import { Button } from './components/ui/button';
 import './styles/index.css';
-import './styles/redesign.css';
 const Landing = lazy(() => import('./pages/Landing'));
 const Auth = lazy(() => import('./pages/Auth'));
 const Layout = lazy(() => import('./components/Layout'));
