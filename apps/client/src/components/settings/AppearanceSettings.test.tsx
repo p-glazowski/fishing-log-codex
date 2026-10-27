@@ -15,6 +15,9 @@ function systemChanges(next: boolean) {
 }
 beforeEach(() => {
   localStorage.clear();
+  const meta = document.createElement('meta');
+  meta.name = 'theme-color';
+  document.head.append(meta);
   dark = false;
   listeners.clear();
   vi.stubGlobal('matchMedia', () => ({
@@ -29,14 +32,17 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   stop();
+  document.querySelector('meta[name="theme-color"]')?.remove();
   vi.unstubAllGlobals();
 });
 it('defaults to the system and follows live system changes', () => {
   render(<AppearanceSettings />);
   expect(screen.getByRole('radio', { name: /Use system settings/ })).toBeChecked();
   expect(document.documentElement).not.toHaveClass('dark');
+  expect(document.querySelector('meta[name="theme-color"]')).toHaveAttribute('content', '#f5f5ef');
   systemChanges(true);
   expect(document.documentElement).toHaveClass('dark');
+  expect(document.querySelector('meta[name="theme-color"]')).toHaveAttribute('content', '#13211b');
   expect(screen.getByRole('status')).toHaveTextContent('Currently using dark mode');
   systemChanges(false);
   expect(document.documentElement).not.toHaveClass('dark');

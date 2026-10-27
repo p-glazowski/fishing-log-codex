@@ -19,10 +19,11 @@ function systemIsDark() {
   );
 }
 function applyTheme() {
-  document.documentElement.classList.toggle(
-    'dark',
-    preference === 'dark' || (preference === 'system' && systemIsDark()),
-  );
+  const dark = preference === 'dark' || (preference === 'system' && systemIsDark());
+  document.documentElement.classList.toggle('dark', dark);
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute('content', dark ? '#13211b' : '#f5f5ef');
   window.dispatchEvent(new Event(changeEvent));
 }
 
