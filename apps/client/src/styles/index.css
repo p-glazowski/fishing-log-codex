@@ -3679,3 +3679,15 @@ button.picker-option:hover {
 .field > .filter-select select {
   margin: 0;
 }
+
+@media (min-width: 768px) {
+  .date-filters label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .date-filters input,
+  .date-filters .journal-catch-total {
+    min-height: 56px;
+  }
+}
