@@ -113,7 +113,7 @@ export default function Collection() {
         <div className="extra-filters">
           <label>
             {translate('Lure type')}
-            <select
+            <FilterSelect
               value={params.get('type') ?? ''}
               onChange={(e) => filter('type', e.target.value)}
             >
@@ -123,7 +123,7 @@ export default function Collection() {
                   {translate(t)}
                 </option>
               ))}
-            </select>
+            </FilterSelect>
           </label>
           <label>
             {translate('Minimum length (mm)')}
