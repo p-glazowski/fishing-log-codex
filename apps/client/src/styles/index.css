@@ -1240,29 +1240,41 @@ form > label {
 .dashboard-bottom .section-heading {
   margin: 0 0 20px;
 }
+.top-lures {
+  border-top: 3px solid var(--primary);
+}
+.top-lures .panel-heading {
+  align-items: flex-start;
+}
+.top-lures .panel-heading .text-action {
+  flex-shrink: 0;
+  margin-top: 4px;
+}
 .ranking-list {
   list-style: none;
   margin: 0;
-  padding: 0 24px 8px;
+  padding: 0 16px 8px;
 }
-.ranking-list li {
+.ranking-list li + li {
   border-top: 1px solid var(--border);
 }
 .ranking-list a {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 0;
+  padding: 16px 4px;
+  border-radius: var(--radius);
 }
-.rank {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
+.ranking-list a:hover {
+  background: var(--soft);
 }
 .rank-image {
-  width: 64px;
-  height: 48px;
-  border-radius: 4px;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   background: var(--soft);
   overflow: hidden;
 }
@@ -1271,28 +1283,71 @@ form > label {
   height: 100%;
   object-fit: cover;
 }
+.rank {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  min-width: 20px;
+  padding: 2px 5px;
+  background: var(--surface);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-align: center;
+  border-radius: 0 4px 0 0;
+}
+.ranking-list li:first-child .rank {
+  background: var(--primary);
+  color: var(--surface);
+}
 .rank-name {
   flex: 1;
   min-width: 0;
 }
 .rank-name strong {
   display: block;
-  font-size: 13px;
-  margin: 4px 0;
+  font-size: 14px;
+  margin: 3px 0;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 .rank-name .brand {
-  font-size: 9px;
+  font-size: 10px;
 }
 .rank-name small {
   color: var(--muted);
   font-size: 11px;
+  line-height: 1.4;
 }
 .rank-count {
   display: flex;
-  gap: 4px;
-  align-items: center;
-  font-size: 13px;
-  font-weight: 600;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+.rank-count strong {
+  color: var(--primary);
+  font-family: 'Manrope', sans-serif;
+  font-size: 24px;
+  line-height: 1.2;
+}
+.rank-meter {
+  display: block;
+  width: 44px;
+  height: 3px;
+  margin-top: 4px;
+  background: var(--soft);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.rank-meter > span {
+  display: block;
+  height: 100%;
+  background: var(--primary);
+  border-radius: inherit;
 }
 /* Forms and details share the same technical, readable specification layout. */
 .record-form {
@@ -2639,21 +2694,6 @@ button.picker-option:hover {
   }
   .donut-container {
     height: 196px;
-  }
-  .ranking-list {
-    padding: 0 20px 8px;
-  }
-  .rank-image {
-    width: 56px;
-  }
-  .rank-name .brand {
-    font-size: 8px;
-  }
-  .rank-name strong {
-    font-size: 12px;
-  }
-  .rank-name small {
-    font-size: 10px;
   }
   .record-form {
     grid-template-columns: 1fr;
