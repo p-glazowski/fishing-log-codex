@@ -52,12 +52,12 @@ export function LandingFeatures() {
             <div>
               <h3>{t(title)}</h3>
               <p>{t(text)}</p>
+              {!loading && !error && (
+                <Link to={user ? path : '/register'} className="feature-link">
+                  {t(label)} <ArrowRight size={18} aria-hidden="true" />
+                </Link>
+              )}
             </div>
-            {!loading && !error && (
-              <Link to={user ? path : '/register'} className="feature-link" aria-label={t(label)}>
-                <ArrowRight size={22} />
-              </Link>
-            )}
           </article>
         ))}
       </div>
