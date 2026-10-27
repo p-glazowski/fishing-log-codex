@@ -3695,3 +3695,15 @@ button.picker-option:hover {
     grid-template-columns: 24px minmax(0, 1fr);
   }
 }
+
+/* Keep language selection visible in the public header. */
+.landing-nav > .language-select {
+  flex-shrink: 0;
+}
+@media (max-width: 767px) {
+  .landing-nav > .language-select {
+    order: 3;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

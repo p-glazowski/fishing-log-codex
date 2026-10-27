@@ -4,7 +4,7 @@ import { ArrowUpRight, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { Logo } from '../branding/Logo';
 import { Button } from '../ui/button';
-import { ProfileLink } from './ProfileLink';
+import { LanguageSelect } from '../settings/LanguageSettings';
 export function LandingNavigation() {
   useTranslation();
 
@@ -20,6 +20,7 @@ export function LandingNavigation() {
           {t('How it works')}
         </a>
       </nav>
+      <LanguageSelect />
       <div className="landing-account">
         {loading ? (
           <span
@@ -33,15 +34,12 @@ export function LandingNavigation() {
             {t('Retry session')}
           </Button>
         ) : user ? (
-          <>
-            <Button asChild size="sm">
-              <Link to="/dashboard">
-                {t('Your fishing log')}
-                <ArrowUpRight size={16} />
-              </Link>
-            </Button>
-            <ProfileLink user={user} avatarLast />
-          </>
+          <Button asChild size="sm">
+            <Link to="/dashboard">
+              {t('Your fishing log')}
+              <ArrowUpRight size={16} />
+            </Link>
+          </Button>
         ) : (
           <>
             <Link className="sign-in-link" to="/login">
