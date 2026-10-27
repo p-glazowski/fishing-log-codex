@@ -40,7 +40,10 @@ export function StatsCards({ stats }: { stats: Stats }) {
         <dd className="stat-text">
           {top ? (
             <Link to={`/lures/${top._id}`}>
-              {top.name}
+              <span>
+                <span className="stat-lure-name">{top.name}</span>
+                <span className="stat-lure-size">{numberLabel(top.lengthMm)} mm</span>
+              </span>
               <ArrowUpRight size={17} />
             </Link>
           ) : (
