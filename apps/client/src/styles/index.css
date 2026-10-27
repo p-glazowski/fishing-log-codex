@@ -3785,3 +3785,13 @@ button.picker-option:hover {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
+
+/* iOS zooms focused controls with small text. Keep this shared mobile rule
+   stronger than compact component styles while preserving user zoom. */
+@media (max-width: 1023px), (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
