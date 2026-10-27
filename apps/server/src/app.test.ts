@@ -217,6 +217,47 @@ describe('private fishing workspace', () => {
     ).toBe(1);
     expect((await bob.get('/api/v1/dashboard/stats')).body.data.totalCatches).toBe(0);
   });
+  it('persists validated photo positioning across detail, list and dashboard responses', async () => {
+    const position = { x: 0, y: 100 };
+    const changed = await write(alice, 'patch', `/catches/${catchId}`).send({
+      photoPosition: position,
+    });
+    expect(changed.status).toBe(200);
+    expect(changed.body.data.photoPosition).toEqual(position);
+    expect((await alice.get(`/api/v1/catches/${catchId}`)).body.data.photoPosition).toEqual(
+      position,
+    );
+    const list = (await alice.get('/api/v1/catches')).body.data;
+    expect(list.find((item: { _id: string }) => item._id === catchId).photoPosition).toEqual(
+      position,
+    );
+    const dashboard = (await alice.get('/api/v1/dashboard/stats')).body.data;
+    expect(
+      dashboard.recentCatches.find((item: { _id: string }) => item._id === catchId).photoPosition,
+    ).toEqual(position);
+    for (const invalid of [
+      { x: -1, y: 50 },
+      { x: 50, y: 101 },
+      { x: '50', y: 50 },
+      { x: 50 },
+      { x: 50, y: 50, userId: 'forged' },
+    ]) {
+      expect(
+        (await write(alice, 'patch', `/catches/${catchId}`).send({ photoPosition: invalid }))
+          .status,
+      ).toBe(422);
+    }
+    expect(
+      (
+        await write(bob, 'patch', `/catches/${catchId}`, bToken).send({
+          photoPosition: { x: 50, y: 50 },
+        })
+      ).status,
+    ).toBe(404);
+    expect((await alice.get(`/api/v1/catches/${catchId}`)).body.data.photoPosition).toEqual(
+      position,
+    );
+  });
   it('returns exact daily totals, UTC boundaries, empty days and private month activity', async () => {
     const created = await write(alice, 'post', '/lures').send(lure);
     const activityLure = created.body.data._id;
@@ -295,7 +336,9 @@ describe('private fishing workspace', () => {
     expect(photo.headers['content-type']).toContain('image/webp');
     expect((await bob.get(imageUrl)).status).toBe(404);
     expect((await supertest(app).get(imageUrl)).status).toBe(401);
-    expect((await alice.get(`/api/v1/catches/${catchId}`)).body.data.photo.url).toBe(imageUrl);
+    const savedCatch = (await alice.get(`/api/v1/catches/${catchId}`)).body.data;
+    expect(savedCatch.photo.url).toBe(imageUrl);
+    expect(savedCatch.photoPosition).toEqual({ x: 0, y: 100 });
   });
   it('edits catches, denies cross-user actions, and validates input', async () => {
     expect(
@@ -317,7 +360,11 @@ describe('private fishing workspace', () => {
     expect((await write(bob, 'delete', `/catches/${catchId}`, bToken)).status).toBe(404);
   });
   it('deletes a catch independently', async () => {
-    const result = await write(alice, 'post', '/catches').send(catchBody(lureId));
+    const result = await write(alice, 'post', '/catches').send({
+      ...catchBody(lureId),
+      photoPosition: { x: 25, y: 75 },
+    });
+    expect(result.body.data.photoPosition).toEqual({ x: 25, y: 75 });
     expect((await write(alice, 'delete', `/catches/${result.body.data._id}`)).status).toBe(204);
     expect((await alice.get(`/api/v1/catches/${result.body.data._id}`)).status).toBe(404);
   });

@@ -1,3 +1,5 @@
+import type { PhotoPosition } from '@lurelog/shared';
+import { PhotoPositionEditor } from './PhotoPositionEditor';
 import { t, useTranslation } from '../../lib/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { UploadCloud, ImagePlus, X, Camera } from 'lucide-react';
@@ -6,10 +8,14 @@ export function ImageUpload({
   file,
   onChange,
   existing,
+  position,
+  onPositionChange,
 }: {
   file: File | null;
   onChange: (file: File | null) => void;
   existing?: string;
+  position?: PhotoPosition;
+  onPositionChange?: (position: PhotoPosition) => void;
 }) {
   useTranslation();
 
@@ -17,6 +23,7 @@ export function ImageUpload({
   const camera = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState('');
   const [error, setError] = useState('');
+  const [adjusting, setAdjusting] = useState(false);
   useEffect(() => {
     if (!file) {
       setPreview('');
@@ -79,9 +86,22 @@ export function ImageUpload({
             type="file"
             accept="image/jpeg,image/png,image/webp"
             capture="environment"
-            onChange={(event) => pick(event.target.files?.[0])}
+            onChange={(event) => {
+              pick(event.target.files?.[0]);
+              event.target.value = '';
+            }}
           />
 
+          {(preview || existing) && onPositionChange && (
+            <Button
+              type="button"
+              variant="outline"
+              aria-expanded={adjusting}
+              onClick={() => setAdjusting(!adjusting)}
+            >
+              {t(adjusting ? 'Done adjusting' : 'Adjust preview')}
+            </Button>
+          )}
           {file && (
             <Button
               type="button"
@@ -98,9 +118,19 @@ export function ImageUpload({
           hidden
           type="file"
           accept="image/jpeg,image/png,image/webp"
-          onChange={(e) => pick(e.target.files?.[0])}
+          onChange={(e) => {
+            pick(e.target.files?.[0]);
+            e.target.value = '';
+          }}
         />
       </div>
+      {adjusting && (preview || existing) && onPositionChange && (
+        <PhotoPositionEditor
+          src={preview || existing!}
+          value={position ?? { x: 50, y: 50 }}
+          onChange={onPositionChange}
+        />
+      )}
       {error && (
         <p role="alert" className="field-error">
           {error}

@@ -51,3 +51,7 @@ Offer a persistent, device-local English/Polish preference in Account settings a
 ## Journal lure filter
 
 Keep individual-lure filtering with All lures as the default. Use a searchable combobox with case-insensitive brand grouping; each option exposes model, length in mm, and optional color, while keeping the lure ID as the filter value. Fetch search results from the API in pages rather than limiting the collection to 100 records. Resolve URL-preselected lures independently of result pages. Preserve accessible keyboard selection, Escape/blur dismissal, retry/empty/loading states, and English/Polish labels. Changing or clearing the lure resets catch pagination.
+
+## Catch photo positioning
+
+Retain edge-to-edge cover previews. Offer an optional inline crop-position editor for catch photos, with pointer dragging, accessible horizontal/vertical range inputs, a center reset, and wide/narrow previews. Use matching 3:2 editor/journal frames; Recent catches retains its narrow thumbnail. Save percentage positions with the catch through ownership-checked APIs. Center legacy/replacement photos by default, restore the original position if a pending replacement is removed, and preserve the full uncropped photo in catch details. Translate controls into English and Polish.

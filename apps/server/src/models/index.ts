@@ -53,6 +53,16 @@ const catchSchema = new Schema(
     waterConditions: String,
     weather: String,
     photo: imageSchema,
+    photoPosition: {
+      type: new Schema(
+        {
+          x: { type: Number, required: true, min: 0, max: 100 },
+          y: { type: Number, required: true, min: 0, max: 100 },
+        },
+        { _id: false },
+      ),
+      default: undefined,
+    },
   },
   { timestamps: true },
 );

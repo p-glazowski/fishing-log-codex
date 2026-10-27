@@ -56,6 +56,13 @@ export const lureSchema = z
     purchasePrice: z.number().finite().nonnegative().max(1000000).nullable().optional(),
   })
   .strict();
+export const photoPositionSchema = z
+  .object({
+    x: z.number().finite().min(0).max(100),
+    y: z.number().finite().min(0).max(100),
+  })
+  .strict();
+export type PhotoPosition = z.infer<typeof photoPositionSchema>;
 export const catchSchema = z
   .object({
     lureId: z.string().regex(/^[a-f\d]{24}$/i, 'Select a lure'),
@@ -67,6 +74,7 @@ export const catchSchema = z
     notes: optionalText(4000),
     waterConditions: optionalText(500),
     weather: optionalText(500),
+    photoPosition: photoPositionSchema.optional(),
   })
   .strict();
 export type LureInput = z.infer<typeof lureSchema>;

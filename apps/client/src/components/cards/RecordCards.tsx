@@ -70,7 +70,14 @@ export function CatchCard({
         })}
       >
         {item.photo ? (
-          <img src={item.photo.url} alt={speciesLabel(item.species)} loading="lazy" />
+          <img
+            src={item.photo.url}
+            alt={speciesLabel(item.species)}
+            loading="lazy"
+            style={{
+              objectPosition: `${item.photoPosition?.x ?? 50}% ${item.photoPosition?.y ?? 50}%`,
+            }}
+          />
         ) : (
           <div className="fish-placeholder">
             <Fish size={54} />

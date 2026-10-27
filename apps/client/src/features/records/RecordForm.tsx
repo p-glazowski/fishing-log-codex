@@ -4,7 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { FormProvider, useForm, type FieldValues, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { lureSchema, catchSchema, type Lure, type FishCatch } from '@lurelog/shared';
+import {
+  lureSchema,
+  catchSchema,
+  type Lure,
+  type FishCatch,
+  type PhotoPosition,
+} from '@lurelog/shared';
 import { Check, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { api, ApiError, data, json, errorMessage, upload, lureOf } from '../../lib/api';
@@ -26,6 +32,8 @@ export function RecordForm({
   const schema = isLure ? lureSchema : catchSchema;
   const client = useQueryClient();
   const navigate = useNavigate();
+  const originalPosition = (initial as FishCatch)?.photoPosition ?? { x: 50, y: 50 };
+  const [photoPosition, setPhotoPosition] = useState<PhotoPosition>(originalPosition);
   const [file, setFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -67,6 +75,7 @@ export function RecordForm({
       }
       if (!isLure && typeof values.species === 'string')
         values.species = canonicalSpecies(values.species);
+      if (!isLure) values.photoPosition = photoPosition;
       const base = isLure ? '/lures' : '/catches';
       let recordId = initial?._id ?? savedId.current;
       if (!isLure && typeof values.caughtAt === 'string' && !values.caughtAt.endsWith('Z'))
@@ -136,7 +145,16 @@ export function RecordForm({
                 ? t('Make it easy to spot your favorite.')
                 : t('A photo brings the story back to life.')}
             </p>
-            <ImageUpload file={file} onChange={setFile} existing={image} />
+            <ImageUpload
+              file={file}
+              existing={image}
+              onChange={(next) => {
+                setFile(next);
+                if (!isLure) setPhotoPosition(next ? { x: 50, y: 50 } : originalPosition);
+              }}
+              position={!isLure ? photoPosition : undefined}
+              onPositionChange={!isLure ? setPhotoPosition : undefined}
+            />
           </section>
           <div className="form-tip">
             <Info size={19} />
