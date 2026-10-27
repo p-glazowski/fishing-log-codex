@@ -3717,9 +3717,15 @@ button.picker-option:hover {
   }
 }
 
+.recent-list .recent-catch-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
 .recent-list .recent-catch-date {
-  align-self: flex-end;
-  margin: -2px 0 2px;
+  flex-shrink: 0;
   color: var(--muted);
   font-size: 10px;
   line-height: 1.3;

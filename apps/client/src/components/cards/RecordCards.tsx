@@ -93,13 +93,17 @@ export function CatchCard({
         )}
       </Link>
       <div className="catch-body">
-        {recent && (
-          <time className="recent-catch-date" dateTime={item.caughtAt}>
-            {dateLabel(item.caughtAt)}
-          </time>
-        )}
-        {(!recent || item.location) && (
-          <span className="brand">{item.location || t('On the water')}</span>
+        {(item.location || recent) && (
+          <div className="recent-catch-meta">
+            <span className="brand">
+              {item.location || (recent ? t('Fish catch') : t('On the water'))}
+            </span>
+            {recent && (
+              <time className="recent-catch-date" dateTime={item.caughtAt}>
+                {dateLabel(item.caughtAt)}
+              </time>
+            )}
+          </div>
         )}
         <Link to={`/catches/${item._id}`}>
           <Heading>{speciesLabel(item.species)}</Heading>
