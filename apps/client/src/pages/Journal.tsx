@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Plus, Search } from 'lucide-react';
 import { api } from '../lib/api';
 import { JournalLureFilter } from '../components/lures/JournalLureFilter';
+import { FilterSelect } from '../components/ui/filter-select';
 import { Button } from '../components/ui/button';
 import { PageHeading, Loading, Failure, Empty, CatchCard, Pagination } from '../components/common';
 export default function Journal() {
@@ -63,7 +64,7 @@ export default function Journal() {
             setPage(1);
           }}
         />
-        <select
+        <FilterSelect
           aria-label={t('Sort catches')}
           value={sort}
           onChange={(e) => {
@@ -74,7 +75,7 @@ export default function Journal() {
           <option value="date">{t('Newest catches')}</option>
           <option value="length">{t('Longest fish')}</option>
           <option value="weight">{t('Heaviest fish')}</option>
-        </select>
+        </FilterSelect>
       </div>
       <div className="date-filters">
         <label>
