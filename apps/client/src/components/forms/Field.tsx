@@ -24,7 +24,7 @@ export function Field({
   } = useFormContext();
   const props = register(name, {
     setValueAs: (v) =>
-      v === ''
+      v === '' || v === null || v === undefined
         ? type === 'number' || type === 'date' || children
           ? required
             ? undefined

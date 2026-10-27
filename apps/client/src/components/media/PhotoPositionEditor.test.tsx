@@ -197,3 +197,52 @@ it('centers a replacement photo, restores the old crop on removal, and saves a n
   client.clear();
   expect(PreviewURL.revokeObjectURL).toHaveBeenCalled();
 });
+
+it.each([null, undefined])('saves crop edits when optional measurements are %s', async (empty) => {
+  const lure = {
+    _id: String(catchRecord.lureId),
+    name: 'Original Floater',
+    brand: 'Rapala',
+    type: 'Hard Bait' as const,
+    lengthMm: 90,
+    catchCount: 1,
+    createdAt: '2026-10-01',
+  };
+  vi.mocked(api.lure).mockResolvedValue(lure);
+  vi.mocked(api.lures).mockResolvedValue({ data: [lure], total: 1, page: 1, pages: 1 });
+  vi.mocked(data).mockResolvedValue(catchRecord);
+  const user = userEvent.setup();
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const { unmount } = render(
+    <QueryClientProvider client={client}>
+      <MemoryRouter initialEntries={['/edit']}>
+        <Routes>
+          <Route
+            path="/edit"
+            element={
+              <RecordForm
+                kind="catch"
+                initial={{ ...catchRecord, weightKg: empty, lengthCm: empty }}
+              />
+            }
+          />
+          <Route
+            path={`/catches/${catchRecord._id}`}
+            element={<p>Crop saved without measurements</p>}
+          />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+  expect(screen.getByLabelText(/Fish weight/)).toHaveValue(null);
+  await user.click(screen.getByRole('button', { name: 'Adjust preview' }));
+  fireEvent.change(screen.getByLabelText('Vertical position'), { target: { value: '25' } });
+  await user.click(screen.getByRole('button', { name: 'Save changes' }));
+  await screen.findByText('Crop saved without measurements');
+  const saved = JSON.parse(String(vi.mocked(data).mock.calls[0][1]?.body));
+  expect(saved.weightKg == null).toBe(true);
+  expect(saved.lengthCm == null).toBe(true);
+  expect(saved.photoPosition).toEqual({ x: 20, y: 25 });
+  unmount();
+  client.clear();
+});
