@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { registerSchema, loginSchema } from '@lurelog/shared';
-import { ArrowRight, Fish, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { data, json, errorMessage } from '../lib/api';
 import { Logo } from '../components/branding/Logo';
@@ -40,33 +40,14 @@ export default function Auth({ register = false }: { register?: boolean }) {
   }
   return (
     <div className="auth-page">
-      <div className="auth-visual">
-        <Logo />
-        <div>
-          <span className="eyebrow">{t('A LIFE WELL CAST')}</span>
-          <p className="auth-visual-title">
-            {t('There’s a story')}
-            <br />
-            {t('behind every catch.')}
-          </p>
-          <p>
-            {t('Keep your favorite lures, unforgettable catches,')}
-            <br />
-            {t('and days on the water together.')}
-          </p>
-        </div>
-        <span className="auth-quote">
-          <Fish size={20} />
-          {t('Less remembering. More fishing.')}
-        </span>
-      </div>
       <div className="auth-panel">
-        <LanguageSelect />
-        <Link className="back-link" to="/">
-          {t('← Back to LureLog')}
-        </Link>
+        <header className="auth-header">
+          <Logo />
+          <Link className="back-link" to="/">
+            {t('← Back to LureLog')}
+          </Link>
+        </header>
         <div className="auth-form-wrap">
-          <span className="eyebrow">{t('YOUR NEXT CHAPTER')}</span>
           <h1>{register ? t('Start your fishing story.') : t('Welcome back, angler.')}</h1>
           <p>
             {register
@@ -132,6 +113,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
             {t('Your collection is private. Always yours.')}
           </div>
         </div>
+        <LanguageSelect />
       </div>
     </div>
   );
