@@ -454,5 +454,19 @@
   "Choose an image": "Wybierz zdjęcie",
   "Photo storage is temporarily unavailable": "Przechowywanie zdjęć jest chwilowo niedostępne",
   "Unexpected field": "Nieoczekiwane pole formularza",
-  "Invalid or oversized JSON request": "Nieprawidłowe lub zbyt duże żądanie"
+  "Invalid or oversized JSON request": "Nieprawidłowe lub zbyt duże żądanie",
+  "Selected lure unavailable": "Wybrana przynęta jest niedostępna",
+  "Could not load lure choices.": "Nie udało się wczytać listy przynęt.",
+  "Adjust preview": "Dostosuj podgląd",
+  "Done adjusting": "Zakończ dostosowywanie",
+  "Card preview": "Podgląd karty",
+  "Catch card preview": "Podgląd zdjęcia na karcie połowu",
+  "Drag the photo to keep the person and fish visible, or use the sliders below.": "Przeciągnij zdjęcie, aby osoba i ryba pozostały widoczne, lub użyj suwaków poniżej.",
+  "Horizontal position": "Pozycja w poziomie",
+  "Vertical position": "Pozycja w pionie",
+  "Position": "Pozycja",
+  "Center photo": "Wyśrodkuj zdjęcie",
+  "Only the preview changes. Your full photo is preserved. Check both people and fish stay inside the frame.": "Zmienia się tylko podgląd. Pełne zdjęcie zostaje zachowane. Sprawdź, czy osoba i ryba mieszczą się w kadrze.",
+  "Catch thumbnail preview": "Podgląd miniatury połowu",
+  "Thumbnail preview": "Podgląd miniatury"
 }

@@ -990,6 +990,8 @@ form > label {
   background: var(--soft);
 }
 .catch-image > img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -3437,4 +3439,184 @@ button.picker-option:hover {
 }
 .language-settings .language-select select {
   flex: 1;
+}
+
+.filter-bar > .journal-lure-filter {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+.journal-lure-filter {
+  position: relative;
+}
+.journal-lure-filter .picker-input input {
+  text-overflow: ellipsis;
+}
+.journal-lure-dropdown {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  box-shadow: var(--shadow);
+}
+.journal-lure-brand {
+  padding: 12px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+.journal-lure-dropdown .picker-option {
+  min-height: 48px;
+}
+.journal-lure-dropdown .picker-option > span {
+  min-width: 0;
+  flex: 1;
+}
+.journal-lure-dropdown .picker-option strong,
+.journal-lure-dropdown .picker-option small {
+  overflow-wrap: anywhere;
+}
+.journal-lure-dropdown .picker-option > svg {
+  flex-shrink: 0;
+}
+
+.photo-position-editor {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.photo-position-editor h3 {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.photo-position-editor > p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.photo-position-frame {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  margin-top: 16px;
+  border-radius: var(--radius);
+  background: var(--soft);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.photo-position-frame:active {
+  cursor: grabbing;
+}
+.photo-position-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.photo-position-controls {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.photo-position-controls label {
+  font-size: 12px;
+}
+.photo-position-controls input[type='range'] {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+.photo-position-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--muted);
+}
+.photo-position-note {
+  margin-top: 12px;
+}
+
+/* Keep the journal frame identical to the crop editor at every breakpoint. */
+.catch-grid .catch-image {
+  height: auto;
+  aspect-ratio: 3 / 2;
+}
+.catch-grid .fish-placeholder {
+  position: absolute;
+  inset: 0;
+}
+.photo-position-secondary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.photo-position-secondary img {
+  width: 80px;
+  height: 100px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+.photo-position-secondary span {
+  font-size: 12px;
+  font-weight: 600;
+}
+.photo-position-secondary small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.journal-catch-total {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  padding: 12px 20px;
+  min-height: 52px;
+  background: var(--soft);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  color: var(--primary);
+}
+.journal-catch-total > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.journal-catch-total strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.journal-catch-total span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.journal-catch-total > svg {
+  flex-shrink: 0;
+}
+@media (max-width: 767px) {
+  .journal-catch-total {
+    flex-basis: 100%;
+    margin-left: 0;
+    justify-content: center;
+  }
 }

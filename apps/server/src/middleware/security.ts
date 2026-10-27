@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { isClientOrigin } from '../config/origins.js';
 import { env } from '../config/env.js';
 import { UserModel } from '../models/index.js';
 export class HttpError extends Error {
@@ -64,7 +65,7 @@ export function csrf(req: Request, res: Response, next: NextFunction) {
     return;
   }
   if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
-    if (req.get('origin') !== env.CLIENT_ORIGIN)
+    if (!isClientOrigin(req.get('origin')))
       return next(new HttpError(403, 'Request origin is not allowed'));
     const token = req.get('x-csrf-token') ?? '';
     const cookie = req.cookies[csrfCookieName] ?? '';

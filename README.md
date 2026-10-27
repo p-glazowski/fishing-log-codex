@@ -184,3 +184,15 @@ The authenticated `GET /api/v1/dashboard/activity?month=YYYY-MM` endpoint return
 LureLog supports English and Polish. Choose **Language** in Account settings, on the sign-in/registration screen, or in the public landing-page footer. The preference is saved in this browser, survives reloads, and synchronizes between tabs. It does not sync between devices. English is the default.
 
 UI copy and known API/validation errors use the catalog in `apps/client/src/lib/i18n/pl.json`; English source strings provide the fallback. Use `useTranslation()` in components to subscribe to language changes, and `t()` for translated strings with named interpolation. Date, number, and plural helpers use the selected locale. Keep route paths, form field names, API values, and user-written names/notes untranslated. Lure category labels are translated while their API values remain canonical; common Polish fish-species names resolve to their canonical values on save, and custom species remain unchanged.
+
+The fishing journal’s lure filter supports server-backed search and paginated results. Choices are grouped by brand without case duplicates and include model, length, and color so different versions of the same lure remain distinguishable. Selecting **All lures** clears the filter.
+
+### Testing on an iPhone over Wi-Fi
+
+Keep your phone and Mac on the same Wi-Fi. Set `CLIENT_ORIGIN=http://<your-Mac-LAN-IP>:5173` in the root `.env`, restart `npm run dev`, and open that URL in Safari on your phone. Keep MongoDB running. Development also trusts `localhost` and `127.0.0.1` on the configured frontend port, so the Mac and phone can use their respective addresses. CORS and CSRF share this exact allowlist, and CSRF tokens are still required. Production trusts only the configured origin.
+
+### Adjusting catch photo previews
+
+When adding or editing a catch with a photo, select **Adjust preview**. Drag the image or use the horizontal/vertical sliders, check the journal card and Recent catches thumbnail previews, then save the catch. **Center photo** resets the crop. Positioning changes only the preview: the full photo remains available in catch details. New/replacement photos start centered; older catches without saved positioning also use the center.
+
+The catch API accepts an optional `photoPosition: { x, y }` object, with both coordinates between 0 and 100. This is stored with the catch and returned by detail/list/dashboard endpoints. Existing records require no migration. Journal cards and the editor share a 3:2 frame so the chosen journal crop stays consistent at different screen widths.
