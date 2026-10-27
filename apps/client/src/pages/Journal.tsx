@@ -2,7 +2,7 @@ import { t, countLabel, numberLabel, useTranslation } from '../lib/i18n';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Plus, Search, Fish } from 'lucide-react';
+import { Plus, Search, Fish, CalendarDays } from 'lucide-react';
 import { api } from '../lib/api';
 import { JournalLureFilter } from '../components/lures/JournalLureFilter';
 import { FilterSelect } from '../components/ui/filter-select';
@@ -16,6 +16,7 @@ export default function Journal() {
   const [lure, setLure] = useState(urlParams.get('lure') ?? '');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [showDateFilters, setShowDateFilters] = useState(false);
   const [sort, setSort] = useState('date');
   const [page, setPage] = useState(1);
   const params = new URLSearchParams({
@@ -76,32 +77,52 @@ export default function Journal() {
           <option value="length">{t('Longest fish')}</option>
           <option value="weight">{t('Heaviest fish')}</option>
         </FilterSelect>
+        <Button
+          type="button"
+          variant="outline"
+          aria-expanded={showDateFilters}
+          onClick={() => {
+            if (showDateFilters) {
+              setFrom('');
+              setTo('');
+              setPage(1);
+            }
+            setShowDateFilters(!showDateFilters);
+          }}
+        >
+          <CalendarDays size={17} />
+          {t(showDateFilters ? 'Hide dates' : 'Choose dates')}
+        </Button>
       </div>
       <div className="date-filters">
-        <label>
-          {t('From')}
-          <input
-            aria-label={t('From date')}
-            type="date"
-            value={from}
-            onChange={(e) => {
-              setFrom(e.target.value);
-              setPage(1);
-            }}
-          />
-        </label>
-        <label>
-          {t('To')}
-          <input
-            aria-label={t('To date')}
-            type="date"
-            value={to}
-            onChange={(e) => {
-              setTo(e.target.value);
-              setPage(1);
-            }}
-          />
-        </label>
+        {showDateFilters && (
+          <>
+            <label>
+              {t('From')}
+              <input
+                aria-label={t('From date')}
+                type="date"
+                value={from}
+                onChange={(e) => {
+                  setFrom(e.target.value);
+                  setPage(1);
+                }}
+              />
+            </label>
+            <label>
+              {t('To')}
+              <input
+                aria-label={t('To date')}
+                type="date"
+                value={to}
+                onChange={(e) => {
+                  setTo(e.target.value);
+                  setPage(1);
+                }}
+              />
+            </label>
+          </>
+        )}
         <div
           className="journal-catch-total"
           role="status"

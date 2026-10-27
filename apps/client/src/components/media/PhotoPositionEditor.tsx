@@ -9,12 +9,12 @@ export function PhotoPositionEditor({
   src,
   value,
   onChange,
-  onSave,
+  onSave = () => {},
 }: {
   src: string;
   value: PhotoPosition;
   onChange: (position: PhotoPosition) => void;
-  onSave: () => void;
+  onSave?: () => void;
 }) {
   const { t } = useTranslation();
   const id = useId();
