@@ -964,6 +964,80 @@ form > label {
   padding-bottom: 24px;
   border-bottom: 1px solid var(--border);
 }
+.journal-filters {
+  --journal-filter-gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--journal-filter-gap);
+}
+.journal-filters .filter-bar {
+  gap: var(--journal-filter-gap);
+  margin-bottom: 0;
+}
+.journal-filters .date-filters {
+  gap: var(--journal-filter-gap);
+}
+.journal-filters .journal-date-range {
+  width: 100%;
+  gap: var(--journal-filter-gap);
+}
+.journal-filters .filter-bar :is(input, select) {
+  height: 50px;
+}
+button.journal-date-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 50px;
+  padding: 12px;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  text-align: left;
+}
+.journal-date-toggle > svg {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.journal-date-toggle .is-open {
+  transform: rotate(180deg);
+}
+.journal-date-range {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: min(100%, 400px);
+}
+.journal-reset-dates {
+  grid-column: 1 / -1;
+  justify-self: end;
+}
+.date-filters .journal-date-range label {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+.date-filters .journal-date-range input {
+  width: 100%;
+  min-width: 0;
+  height: 50px;
+  margin: 0;
+  padding: 12px;
+}
+@media (max-width: 767px) {
+  .journal-date-range {
+    width: 100%;
+  }
+  .journal-date-toggle {
+    font-size: 16px;
+  }
+}
 .date-filters label {
   display: flex;
   align-items: center;
