@@ -1,50 +1,53 @@
-/* Lake / reed: shared visual system, with phone layouts designed independently. */
+/* Reed / water: green-led palette with brighter accents for key actions. */
 :root {
-  --bg: #f0f5f7;
+  --bg: #f1f5ef;
   --surface: #fff;
-  --text: #18323d;
-  --muted: #526b76;
-  --primary: #174c63;
-  --primary-hover: #10394b;
-  --border: #d6e2e7;
-  --control-border: #829ba7;
-  --soft: #e4eef0;
-  --subtle: #f5f8f9;
-  --sidebar: #153c4c;
+  --text: #1a3328;
+  --muted: #53695c;
+  --primary: #286244;
+  --primary-hover: #1d4d35;
+  --primary-fg: #ffffff;
+  --border: #d5e0d5;
+  --control-border: #809588;
+  --soft: #e3eee3;
+  --subtle: #f7f9f5;
+  --sidebar: #173c2c;
   --sidebar-text: #f5fafb;
-  --sidebar-muted: #c4d8df;
-  --accent: #426451;
-  --paper: #e3ece6;
-  --chart-primary: #174c63;
-  --chart-fill: #d6e7ed;
-  --chart-0: #174c63;
-  --chart-1: #426451;
-  --focus: #28738e;
+  --sidebar-muted: #c5d8c9;
+  --accent: #7b4c29;
+  --paper: #e4ecdc;
+  --chart-primary: #2c714b;
+  --chart-fill: #d8e9d8;
+  --chart-0: #286244;
+  --chart-1: #79934c;
+  --chart-2: #bd713c;
+  --focus: #267249;
   --radius: 12px;
   --radius-lg: 20px;
   --shadow: 0 12px 32px #18323d0c;
 }
 :root.dark {
-  --bg: #10232c;
-  --surface: #19323d;
-  --text: #edf5f8;
-  --muted: #b4cbd4;
-  --primary: #a5d8eb;
-  --primary-hover: #ccebf5;
-  --primary-fg: #10232c;
-  --border: #36535f;
-  --control-border: #7b9aa8;
-  --soft: #25444f;
-  --subtle: #203a46;
-  --sidebar: #0c2029;
-  --sidebar-muted: #c4d8df;
-  --accent: #add0b8;
-  --paper: #2b483d;
-  --chart-primary: #a5d8eb;
-  --chart-fill: #25444f;
-  --chart-0: #a5d8eb;
-  --chart-1: #add0b8;
-  --focus: #a5d8eb;
+  --bg: #12231a;
+  --surface: #1b3024;
+  --text: #eef4e9;
+  --muted: #b7c7b7;
+  --primary: #91d3a4;
+  --primary-hover: #afe4bb;
+  --primary-fg: #102318;
+  --border: #3c5543;
+  --control-border: #829b88;
+  --soft: #294332;
+  --subtle: #203728;
+  --sidebar: #0d2116;
+  --sidebar-muted: #c0d0c1;
+  --accent: #e0aa71;
+  --paper: #314638;
+  --chart-primary: #91d3a4;
+  --chart-fill: #294332;
+  --chart-0: #91d3a4;
+  --chart-1: #c0d87c;
+  --chart-2: #edaa73;
+  --focus: #91d3a4;
 }
 body {
   font-size: 16px;
@@ -96,17 +99,14 @@ h2 {
   border-radius: 12px;
 }
 .sidebar-content nav a.active {
-  background: #ffffff18;
-  box-shadow: none;
+  background: #ffffff24;
+  color: #fff;
+  box-shadow: inset 3px 0 #9edb9d;
 }
 .nav-arrow {
   display: none;
 }
-.sidebar-add {
-  margin: auto 8px 8px;
-  background: #d9e8de;
-  color: #1e4435;
-}
+.sidebar-add { margin: auto 8px 8px; }
 .main-wrap {
   margin-left: 224px;
 }
