@@ -3433,8 +3433,28 @@ button.picker-option:hover {
   margin-bottom: 24px;
 }
 .landing-footer .language-select {
-  font-size: 13px;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 12px;
   flex-shrink: 0;
+}
+.landing-footer .language-select > svg {
+  width: 16px;
+  height: 16px;
+}
+.landing-footer .language-select select {
+  min-width: 0;
+  padding: 8px 28px 8px 4px;
+  border-color: transparent;
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+}
+.landing-footer .language-select select:hover {
+  color: var(--text);
+}
+.landing-footer .language-select .filter-select > svg {
+  right: 4px;
 }
 .language-settings .language-select {
   display: flex;
@@ -3623,5 +3643,75 @@ button.picker-option:hover {
     flex-basis: 100%;
     margin-left: 0;
     justify-content: center;
+  }
+}
+
+/* Landing page reading hierarchy */
+.landing .eyebrow,
+.field-guide-heading {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.hero-copy > p {
+  max-width: 36rem;
+  font-size: 18px;
+  line-height: 1.7;
+}
+.hero-assurance,
+.welcome-link,
+.field-guide figcaption p,
+.section-intro > p,
+.feature-row p,
+.how-section > div > p,
+.steps p,
+.landing-cta p {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.features-section {
+  border-top: 1px solid var(--border);
+}
+.feature-row {
+  grid-template-columns: 28px 36px minmax(0, 1fr);
+}
+.feature-row p {
+  max-width: 42rem;
+}
+.feature-link {
+  display: inline-flex;
+  width: auto;
+  min-height: 44px;
+  gap: 8px;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+.steps h3 {
+  font-size: 17px;
+}
+@media (max-width: 1023px) {
+  .feature-row {
+    grid-template-columns: 24px minmax(0, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  .hero-copy > p {
+    font-size: 16px;
+  }
+  .feature-row {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+  .landing .eyebrow,
+  .field-guide-heading {
+    font-size: 10px;
+  }
+}
+@media (max-width: 479px) {
+  .hero h1 {
+    font-size: clamp(40px, 11vw, 52px);
+    letter-spacing: -1.6px;
+  }
+  .feature-row {
+    grid-template-columns: 24px minmax(0, 1fr);
   }
 }

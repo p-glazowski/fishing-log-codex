@@ -19,11 +19,6 @@ export default function Landing() {
       <LandingNavigation />
       <main id="landing-content">
         <LandingHero />
-        <div className="landing-index">
-          <span>{t('01 / ORGANIZE YOUR TACKLE')}</span>
-          <span>{t('02 / RECORD YOUR CATCHES')}</span>
-          <span>{t('03 / FIND YOUR PATTERNS')}</span>
-        </div>
         <LandingFeatures />
         <LandingSteps />
         <LandingCallToAction />
