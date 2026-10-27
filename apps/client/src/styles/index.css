@@ -3653,9 +3653,9 @@ button.picker-option:hover {
   display: flex;
 }
 .recent-list .catch-row .catch-image {
-  width: 112px;
+  width: 96px;
   height: auto;
-  min-height: 128px;
+  min-height: 0;
 }
 .recent-list .catch-row .image-tag {
   top: auto;
@@ -3666,6 +3666,8 @@ button.picker-option:hover {
   font-size: 9px;
 }
 .recent-list .catch-body {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   gap: 4px;
   padding: 12px;
@@ -3707,7 +3709,7 @@ button.picker-option:hover {
 }
 @media (min-width: 768px) {
   .recent-list .catch-row .catch-image {
-    width: 128px;
+    width: 112px;
   }
   .recent-list .catch-body {
     padding: 16px;
