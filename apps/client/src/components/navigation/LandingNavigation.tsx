@@ -4,7 +4,7 @@ import { ArrowUpRight, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { Logo } from '../branding/Logo';
 import { Button } from '../ui/button';
-import { ProfileLink } from './ProfileLink';
+import { ProfileMenu } from './ProfileMenu';
 export function LandingNavigation() {
   useTranslation();
 
@@ -40,7 +40,7 @@ export function LandingNavigation() {
                 <ArrowUpRight size={16} />
               </Link>
             </Button>
-            <ProfileLink user={user} avatarLast />
+            <ProfileMenu user={user} avatarLast />
           </>
         ) : (
           <>

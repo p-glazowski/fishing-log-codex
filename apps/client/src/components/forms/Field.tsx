@@ -1,3 +1,4 @@
+import { FilterSelect } from '../ui/filter-select';
 import { t, useTranslation, validationMessage } from '../../lib/i18n';
 import { useId, type ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -40,14 +41,14 @@ export function Field({
       {t(label)}
       {required && <span className="required">*</span>}
       {children ? (
-        <select
+        <FilterSelect
           {...props}
           aria-invalid={!!error}
           aria-required={required}
           aria-describedby={error ? errorId : undefined}
         >
           {children}
-        </select>
+        </FilterSelect>
       ) : type === 'textarea' ? (
         <textarea
           {...props}

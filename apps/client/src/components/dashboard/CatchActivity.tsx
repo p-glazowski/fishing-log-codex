@@ -2,6 +2,7 @@ import { t, getLocale, useTranslation } from '../../lib/i18n';
 import { useState } from 'react';
 import { ActivityChart } from './ActivityChart';
 import { DailyCatchActivity } from './DailyCatchActivity';
+import { FilterSelect } from '../ui/filter-select';
 import { Button } from '../ui/button';
 import type { Stats } from '@lurelog/shared';
 export function CatchActivity({ stats }: { stats: Stats }) {
@@ -36,14 +37,14 @@ export function CatchActivity({ stats }: { stats: Stats }) {
           <h2>{t('Catch activity')}</h2>
           <p>{t('Recorded catches by month')}</p>
         </div>
-        <select
+        <FilterSelect
           aria-label={t('Chart period')}
           value={period}
           onChange={(event) => setPeriod(event.target.value)}
         >
           <option value="year">{t('This year')}</option>
           <option value="two">{t('Last 2 calendar years')}</option>
-        </select>
+        </FilterSelect>
       </div>
       <ActivityChart points={chart} />
       <div className="activity-explore">
