@@ -1,3 +1,4 @@
+import { LanguageSelect } from '../components/settings/LanguageSettings';
 import { t, useTranslation } from '../lib/i18n';
 import { Logo } from '../components/branding/Logo';
 import { LandingNavigation } from '../components/navigation/LandingNavigation';
@@ -26,6 +27,7 @@ export default function Landing() {
         <Logo />
         <span>{t('A personal record of a life on the water.')}</span>
         <small>© {new Date().getFullYear()} LureLog</small>
+        <LanguageSelect />
       </footer>
     </div>
   );

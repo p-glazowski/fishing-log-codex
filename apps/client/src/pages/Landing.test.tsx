@@ -5,7 +5,6 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import axe from 'axe-core';
 import Landing from './Landing';
 import { useAuth } from '../lib/auth';
-import { setLanguage } from '../lib/i18n';
 vi.mock('../lib/auth', () => ({ useAuth: vi.fn() }));
 const user = {
   _id: 'user',
@@ -39,7 +38,6 @@ beforeEach(() => {
 });
 afterEach(() => {
   cleanup();
-  setLanguage('en');
   vi.clearAllMocks();
   vi.restoreAllMocks();
 });
@@ -57,7 +55,14 @@ describe('session-aware landing page', () => {
     vi.mocked(useAuth).mockReturnValue({ user, loading: false, error: null, refresh });
     const interaction = userEvent.setup();
     mount();
-    expect(screen.queryByRole('link', { name: /Your profile/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Your profile, Alex Fisher' })).toHaveAttribute(
+      'href',
+      '/profile',
+    );
+    expect(screen.getByText('Alex Fisher')).toBeVisible();
+    const profile = screen.getByRole('link', { name: 'Your profile, Alex Fisher' });
+    expect(within(screen.getByRole('banner')).getAllByRole('link').at(-1)).toBe(profile);
+    expect(profile.lastElementChild).toHaveClass('avatar');
     expect(screen.getByRole('link', { name: 'Your fishing log' })).toHaveAttribute(
       'href',
       '/dashboard',
@@ -67,17 +72,8 @@ describe('session-aware landing page', () => {
       'href',
       '/dashboard',
     );
-    await interaction.click(screen.getByRole('link', { name: 'Your fishing log' }));
-    expect(screen.getByRole('heading', { name: 'Your fishing log' })).toBeVisible();
-  });
-  it('offers language selection in the header', async () => {
-    const interaction = userEvent.setup();
-    mount();
-    const header = screen.getByRole('banner');
-    const language = within(header).getByLabelText('Language preference');
-    await interaction.selectOptions(language, 'pl');
-    expect(document.documentElement.lang).toBe('pl');
-    expect(within(header).getByLabelText('Preferowany język')).toHaveValue('pl');
+    await interaction.click(screen.getByRole('link', { name: 'Your profile, Alex Fisher' }));
+    expect(screen.getByRole('heading', { name: 'Your account' })).toBeVisible();
   });
   it('does not flash sign-in or registration while checking a session', () => {
     vi.mocked(useAuth).mockReturnValue({ user: null, loading: true, error: null, refresh });
