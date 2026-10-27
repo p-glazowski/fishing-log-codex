@@ -3658,3 +3658,16 @@ button.picker-option:hover {
   outline: 2px solid var(--focus);
   outline-offset: -2px;
 }
+
+.panel-heading > .filter-select {
+  max-width: 200px;
+  font-size: 12px;
+}
+.panel-heading > .filter-select select {
+  width: 100%;
+}
+@media (max-width: 767px) {
+  .panel-heading > .filter-select {
+    max-width: 132px;
+  }
+}
