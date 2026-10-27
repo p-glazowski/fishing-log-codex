@@ -3433,8 +3433,28 @@ button.picker-option:hover {
   margin-bottom: 24px;
 }
 .landing-footer .language-select {
-  font-size: 13px;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 12px;
   flex-shrink: 0;
+}
+.landing-footer .language-select > svg {
+  width: 16px;
+  height: 16px;
+}
+.landing-footer .language-select select {
+  min-width: 0;
+  padding: 8px 28px 8px 4px;
+  border-color: transparent;
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+}
+.landing-footer .language-select select:hover {
+  color: var(--text);
+}
+.landing-footer .language-select .filter-select > svg {
+  right: 4px;
 }
 .language-settings .language-select {
   display: flex;
