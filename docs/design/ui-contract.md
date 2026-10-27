@@ -30,7 +30,7 @@ A practical fishing field journal: forest ink, warm paper, restrained teal, read
 
 ## Session-aware navigation
 
-While loading a session, reserve navigation space without showing sign-in/register links. Signed-out visitors see sign in and registration. Signed-in visitors see their real name/avatar linked to `/profile` and a workspace link. All landing-page CTAs also use the session state. Session errors provide retry rather than implying the visitor is signed out.
+While loading a session, reserve navigation space without showing sign-in/register links. Signed-out visitors see sign in and registration. Signed-in visitors see their real name/avatar opening an account dropdown with Account settings (`/profile`) and Sign out, plus a fishing-log link. All landing-page CTAs also use the session state. Session errors provide retry rather than implying the visitor is signed out.
 
 ## Responsive rules
 
@@ -55,3 +55,7 @@ Keep individual-lure filtering with All lures as the default. Use a searchable c
 ## Catch photo positioning
 
 Retain edge-to-edge cover previews. Offer an optional inline crop-position editor for catch photos, with pointer dragging, accessible horizontal/vertical range inputs, a center reset, and wide/narrow previews. Use matching 3:2 editor/journal frames; Recent catches retains its narrow thumbnail. Save percentage positions with the catch through ownership-checked APIs. Center legacy/replacement photos by default, restore the original position if a pending replacement is removed, and preserve the full uncropped photo in catch details. Translate controls into English and Polish.
+
+## Focused fishing navigation
+
+The desktop sidebar and mobile drawer contain Overview, Lure collection, Fishing journal, and Add lure. Remove duplicate account controls and identity blocks from the sidebar. Both authenticated headers retain the profile avatar as the last control; it opens a collision-aware account dropdown with the current user's name, Account settings, and Sign out. Use managed keyboard focus, Escape/outside dismissal, 44px touch targets, and English/Polish labels. Clear private query data only after successful sign-out, keep the session intact on failure, and expose retry through the existing menu action.

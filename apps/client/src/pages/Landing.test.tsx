@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen, cleanup, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -19,18 +20,24 @@ const user = {
   },
 };
 const refresh = vi.fn().mockResolvedValue(undefined);
+const clients: QueryClient[] = [];
 function mount() {
+  const client = new QueryClient();
+  clients.push(client);
   return render(
-    <MemoryRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/profile" element={<h1>Your account</h1>} />
-        <Route path="/dashboard" element={<h1>Your fishing log</h1>} />
-      </Routes>
-    </MemoryRouter>,
+    <QueryClientProvider client={client}>
+      <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/profile" element={<h1>Your account</h1>} />
+          <Route path="/dashboard" element={<h1>Your fishing log</h1>} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 beforeEach(() => {
+  vi.stubGlobal('PointerEvent', MouseEvent);
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
   vi.mocked(useAuth).mockReturnValue({ user: null, loading: false, error: null, refresh });
   document.documentElement.classList.remove('dark');
@@ -38,8 +45,11 @@ beforeEach(() => {
 });
 afterEach(() => {
   cleanup();
+  clients.forEach((client) => client.clear());
+  clients.length = 0;
   vi.clearAllMocks();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 describe('session-aware landing page', () => {
   it('offers sign-in and registration to guests', () => {
@@ -49,19 +59,19 @@ describe('session-aware landing page', () => {
       'href',
       '/register',
     );
-    expect(screen.queryByRole('link', { name: /Your profile/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Your profile/ })).not.toBeInTheDocument();
   });
   it('shows the actual profile and workspace for signed-in visitors across all CTAs', async () => {
     vi.mocked(useAuth).mockReturnValue({ user, loading: false, error: null, refresh });
     const interaction = userEvent.setup();
     mount();
-    expect(screen.getByRole('link', { name: 'Your profile, Alex Fisher' })).toHaveAttribute(
-      'href',
-      '/profile',
+    expect(screen.getByRole('button', { name: 'Your profile, Alex Fisher' })).toHaveAttribute(
+      'aria-haspopup',
+      'menu',
     );
     expect(screen.getByText('Alex Fisher')).toBeVisible();
-    const profile = screen.getByRole('link', { name: 'Your profile, Alex Fisher' });
-    expect(within(screen.getByRole('banner')).getAllByRole('link').at(-1)).toBe(profile);
+    const profile = screen.getByRole('button', { name: 'Your profile, Alex Fisher' });
+    expect(within(screen.getByRole('banner')).getAllByRole('button').at(-1)).toBe(profile);
     expect(profile.lastElementChild).toHaveClass('avatar');
     expect(screen.getByRole('link', { name: 'Your fishing log' })).toHaveAttribute(
       'href',
@@ -72,7 +82,8 @@ describe('session-aware landing page', () => {
       'href',
       '/dashboard',
     );
-    await interaction.click(screen.getByRole('link', { name: 'Your profile, Alex Fisher' }));
+    await interaction.click(screen.getByRole('button', { name: 'Your profile, Alex Fisher' }));
+    await interaction.click(screen.getByRole('menuitem', { name: 'Account settings' }));
     expect(screen.getByRole('heading', { name: 'Your account' })).toBeVisible();
   });
   it('does not flash sign-in or registration while checking a session', () => {
