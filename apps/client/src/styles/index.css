@@ -3717,12 +3717,18 @@ button.picker-option:hover {
   }
 }
 
-.recent-list .recent-catch-meta {
+.recent-list .recent-catch-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   min-width: 0;
+}
+.recent-list .recent-catch-title > a {
+  min-width: 0;
+}
+.recent-list .recent-catch-title :is(h2, h3) {
+  overflow-wrap: anywhere;
 }
 .recent-list .recent-catch-date {
   flex-shrink: 0;
