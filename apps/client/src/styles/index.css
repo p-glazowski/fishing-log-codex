@@ -3430,19 +3430,21 @@ button.picker-option:hover {
 }
 .auth-panel > .language-select {
   align-self: flex-end;
-  margin-bottom: 24px;
 }
-.landing-footer .language-select {
+.landing-footer .language-select,
+.auth-panel > .language-select {
   gap: 4px;
   color: var(--muted);
   font-size: 12px;
   flex-shrink: 0;
 }
-.landing-footer .language-select > svg {
+.landing-footer .language-select > svg,
+.auth-panel > .language-select > svg {
   width: 16px;
   height: 16px;
 }
-.landing-footer .language-select select {
+.landing-footer .language-select select,
+.auth-panel > .language-select select {
   min-width: 0;
   padding: 8px 28px 8px 4px;
   border-color: transparent;
@@ -3450,10 +3452,12 @@ button.picker-option:hover {
   color: inherit;
   font-weight: 600;
 }
-.landing-footer .language-select select:hover {
+.landing-footer .language-select select:hover,
+.auth-panel > .language-select select:hover {
   color: var(--text);
 }
-.landing-footer .language-select .filter-select > svg {
+.landing-footer .language-select .filter-select > svg,
+.auth-panel > .language-select .filter-select > svg {
   right: 4px;
 }
 .language-settings .language-select {

@@ -61,7 +61,6 @@ export default function Auth({ register = false }: { register?: boolean }) {
         </span>
       </div>
       <div className="auth-panel">
-        <LanguageSelect />
         <Link className="back-link" to="/">
           {t('← Back to LureLog')}
         </Link>
@@ -132,6 +131,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
             {t('Your collection is private. Always yours.')}
           </div>
         </div>
+        <LanguageSelect />
       </div>
     </div>
   );
