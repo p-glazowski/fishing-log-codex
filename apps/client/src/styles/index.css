@@ -969,7 +969,7 @@ button.journal-date-toggle {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  width: 172px;
+  width: 100%;
   min-height: 50px;
   padding: 12px;
   border: 1px solid var(--control-border);
