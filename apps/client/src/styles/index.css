@@ -3594,6 +3594,11 @@ button.picker-option:hover {
 .profile-menu-trigger[data-state='open'] {
   background: var(--soft);
 }
+@media (min-width: 1024px) {
+  .landing-account .profile-menu-trigger {
+    padding-inline: 12px;
+  }
+}
 .profile-menu {
   z-index: 100;
   width: 248px;
