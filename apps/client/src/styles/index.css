@@ -1248,10 +1248,21 @@ form > label {
 .ranking-list li {
   border-top: 1px solid var(--border);
 }
+.ranking-list li:first-child {
+  border-top: 0;
+  margin: 0 -12px 8px;
+  padding: 4px 12px;
+  border-radius: var(--radius);
+  background: var(--soft);
+}
 .ranking-list a {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 14px 0;
+}
+.ranking-list li:first-child a {
+  gap: 14px;
   padding: 16px 0;
 }
 .rank {
@@ -1262,6 +1273,7 @@ form > label {
 .rank-image {
   width: 64px;
   height: 48px;
+  flex: 0 0 auto;
   border-radius: 4px;
   background: var(--soft);
   overflow: hidden;
@@ -1280,6 +1292,17 @@ form > label {
   font-size: 13px;
   margin: 4px 0;
 }
+.ranking-list li:first-child .rank-image {
+  width: 76px;
+  height: 68px;
+}
+.ranking-list li:first-child .rank {
+  color: var(--primary);
+  font-weight: 700;
+}
+.ranking-list li:first-child .rank-name strong {
+  font-size: 15px;
+}
 .rank-name .brand {
   font-size: 9px;
 }
@@ -1291,8 +1314,25 @@ form > label {
   display: flex;
   gap: 4px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   font-size: 13px;
   font-weight: 600;
+}
+.rank-count-label {
+  color: var(--muted);
+  font-size: 10px;
+}
+.rank-count-featured {
+  min-width: 56px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--primary);
+}
+.rank-count-featured .rank-count-label {
+  flex-basis: 100%;
+  text-align: center;
 }
 /* Forms and details share the same technical, readable specification layout. */
 .record-form {
