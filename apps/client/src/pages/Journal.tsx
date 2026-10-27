@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, Search, Grid2X2, List } from 'lucide-react';
 import { api } from '../lib/api';
+import { JournalLureFilter } from '../components/lures/JournalLureFilter';
 import { Button } from '../components/ui/button';
 import { PageHeading, Loading, Failure, Empty, CatchCard, Pagination } from '../components/common';
 export default function Journal() {
@@ -28,10 +29,6 @@ export default function Journal() {
   const query = useQuery({
     queryKey: ['catches', params.toString()],
     queryFn: () => api.catches(params.toString()),
-  });
-  const lures = useQuery({
-    queryKey: ['lure-options'],
-    queryFn: () => api.lures('limit=100&sort=name'),
   });
   return (
     <>
@@ -60,21 +57,13 @@ export default function Journal() {
             }}
           />
         </div>
-        <select
-          aria-label={t('Filter by lure')}
+        <JournalLureFilter
           value={lure}
-          onChange={(e) => {
-            setLure(e.target.value);
+          onChange={(id) => {
+            setLure(id);
             setPage(1);
           }}
-        >
-          <option value="">{t('All lures')}</option>
-          {lures.data?.data.map((l) => (
-            <option key={l._id} value={l._id}>
-              {l.brand} {l.name}
-            </option>
-          ))}
-        </select>
+        />
         <select
           aria-label={t('Sort catches')}
           value={sort}

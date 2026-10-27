@@ -454,5 +454,7 @@
   "Choose an image": "Wybierz zdjęcie",
   "Photo storage is temporarily unavailable": "Przechowywanie zdjęć jest chwilowo niedostępne",
   "Unexpected field": "Nieoczekiwane pole formularza",
-  "Invalid or oversized JSON request": "Nieprawidłowe lub zbyt duże żądanie"
+  "Invalid or oversized JSON request": "Nieprawidłowe lub zbyt duże żądanie",
+  "Selected lure unavailable": "Wybrana przynęta jest niedostępna",
+  "Could not load lure choices.": "Nie udało się wczytać listy przynęt."
 }

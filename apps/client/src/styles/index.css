@@ -3438,3 +3438,41 @@ button.picker-option:hover {
 .language-settings .language-select select {
   flex: 1;
 }
+
+.filter-bar > .journal-lure-filter {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+.journal-lure-filter {
+  position: relative;
+}
+.journal-lure-filter .picker-input input {
+  text-overflow: ellipsis;
+}
+.journal-lure-dropdown {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  box-shadow: var(--shadow);
+}
+.journal-lure-brand {
+  padding: 12px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+.journal-lure-dropdown .picker-option {
+  min-height: 48px;
+}
+.journal-lure-dropdown .picker-option > span {
+  min-width: 0;
+  flex: 1;
+}
+.journal-lure-dropdown .picker-option strong,
+.journal-lure-dropdown .picker-option small {
+  overflow-wrap: anywhere;
+}
+.journal-lure-dropdown .picker-option > svg {
+  flex-shrink: 0;
+}

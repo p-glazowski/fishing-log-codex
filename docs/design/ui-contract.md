@@ -47,3 +47,7 @@ Keep the existing overview chart and semantic theme tokens. The primary action i
 ## English and Polish
 
 Offer a persistent, device-local English/Polish preference in Account settings and on public authentication screens and the landing footer. Switching must update UI text and document language without remounting forms or discarding typed values. Preserve LureLog branding, user-entered names/notes, and stable API enum values. Localize date/number presentation, Polish plural forms, labels, status messages, validation, and destructive-action dialogs. Keep controls accessible with translated names and ensure longer Polish copy fits at 320, 768, 1024, and 1440px.
+
+## Journal lure filter
+
+Keep individual-lure filtering with All lures as the default. Use a searchable combobox with case-insensitive brand grouping; each option exposes model, length in mm, and optional color, while keeping the lure ID as the filter value. Fetch search results from the API in pages rather than limiting the collection to 100 records. Resolve URL-preselected lures independently of result pages. Preserve accessible keyboard selection, Escape/blur dismissal, retry/empty/loading states, and English/Polish labels. Changing or clearing the lure resets catch pagination.
