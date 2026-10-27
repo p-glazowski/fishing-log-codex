@@ -34,10 +34,10 @@ export function TopLures({ lures }: { lures: Lure[] }) {
                     {t(lure.type)} · {numberLabel(lure.lengthMm)} mm
                   </small>
                 </span>
-                <span className={`rank-count ${index === 0 ? 'rank-count-featured' : ''}`}>
+                <span className="rank-count">
                   <Fish size={16} />
-                  <strong>{numberLabel(lure.catchCount ?? 0)}</strong>
-                  <span className="rank-count-label">{t('catches')}</span>
+                  {numberLabel(lure.catchCount ?? 0)}
+                  <span className="sr-only"> {t('catches')}</span>
                 </span>
               </Link>
             </li>
