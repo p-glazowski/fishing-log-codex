@@ -9,10 +9,12 @@ export function PhotoPositionEditor({
   src,
   value,
   onChange,
+  onSave = () => {},
 }: {
   src: string;
   value: PhotoPosition;
   onChange: (position: PhotoPosition) => void;
+  onSave?: () => void;
 }) {
   const { t } = useTranslation();
   const id = useId();
@@ -28,9 +30,7 @@ export function PhotoPositionEditor({
   return (
     <section className="photo-position-editor" aria-labelledby={`${id}-title`}>
       <h3 id={`${id}-title`}>{t('Card preview')}</h3>
-      <p id={`${id}-help`}>
-        {t('Drag the photo to keep the person and fish visible, or use the sliders below.')}
-      </p>
+      <p id={`${id}-help`}>{t('Drag the image to find the crop you want.')}</p>
       <div
         className="photo-position-frame"
         aria-describedby={`${id}-help`}
@@ -84,44 +84,6 @@ export function PhotoPositionEditor({
           style={{ objectPosition: photoPositionStyle(value) }}
         />
       </div>
-      <div className="photo-position-secondary">
-        <img
-          src={src}
-          alt={t('Catch thumbnail preview')}
-          draggable={false}
-          style={{ objectPosition: photoPositionStyle(value) }}
-        />
-        <span>
-          {t('Recent catches')}
-          <small>{t('Thumbnail preview')}</small>
-        </span>
-      </div>
-      <div className="photo-position-controls">
-        <label htmlFor={`${id}-horizontal`}>
-          {t('Horizontal position')}
-          <input
-            id={`${id}-horizontal`}
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={value.x}
-            onChange={(event) => onChange({ ...value, x: Number(event.target.value) })}
-          />
-        </label>
-        <label htmlFor={`${id}-vertical`}>
-          {t('Vertical position')}
-          <input
-            id={`${id}-vertical`}
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={value.y}
-            onChange={(event) => onChange({ ...value, y: Number(event.target.value) })}
-          />
-        </label>
-      </div>
       <div className="photo-position-footer">
         <span role="status">
           {t('Position')}: {numberLabel(value.x)}% / {numberLabel(value.y)}%
@@ -130,6 +92,9 @@ export function PhotoPositionEditor({
           {t('Center photo')}
         </Button>
       </div>
+      <Button type="button" onClick={onSave} className="photo-position-save">
+        {t('Save preview')}
+      </Button>
       <p className="photo-position-note">
         {t(
           'Only the preview changes. Your full photo is preserved. Check both people and fish stay inside the frame.',
