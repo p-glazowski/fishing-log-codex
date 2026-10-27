@@ -1,6 +1,6 @@
 # Pike and perch logo concepts
 
-Original editable SVG concepts exploring the existing LureLog outline style and framed mark. These are design proposals; the application logo is unchanged.
+Original editable SVG concepts exploring the existing LureLog outline style and framed mark. The perch concept was selected as the production mark. The application uses the shared artwork in `apps/client/public/brand/perch.svg` for its logo lockups. Browser and Apple touch icons are generated from that artwork with `node scripts/generate-brand-assets.mjs`. The comparison remains as design history.
 
 - `pike-concept.svg`: elongated profile with a narrow snout and restrained markings.
 - `perch-concept.svg`: compact profile, spiny dorsal fin, and vertical stripes.

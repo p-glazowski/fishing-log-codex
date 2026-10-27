@@ -1,13 +1,14 @@
 import { t, useTranslation } from '../../lib/i18n';
 import { Link } from 'react-router-dom';
-import { Fish } from 'lucide-react';
 export function Logo() {
   useTranslation();
 
   return (
     <Link className="logo" to="/" aria-label={t('LureLog home')}>
       <span className="logo-mark">
-        <Fish size={24} aria-hidden="true" />
+        <svg width={24} height={24} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <use href="/brand/perch.svg#perch-mark" />
+        </svg>
       </span>
       <span>
         Lure
