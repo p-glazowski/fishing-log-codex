@@ -134,11 +134,13 @@ describe('record forms', () => {
     await user.type(screen.getByLabelText(/Model \/ name/), 'Original Floater');
     await user.type(screen.getByLabelText(/Brand/), 'Rapala');
     await user.type(screen.getByLabelText(/Length \(mm\)/), '90');
+    await user.selectOptions(screen.getByLabelText(/Lure type/), 'Soft Lure');
     await user.click(screen.getByRole('button', { name: 'Add to collection' }));
     expect(await screen.findByText('Lure saved')).toBeVisible();
     const args = vi.mocked(data).mock.calls.find((c) => c[0] === '/lures');
     expect(JSON.parse(args![1]!.body as string)).toMatchObject({
       name: 'Original Floater',
+      type: 'Soft Lure',
       lengthMm: 90,
     });
   });

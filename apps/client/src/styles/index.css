@@ -3343,6 +3343,7 @@ button.picker-option:hover {
 }
 
 .filter-select {
+  display: block;
   position: relative;
   min-width: 0;
   font-size: 14px;
@@ -3670,4 +3671,11 @@ button.picker-option:hover {
   .panel-heading > .filter-select {
     max-width: 132px;
   }
+}
+
+.field > .filter-select {
+  margin-top: 8px;
+}
+.field > .filter-select select {
+  margin: 0;
 }
