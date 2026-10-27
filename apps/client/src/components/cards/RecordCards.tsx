@@ -49,9 +49,11 @@ export function CatchCard({
   list = false,
   headingLevel = 2,
   datePlacement = 'photo',
+  recent = false,
 }: {
   item: FishCatch;
   datePlacement?: 'photo' | 'footer';
+  recent?: boolean;
   list?: boolean;
   headingLevel?: 2 | 3;
 }) {
@@ -91,7 +93,9 @@ export function CatchCard({
         )}
       </Link>
       <div className="catch-body">
-        <span className="brand">{item.location || t('On the water')}</span>
+        {(!recent || item.location) && (
+          <span className="brand">{item.location || t('On the water')}</span>
+        )}
         <Link to={`/catches/${item._id}`}>
           <Heading>{speciesLabel(item.species)}</Heading>
         </Link>
@@ -103,6 +107,7 @@ export function CatchCard({
           <Link className="lure-link" to={`/lures/${lure._id}`}>
             <Fish size={14} />
             {lure.brand} {lure.name}
+            {recent && lure.lengthMm != null ? ` · ${numberLabel(lure.lengthMm)} mm` : ''}
             <ArrowUpRight size={14} />
           </Link>
         )}

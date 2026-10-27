@@ -1255,8 +1255,10 @@ form > label {
 .recent-list .image-tag {
   font-size: 8px;
   padding: 4px;
-  left: 8px;
-  top: 8px;
+  left: auto;
+  top: auto;
+  right: 8px;
+  bottom: 8px;
 }
 .ranking-list {
   list-style: none;
@@ -3061,6 +3063,12 @@ button.picker-option:hover {
     top: 8px;
     padding: 4px;
   }
+  .recent-list .catch-row .image-tag {
+    left: auto;
+    top: auto;
+    right: 8px;
+    bottom: 8px;
+  }
   .catch-row .lure-link {
     font-size: 11px;
     gap: 4px;
@@ -3368,15 +3376,6 @@ button.picker-option:hover {
   .activity-total {
     margin: 16px 20px;
   }
-}
-
-.recent-list .catch-date {
-  align-self: flex-end;
-  margin-top: auto;
-  padding-top: 12px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.5;
 }
 
 .filter-select {
