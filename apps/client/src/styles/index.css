@@ -2568,6 +2568,7 @@ button.picker-option:hover {
     grid-template-columns: 1fr;
   }
   .stat-card {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, auto);
     column-gap: 16px;
@@ -2581,12 +2582,16 @@ button.picker-option:hover {
     border-bottom: 0;
   }
   .stat-card dt {
+    padding-left: 26px;
     font-size: 13px;
     font-weight: 600;
     color: var(--text);
   }
   .stat-card dt svg {
-    flex-shrink: 0;
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
   }
   .stat-card dd,
   .stat-card dd.stat-text {
