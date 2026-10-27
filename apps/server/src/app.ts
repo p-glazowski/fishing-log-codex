@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import path from 'node:path';
 import { lureTypes, fishSpecies } from '@lurelog/shared';
+import { clientOrigins } from './config/origins.js';
 import { env } from './config/env.js';
 import { auth, csrf, HttpError } from './middleware/security.js';
 import { errorHandler } from './middleware/errors.js';
@@ -27,7 +28,7 @@ app.use(
       },
     },
   }),
-  cors({ origin: env.CLIENT_ORIGIN, credentials: true }),
+  cors({ origin: clientOrigins, credentials: true }),
   express.json({ limit: '64kb' }),
   cookieParser(),
 );
