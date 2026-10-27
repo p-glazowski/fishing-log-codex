@@ -3580,3 +3580,42 @@ button.picker-option:hover {
   font-size: 11px;
   font-weight: 400;
 }
+
+.journal-catch-total {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  padding: 12px 20px;
+  min-height: 76px;
+  background: var(--soft);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  color: var(--primary);
+}
+.journal-catch-total > div {
+  display: grid;
+  gap: 4px;
+}
+.journal-catch-total strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.journal-catch-total span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.journal-catch-total > svg {
+  flex-shrink: 0;
+}
+@media (max-width: 767px) {
+  .journal-catch-total {
+    flex-basis: 100%;
+    margin-left: 0;
+    justify-content: center;
+  }
+}

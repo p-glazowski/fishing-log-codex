@@ -1,8 +1,8 @@
-import { t, countLabel, useTranslation } from '../lib/i18n';
+import { t, countLabel, numberLabel, useTranslation } from '../lib/i18n';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Fish } from 'lucide-react';
 import { api } from '../lib/api';
 import { JournalLureFilter } from '../components/lures/JournalLureFilter';
 import { FilterSelect } from '../components/ui/filter-select';
@@ -102,7 +102,17 @@ export default function Journal() {
             }}
           />
         </label>
-        <span>{countLabel(query.data?.total ?? 0, 'catch')}</span>
+        <div
+          className="journal-catch-total"
+          role="status"
+          aria-label={query.data ? countLabel(query.data.total, 'catch') : t('Catches recorded')}
+        >
+          <Fish size={24} aria-hidden="true" />
+          <div>
+            <strong>{query.data ? numberLabel(query.data.total) : '—'}</strong>
+            <span>{t('Catches recorded')}</span>
+          </div>
+        </div>
       </div>
       {query.isLoading ? (
         <Loading />
