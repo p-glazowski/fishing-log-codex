@@ -147,9 +147,10 @@ export function CatchCard({
                 )}
               </span>
             ) : (
-              <>
+              <span>
                 {lure.brand} {lure.name}
-              </>
+                {lure.lengthMm != null && ` · ${numberLabel(lure.lengthMm)} mm`}
+              </span>
             )}
             {!recent && <ArrowUpRight size={14} />}
           </Link>
