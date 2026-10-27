@@ -1,5 +1,4 @@
 {
-  "A FIELD JOURNAL FOR ANGLERS": "DZIENNIK DLA WĘDKARZY",
   "A LIFE WELL CAST": "ŻYCIE PEŁNE DOBRYCH RZUTÓW",
   "A MEMORY FROM THE WATER": "WSPOMNIENIE ZNAD WODY",
   "A clear view of your tackle, your catches, and your time on the water.": "Twoje przynęty, połowy i czas spędzony nad wodą w jednym miejscu.",
@@ -92,7 +91,6 @@
   "Every lure": "Każda przynęta",
   "Explore month": "Zobacz miesiąc",
   "FIELD GUIDE / 01": "PRZEWODNIK / 01",
-  "FIELD JOURNAL": "DZIENNIK WĘDKARSKI",
   "FIELD NOTES": "NOTATKI ZNAD WODY",
   "FROM YOUR TACKLE BOX TO YOUR JOURNAL": "Z PUDEŁKA Z PRZYNĘTAMI DO DZIENNIKA",
   "Filter by brand": "Filtruj według marki",
@@ -209,7 +207,6 @@
   "Open your fishing log": "Otwórz swój dziennik",
   "Optional details you’ll be glad you kept.": "Opcjonalne szczegóły, do których warto wrócić.",
   "Overview": "Przegląd",
-  "PERSONAL WORKSPACE": "TWOJA PRZESTRZEŃ",
   "PROVEN ON THE WATER": "SPRAWDZONE NAD WODĄ",
   "Page": "Strona",
   "Page not found": "Nie znaleziono strony",
@@ -219,7 +216,6 @@
   "Previous": "Wstecz",
   "Previous month": "Poprzedni miesiąc",
   "Private by default.": "Domyślnie prywatne.",
-  "Private collection": "Prywatna kolekcja",
   "Private workspace": "Prywatna przestrzeń",
   "Profile updated": "Profil zaktualizowany",
   "Public navigation": "Nawigacja publiczna",
@@ -328,7 +324,6 @@
   "What makes this lure special?": "Co wyróżnia tę przynętę?",
   "Workspace": "Twoja przestrzeń",
   "Workspace navigation": "Nawigacja aplikacji",
-  "YOUR FIELD JOURNAL": "TWÓJ DZIENNIK WĘDKARSKI",
   "YOUR FISHING RECORD": "TWOJE WĘDKARSKIE HISTORIE",
   "YOUR MONTH, DAY BY DAY": "TWÓJ MIESIĄC, DZIEŃ PO DNIU",
   "YOUR NEXT CHAPTER": "TWÓJ NASTĘPNY ROZDZIAŁ",
@@ -468,5 +463,11 @@
   "Center photo": "Wyśrodkuj zdjęcie",
   "Only the preview changes. Your full photo is preserved. Check both people and fish stay inside the frame.": "Zmienia się tylko podgląd. Pełne zdjęcie zostaje zachowane. Sprawdź, czy osoba i ryba mieszczą się w kadrze.",
   "Catch thumbnail preview": "Podgląd miniatury połowu",
-  "Thumbnail preview": "Podgląd miniatury"
+  "Thumbnail preview": "Podgląd miniatury",
+  "FISHING JOURNAL": "DZIENNIK WĘDKARSKI",
+  "A FISHING JOURNAL FOR ANGLERS": "DZIENNIK DLA WĘDKARZY",
+  "YOUR FISHING JOURNAL": "TWÓJ DZIENNIK WĘDKARSKI",
+  "YOUR FISHING CORNER": "TWÓJ WĘDKARSKI ZAKĄTEK",
+  "Lures, catches & memories": "Przynęty, połowy i wspomnienia",
+  "Fishing journal navigation": "Nawigacja dziennika wędkarskiego"
 }

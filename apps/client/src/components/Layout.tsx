@@ -39,7 +39,7 @@ export default function Layout() {
         ref={dialog}
         id="workspace-navigation"
         className="mobile-drawer"
-        aria-label={t('Workspace navigation')}
+        aria-label={t('Fishing journal navigation')}
         onCancel={() => setOpen(false)}
         onClose={() => setOpen(false)}
         onClick={(event) => {
@@ -67,7 +67,7 @@ export default function Layout() {
             >
               <Menu size={21} />
             </button>
-            <Link to="/dashboard">{t('Workspace')}</Link>
+            <Link to="/dashboard">{t('Your fishing log')}</Link>
             <ChevronRight size={14} />
             <span>{t(section)}</span>
           </div>

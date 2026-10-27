@@ -10,7 +10,7 @@ export function LandingHero() {
   return (
     <section className="hero">
       <div className="hero-copy">
-        <span className="eyebrow">{t('A FIELD JOURNAL FOR ANGLERS')}</span>
+        <span className="eyebrow">{t('A FISHING JOURNAL FOR ANGLERS')}</span>
         <h1>
           {t('Every lure')}
           <br />

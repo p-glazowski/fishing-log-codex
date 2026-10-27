@@ -15,7 +15,7 @@ export function Logo() {
         <span className="logo-light">Log</span>
       </span>
       <span className="logo-edition" aria-hidden="true">
-        {t('FIELD JOURNAL')}
+        {t('FISHING JOURNAL')}
       </span>
     </Link>
   );
