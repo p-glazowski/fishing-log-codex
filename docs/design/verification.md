@@ -25,3 +25,9 @@ Verified the signed-in landing page displays the actual account name/avatar inst
 ## Boundaries
 
 The redesign does not change backend models, authentication policy, stored records, storage adapters, or API contracts. Live Cloudinary delivery and a physical-device camera were not re-tested for this UI change. The authenticated local browser session was retained; guest/login/register behavior is covered by component, session, and axe tests rather than signing out the user's other local sessions.
+
+## English/Polish localization
+
+The language feature adds six frontend regression tests covering live switching, device persistence and cross-tab synchronization, Polish plurals/dates/numbers, untranslated user content and canonical filter values, successful lure/catch submission from Polish forms, and translated authentication validation/API errors. The existing dashboard day-label test now explicitly uses the selected English locale. All **54 frontend tests and 17 API integration tests** pass, alongside lint, typecheck and production builds.
+
+Browser checks verified Polish landing and sign-in pages at 320/768/1024/1440px without document overflow, plus language persistence on reload and navigation. The collection in Polish also passes the jsdom axe structural check. Authenticated translations and form behavior were verified through component tests; no user account or sample records were added to the local database for this change.

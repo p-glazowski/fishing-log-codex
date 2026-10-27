@@ -1,9 +1,12 @@
+import { t, numberLabel, useTranslation } from '../../lib/i18n';
 import { Check, LoaderCircle } from 'lucide-react';
 import { errorMessage } from '../../lib/api';
 import { Photo } from '../media/LureArt';
 import { Button } from '../ui/button';
 import type { useLurePicker } from './useLurePicker';
 export function LurePickerResults({ picker }: { picker: ReturnType<typeof useLurePicker> }) {
+  useTranslation();
+
   const {
     open,
     waiting,
@@ -23,23 +26,23 @@ export function LurePickerResults({ picker }: { picker: ReturnType<typeof useLur
           {waiting && (
             <p role="status" className="picker-message">
               <LoaderCircle size={16} />
-              Searching your collection…
+              {t('Searching your collection…')}
             </p>
           )}
           {results.isError && (
             <div role="alert" className="picker-message">
-              <p>{errorMessage(results.error)}</p>
+              <p>{t(errorMessage(results.error))}</p>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => void results.refetch()}
               >
-                Try again
+                {t('Try again')}
               </Button>
             </div>
           )}
-          <div id={`${id}-results`} role="listbox" aria-label="Your lures" aria-busy={waiting}>
+          <div id={`${id}-results`} role="listbox" aria-label={t('Your lures')} aria-busy={waiting}>
             {lures.map((lure, index) => (
               <button
                 key={lure._id}
@@ -54,14 +57,15 @@ export function LurePickerResults({ picker }: { picker: ReturnType<typeof useLur
                 onClick={() => choose(lure)}
               >
                 <span className="picker-thumb">
-                  <Photo src={lure.image?.url} alt="" type={lure.type} />
+                  <Photo src={lure.image?.url} alt="" type={t(lure.type)} />
                 </span>
                 <span>
                   <strong>
                     {lure.brand} {lure.name}
                   </strong>
                   <small>
-                    {lure.type} · {lure.lengthMm} mm{lure.color ? ` · ${lure.color}` : ''}
+                    {t(lure.type)} · {numberLabel(lure.lengthMm)} mm
+                    {lure.color ? ` · ${lure.color}` : ''}
                   </small>
                 </span>
                 {selectedId === lure._id && <Check size={17} />}
@@ -71,8 +75,8 @@ export function LurePickerResults({ picker }: { picker: ReturnType<typeof useLur
           {!waiting && !results.isError && !lures.length && (
             <p className="picker-message" role="status">
               {debouncedSearch
-                ? 'No lures match your search. Try another name or brand.'
-                : 'Your collection is empty.'}
+                ? t('No lures match your search. Try another name or brand.')
+                : t('Your collection is empty.')}
             </p>
           )}
           {!waiting && results.hasNextPage && (
@@ -83,7 +87,7 @@ export function LurePickerResults({ picker }: { picker: ReturnType<typeof useLur
               disabled={results.isFetchingNextPage}
               onClick={() => void results.fetchNextPage()}
             >
-              {results.isFetchingNextPage ? 'Loading more…' : 'Load more lures'}
+              {results.isFetchingNextPage ? t('Loading more…') : t('Load more lures')}
             </Button>
           )}
         </div>

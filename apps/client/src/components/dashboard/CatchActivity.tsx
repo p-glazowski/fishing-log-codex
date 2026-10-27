@@ -1,9 +1,12 @@
+import { t, getLocale, useTranslation } from '../../lib/i18n';
 import { useState } from 'react';
 import { ActivityChart } from './ActivityChart';
 import { DailyCatchActivity } from './DailyCatchActivity';
 import { Button } from '../ui/button';
 import type { Stats } from '@lurelog/shared';
 export function CatchActivity({ stats }: { stats: Stats }) {
+  useTranslation();
+
   const [daily, setDaily] = useState(false);
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [period, setPeriod] = useState('year');
@@ -13,7 +16,7 @@ export function CatchActivity({ stats }: { stats: Stats }) {
     const key = date.toISOString().slice(0, 7);
     return {
       key,
-      label: date.toLocaleDateString(undefined, {
+      label: date.toLocaleDateString(getLocale(), {
         month: 'short',
         ...(period === 'year' ? {} : { year: '2-digit' }),
         timeZone: 'UTC',
@@ -29,17 +32,17 @@ export function CatchActivity({ stats }: { stats: Stats }) {
     <section className="panel activity-panel">
       <div className="panel-heading">
         <div>
-          <span className="eyebrow">YOUR SEASON, AT A GLANCE</span>
-          <h2>Catch activity</h2>
-          <p>Recorded catches by month</p>
+          <span className="eyebrow">{t('YOUR SEASON, AT A GLANCE')}</span>
+          <h2>{t('Catch activity')}</h2>
+          <p>{t('Recorded catches by month')}</p>
         </div>
         <select
-          aria-label="Chart period"
+          aria-label={t('Chart period')}
           value={period}
           onChange={(event) => setPeriod(event.target.value)}
         >
-          <option value="year">This year</option>
-          <option value="two">Last 2 calendar years</option>
+          <option value="year">{t('This year')}</option>
+          <option value="two">{t('Last 2 calendar years')}</option>
         </select>
       </div>
       <ActivityChart points={chart} />
@@ -51,20 +54,22 @@ export function CatchActivity({ stats }: { stats: Stats }) {
             setDaily(true);
           }}
         >
-          Explore month
+          {t('Explore month')}
         </Button>
       </div>
       {!stats.totalCatches && (
-        <p className="chart-empty-note">Log your first catch to start your activity record.</p>
+        <p className="chart-empty-note">
+          {t('Log your first catch to start your activity record.')}
+        </p>
       )}
       <details className="chart-data">
-        <summary>View activity data</summary>
+        <summary>{t('View activity data')}</summary>
         <table>
-          <caption>Monthly catch totals</caption>
+          <caption>{t('Monthly catch totals')}</caption>
           <thead>
             <tr>
-              <th scope="col">Month</th>
-              <th scope="col">Catches</th>
+              <th scope="col">{t('Month')}</th>
+              <th scope="col">{t('Catches')}</th>
             </tr>
           </thead>
           <tbody>

@@ -1,3 +1,5 @@
+import { LanguageSelect } from '../components/settings/LanguageSettings';
+import { t, useTranslation, validationMessage } from '../lib/i18n';
 import { useEffect } from 'react';
 import { useAuth } from '../lib/auth';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,6 +13,8 @@ import { data, json, errorMessage } from '../lib/api';
 import { Logo } from '../components/branding/Logo';
 import { Button } from '../components/ui/button';
 export default function Auth({ register = false }: { register?: boolean }) {
+  useTranslation();
+
   const schema = register ? registerSchema : loginSchema;
   type Values = z.infer<typeof registerSchema>;
   const form = useForm<Values>({
@@ -39,85 +43,93 @@ export default function Auth({ register = false }: { register?: boolean }) {
       <div className="auth-visual">
         <Logo />
         <div>
-          <span className="eyebrow">A LIFE WELL CAST</span>
+          <span className="eyebrow">{t('A LIFE WELL CAST')}</span>
           <p className="auth-visual-title">
-            There’s a story
+            {t('There’s a story')}
             <br />
-            behind every catch.
+            {t('behind every catch.')}
           </p>
           <p>
-            Keep your favorite lures, unforgettable catches,
+            {t('Keep your favorite lures, unforgettable catches,')}
             <br />
-            and days on the water together.
+            {t('and days on the water together.')}
           </p>
         </div>
         <span className="auth-quote">
-          <Fish size={20} /> Less remembering. More fishing.
+          <Fish size={20} />
+          {t('Less remembering. More fishing.')}
         </span>
       </div>
       <div className="auth-panel">
+        <LanguageSelect />
         <Link className="back-link" to="/">
-          ← Back to LureLog
+          {t('← Back to LureLog')}
         </Link>
         <div className="auth-form-wrap">
-          <span className="eyebrow">YOUR NEXT CHAPTER</span>
-          <h1>{register ? 'Start your fishing story.' : 'Welcome back, angler.'}</h1>
+          <span className="eyebrow">{t('YOUR NEXT CHAPTER')}</span>
+          <h1>{register ? t('Start your fishing story.') : t('Welcome back, angler.')}</h1>
           <p>
             {register
-              ? 'A little organization. A lot more adventure.'
-              : 'Your collection and your memories are waiting.'}
+              ? t('A little organization. A lot more adventure.')
+              : t('Your collection and your memories are waiting.')}
           </p>
           <form onSubmit={form.handleSubmit(submit)} noValidate>
             {register && (
               <label>
-                Your name
+                {t('Your name')}
                 <input autoComplete="name" placeholder="Alex Fisher" {...form.register('name')} />
-                <span className="field-error">{form.formState.errors.name?.message}</span>
+                <span className="field-error">
+                  {validationMessage(form.formState.errors.name?.message)}
+                </span>
               </label>
             )}
             <label>
-              Email address
+              {t('Email address')}
               <input
                 type="email"
                 autoComplete="email"
                 placeholder="you@example.com"
                 {...form.register('email')}
               />
-              <span className="field-error">{form.formState.errors.email?.message}</span>
+              <span className="field-error">
+                {validationMessage(form.formState.errors.email?.message)}
+              </span>
             </label>
             <label>
-              Password
+              {t('Password')}
               <input
                 type="password"
                 autoComplete={register ? 'new-password' : 'current-password'}
-                placeholder={register ? 'At least 12 characters' : 'Your password'}
+                placeholder={register ? t('At least 12 characters') : t('Your password')}
                 {...form.register('password')}
               />
-              <span className="field-error">{form.formState.errors.password?.message}</span>
+              <span className="field-error">
+                {validationMessage(form.formState.errors.password?.message)}
+              </span>
             </label>
             {form.formState.errors.root && (
               <p role="alert" className="error-banner">
-                {form.formState.errors.root.message}
+                {t(form.formState.errors.root.message)}
               </p>
             )}
             <Button className="full-width" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting
-                ? 'One moment…'
+                ? t('One moment…')
                 : register
-                  ? 'Create your free account'
-                  : 'Sign in'}
+                  ? t('Create your free account')
+                  : t('Sign in')}
               <ArrowRight size={18} />
             </Button>
           </form>
           <p className="auth-switch">
-            {register ? 'Already have an account?' : 'New around here?'}{' '}
+            {register ? t('Already have an account?') : t('New around here?')}{' '}
             <Link to={register ? '/login' : '/register'}>
-              {register ? 'Sign in' : 'Create an account'}
+              {register ? t('Sign in') : t('Create an account')}
             </Link>
           </p>
           <div className="privacy-note">
             <ShieldCheck size={16} />
-            Your collection is private. Always yours.
+            {t('Your collection is private. Always yours.')}
           </div>
         </div>
       </div>

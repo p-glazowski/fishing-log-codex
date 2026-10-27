@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../lib/i18n';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, ArrowUpRight } from 'lucide-react';
@@ -10,6 +11,8 @@ import { CatchActivity } from '../components/dashboard/CatchActivity';
 import { SpeciesBreakdown } from '../components/dashboard/SpeciesBreakdown';
 import { TopLures } from '../components/dashboard/TopLures';
 export default function Dashboard() {
+  useTranslation();
+
   const { user } = useAuth();
   const query = useQuery({ queryKey: ['stats'], queryFn: api.stats });
   if (query.isLoading) return <Loading />;
@@ -18,20 +21,20 @@ export default function Dashboard() {
   return (
     <>
       <PageHeading
-        eyebrow="YOUR FISHING RECORD"
-        title={`Welcome back, ${user?.name.split(' ')[0]}.`}
-        description="A clear view of your tackle, your catches, and your time on the water."
+        eyebrow={t('YOUR FISHING RECORD')}
+        title={t('Welcome back, {{name}}.', { name: user?.name.split(' ')[0] ?? '' })}
+        description={t('A clear view of your tackle, your catches, and your time on the water.')}
       >
         <Button variant="outline" asChild>
           <Link to="/lures/new">
             <Plus size={18} />
-            Add lure
+            {t('Add lure')}
           </Link>
         </Button>
         <Button asChild>
           <Link to="/catches/new">
             <Plus size={18} />
-            Log a catch
+            {t('Log a catch')}
           </Link>
         </Button>
       </PageHeading>
@@ -44,11 +47,11 @@ export default function Dashboard() {
         <section className="recent-section">
           <div className="section-heading">
             <div>
-              <span className="eyebrow">LATEST FIELD NOTES</span>
-              <h2>Recent catches</h2>
+              <span className="eyebrow">{t('LATEST FIELD NOTES')}</span>
+              <h2>{t('Recent catches')}</h2>
             </div>
             <Link className="text-action" to="/catches">
-              Open journal
+              {t('Open journal')}
               <ArrowUpRight size={16} />
             </Link>
           </div>
@@ -66,10 +69,10 @@ export default function Dashboard() {
             </div>
           ) : (
             <Empty
-              title="Make your first memory."
-              description="Log a catch and see your fishing story unfold here."
+              title={t('Make your first memory.')}
+              description={t('Log a catch and see your fishing story unfold here.')}
               to="/catches/new"
-              label="Log a catch"
+              label={t('Log a catch')}
             />
           )}
         </section>

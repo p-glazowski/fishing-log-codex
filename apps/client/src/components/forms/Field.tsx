@@ -1,3 +1,4 @@
+import { t, useTranslation, validationMessage } from '../../lib/i18n';
 import { useId, type ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 export function Field({
@@ -15,6 +16,7 @@ export function Field({
   children?: ReactNode;
   placeholder?: string;
 }) {
+  useTranslation();
   const errorId = useId();
   const {
     register,
@@ -35,7 +37,7 @@ export function Field({
   const error = errors[name]?.message as string | undefined;
   return (
     <label className={type === 'textarea' ? 'field field-wide' : 'field'}>
-      {label}
+      {t(label)}
       {required && <span className="required">*</span>}
       {children ? (
         <select
@@ -69,7 +71,7 @@ export function Field({
       )}{' '}
       {error && (
         <span id={errorId} className="field-error" role="alert">
-          {error}
+          {validationMessage(error)}
         </span>
       )}
     </label>

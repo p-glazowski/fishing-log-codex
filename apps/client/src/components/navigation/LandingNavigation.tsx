@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../../lib/i18n';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
@@ -5,31 +6,37 @@ import { Logo } from '../branding/Logo';
 import { Button } from '../ui/button';
 import { ProfileLink } from './ProfileLink';
 export function LandingNavigation() {
+  useTranslation();
+
   const { user, loading, error, refresh } = useAuth();
   return (
     <header className="landing-nav">
       <Logo />
-      <nav aria-label="Public navigation">
+      <nav aria-label={t('Public navigation')}>
         <a className="landing-section-link" href="#features">
-          The experience
+          {t('The experience')}
         </a>
         <a className="landing-section-link" href="#how">
-          How it works
+          {t('How it works')}
         </a>
       </nav>
       <div className="landing-account">
         {loading ? (
-          <span className="session-placeholder" role="status" aria-label="Checking your session" />
+          <span
+            className="session-placeholder"
+            role="status"
+            aria-label={t('Checking your session')}
+          />
         ) : error ? (
           <Button variant="outline" size="sm" onClick={() => void refresh()}>
             <RefreshCw size={16} />
-            Retry session
+            {t('Retry session')}
           </Button>
         ) : user ? (
           <>
             <Button asChild size="sm">
               <Link to="/dashboard">
-                Your fishing log
+                {t('Your fishing log')}
                 <ArrowUpRight size={16} />
               </Link>
             </Button>
@@ -38,11 +45,11 @@ export function LandingNavigation() {
         ) : (
           <>
             <Link className="sign-in-link" to="/login">
-              Sign in
+              {t('Sign in')}
             </Link>
             <Button asChild size="sm">
               <Link to="/register">
-                Start your log
+                {t('Start your log')}
                 <ArrowUpRight size={16} />
               </Link>
             </Button>

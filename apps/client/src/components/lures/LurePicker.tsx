@@ -1,3 +1,4 @@
+import { t, numberLabel, useTranslation, validationMessage } from '../../lib/i18n';
 import { ChevronDown, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ApiError } from '../../lib/api';
@@ -6,6 +7,8 @@ import { Button } from '../ui/button';
 import { useLurePicker } from './useLurePicker';
 import { LurePickerResults } from './LurePickerResults';
 export default function LurePicker() {
+  useTranslation();
+
   const picker = useLurePicker();
   const {
     id,
@@ -39,10 +42,11 @@ export default function LurePicker() {
       }}
     >
       <label htmlFor={id}>
-        Lure used <span className="required">*</span>
+        {t('Lure used')}
+        <span className="required">*</span>
       </label>
       <p id={`${id}-help`} className="picker-help">
-        Search your collection by lure name or brand, then select a lure.
+        {t('Search your collection by lure name or brand, then select a lure.')}
       </p>
       <div className="picker-input">
         <Search size={17} />
@@ -61,8 +65,8 @@ export default function LurePicker() {
           autoComplete="off"
           placeholder={
             selectedId && selected.isFetching
-              ? 'Checking selected lure…'
-              : 'Search by name or brand…'
+              ? t('Checking selected lure…')
+              : t('Search by name or brand…')
           }
           value={open ? search : current ? `${current.brand} ${current.name}` : ''}
           onFocus={() => {
@@ -78,7 +82,7 @@ export default function LurePicker() {
         />
         <button
           type="button"
-          aria-label={open ? 'Close lure choices' : 'Browse lures'}
+          aria-label={open ? t('Close lure choices') : t('Browse lures')}
           onClick={() => {
             setOpen(!open);
             setSearch('');
@@ -91,20 +95,21 @@ export default function LurePicker() {
       {current && (
         <div className="picker-selection">
           <span className="picker-thumb">
-            <Photo src={current.image?.url} alt="" type={current.type} />
+            <Photo src={current.image?.url} alt="" type={t(current.type)} />
           </span>
           <div>
-            <span className="brand">SELECTED FOR THIS CATCH</span>
+            <span className="brand">{t('SELECTED FOR THIS CATCH')}</span>
             <strong>
               {current.brand} {current.name}
             </strong>
             <small>
-              {current.type} · {current.lengthMm} mm{current.color ? ` · ${current.color}` : ''}
+              {t(current.type)} · {numberLabel(current.lengthMm)} mm
+              {current.color ? ` · ${current.color}` : ''}
             </small>
           </div>
           <button
             type="button"
-            aria-label="Clear selected lure"
+            aria-label={t('Clear selected lure')}
             onClick={() => {
               field.onChange('');
               setSearch('');
@@ -123,24 +128,24 @@ export default function LurePicker() {
       {selected.isError &&
         !(selected.error instanceof ApiError && selected.error.status === 404) && (
           <div className="picker-notice" role="alert">
-            Could not verify the selected lure.{' '}
+            {t('Could not verify the selected lure.')}{' '}
             <Button type="button" variant="ghost" size="sm" onClick={() => void selected.refetch()}>
-              Try again
+              {t('Try again')}
             </Button>
           </div>
         )}
       {!waiting && results.isSuccess && !debouncedSearch && results.data.pages[0].total === 0 && (
         <div className="picker-empty">
-          <strong>First, a lure for your story.</strong>
-          <p>Add a lure to your collection before logging a catch.</p>
+          <strong>{t('First, a lure for your story.')}</strong>
+          <p>{t('Add a lure to your collection before logging a catch.')}</p>
           <Link className="text-action" to="/lures/new">
-            Add a lure →
+            {t('Add a lure →')}
           </Link>
         </div>
       )}
       {fieldState.error && (
         <span id={`${id}-error`} role="alert" className="field-error">
-          {fieldState.error.message}
+          {validationMessage(fieldState.error.message)}
         </span>
       )}
     </div>

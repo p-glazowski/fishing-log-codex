@@ -1,3 +1,4 @@
+import { t, getLocale, useTranslation, countLabel } from '../../lib/i18n';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { activityMonthSchema } from '@lurelog/shared';
@@ -19,11 +20,13 @@ export function DailyCatchActivity({
   onMonthChange: (month: string) => void;
   onBack: () => void;
 }) {
+  useTranslation();
+
   const query = useQuery({
     queryKey: ['stats', 'activity', month],
     queryFn: () => api.activity(month),
   });
-  const title = new Date(`${month}-01T00:00:00Z`).toLocaleDateString(undefined, {
+  const title = new Date(`${month}-01T00:00:00Z`).toLocaleDateString(getLocale(), {
     month: 'long',
     year: 'numeric',
     timeZone: 'UTC',
@@ -36,23 +39,23 @@ export function DailyCatchActivity({
   const previous = shiftMonth(month, -1),
     next = shiftMonth(month, 1);
   return (
-    <section className="panel activity-panel" aria-label="Daily catch activity">
+    <section className="panel activity-panel" aria-label={t('Daily catch activity')}>
       <div className="panel-heading">
         <div>
-          <span className="eyebrow">YOUR MONTH, DAY BY DAY</span>
-          <h2>Catch activity</h2>
-          <p>Recorded catches by day · UTC</p>
+          <span className="eyebrow">{t('YOUR MONTH, DAY BY DAY')}</span>
+          <h2>{t('Catch activity')}</h2>
+          <p>{t('Recorded catches by day · UTC')}</p>
         </div>
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft size={16} />
-          Monthly view
+          {t('Monthly view')}
         </Button>
       </div>
       <div className="activity-month-navigation">
         <Button
           variant="outline"
           size="icon"
-          aria-label="Previous month"
+          aria-label={t('Previous month')}
           disabled={!activityMonthSchema.safeParse(previous).success}
           onClick={() => onMonthChange(previous)}
         >
@@ -64,7 +67,7 @@ export function DailyCatchActivity({
         <Button
           variant="outline"
           size="icon"
-          aria-label="Next month"
+          aria-label={t('Next month')}
           disabled={!activityMonthSchema.safeParse(next).success}
           onClick={() => onMonthChange(next)}
         >
@@ -73,44 +76,44 @@ export function DailyCatchActivity({
       </div>
       {query.isPending ? (
         <div role="status" className="activity-message">
-          Loading daily catches…
+          {t('Loading daily catches…')}
         </div>
       ) : query.isError ? (
         <div role="alert" className="activity-message">
-          <p>Daily activity could not be loaded.</p>
+          <p>{t('Daily activity could not be loaded.')}</p>
           <Button variant="outline" onClick={() => void query.refetch()}>
-            Try again
+            {t('Try again')}
           </Button>
         </div>
       ) : (
         <>
           <p className="activity-total" role="status">
-            <strong>
-              {query.data.total} {query.data.total === 1 ? 'catch' : 'catches'}
-            </strong>{' '}
-            in {title}
+            <strong>{countLabel(query.data.total, 'catch')}</strong>{' '}
+            {t('in {{month}}', { month: title })}
           </p>
           <ActivityChart points={points} daily />
           {query.data.total === 0 && (
             <p className="chart-empty-note">
-              No catches recorded in {title}. Try another month or log a catch.
+              {t('No catches recorded in')} {title}. {t('Try another month or log a catch.')}
             </p>
           )}
           <details className="chart-data">
-            <summary>View daily catch totals</summary>
+            <summary>{t('View daily catch totals')}</summary>
             <table>
-              <caption>Daily catch totals · {title} · UTC</caption>
+              <caption>
+                {t('Daily catch totals ·')} {title} · UTC
+              </caption>
               <thead>
                 <tr>
-                  <th scope="col">Day</th>
-                  <th scope="col">Catches</th>
+                  <th scope="col">{t('Day')}</th>
+                  <th scope="col">{t('Catches')}</th>
                 </tr>
               </thead>
               <tbody>
                 {query.data.days.map((day) => (
                   <tr key={day.date}>
                     <th scope="row">
-                      {new Date(`${day.date}T00:00:00Z`).toLocaleDateString(undefined, {
+                      {new Date(`${day.date}T00:00:00Z`).toLocaleDateString(getLocale(), {
                         day: 'numeric',
                         month: 'short',
                         timeZone: 'UTC',

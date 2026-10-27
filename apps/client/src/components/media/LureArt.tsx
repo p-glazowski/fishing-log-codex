@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../../lib/i18n';
 import { useId } from 'react';
 export function LureArt({
   type = '',
@@ -8,6 +9,8 @@ export function LureArt({
   className?: string;
   decorative?: boolean;
 }) {
+  useTranslation();
+
   const gradientId = useId();
   const soft = type === 'Soft Lure';
   return (
@@ -16,7 +19,9 @@ export function LureArt({
       viewBox="0 0 320 180"
       role={decorative ? undefined : 'img'}
       aria-hidden={decorative || undefined}
-      aria-label={decorative ? undefined : `${type || 'Fishing'} lure illustration`}
+      aria-label={
+        decorative ? undefined : t('{{type}} lure illustration', { type: t(type || 'Fishing') })
+      }
     >
       <defs>
         <linearGradient id={gradientId} x2=".2" y2="1">
@@ -59,6 +64,8 @@ export function LureArt({
   );
 }
 export function Photo({ src, alt, type }: { src?: string; alt: string; type?: string }) {
+  useTranslation();
+
   return src ? (
     <img src={src} alt={alt} loading="lazy" />
   ) : (

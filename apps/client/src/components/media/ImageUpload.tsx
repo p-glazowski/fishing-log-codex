@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../../lib/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { UploadCloud, ImagePlus, X, Camera } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -10,6 +11,8 @@ export function ImageUpload({
   onChange: (file: File | null) => void;
   existing?: string;
 }) {
+  useTranslation();
+
   const input = useRef<HTMLInputElement>(null);
   const camera = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState('');
@@ -26,11 +29,11 @@ export function ImageUpload({
   function pick(next?: File) {
     if (!next) return;
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(next.type)) {
-      setError('Choose a JPEG, PNG, or WebP image.');
+      setError(t('Choose a JPEG, PNG, or WebP image.'));
       return;
     }
     if (next.size > 5 * 1024 * 1024) {
-      setError('Images must be 5 MB or smaller.');
+      setError(t('Images must be 5 MB or smaller.'));
       return;
     }
     setError('');
@@ -47,24 +50,28 @@ export function ImageUpload({
         }}
       >
         {preview || existing ? (
-          <img className="upload-preview" src={preview || existing} alt="Selected upload preview" />
+          <img
+            className="upload-preview"
+            src={preview || existing}
+            alt={t('Selected upload preview')}
+          />
         ) : (
           <UploadCloud size={30} />
         )}
-        <strong>{file ? file.name : 'Give your story a photo'}</strong>
+        <strong>{file ? file.name : t('Give your story a photo')}</strong>
         <p>
-          Drag an image here, or choose one below.
+          {t('Drag an image here, or choose one below.')}
           <br />
-          JPEG, PNG or WebP · up to 5 MB
+          {t('JPEG, PNG or WebP · up to 5 MB')}
         </p>
         <div className="upload-actions">
           <Button type="button" variant="outline" onClick={() => input.current?.click()}>
             <ImagePlus size={16} />
-            Choose photo
+            {t('Choose photo')}
           </Button>
           <Button type="button" variant="outline" onClick={() => camera.current?.click()}>
             <Camera size={16} />
-            Take photo
+            {t('Take photo')}
           </Button>
           <input
             ref={camera}
@@ -80,7 +87,7 @@ export function ImageUpload({
               type="button"
               variant="ghost"
               onClick={() => onChange(null)}
-              aria-label="Remove selected image"
+              aria-label={t('Remove selected image')}
             >
               <X size={18} />
             </Button>

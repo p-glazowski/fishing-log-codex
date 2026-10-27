@@ -1,3 +1,4 @@
+import { t as translate, countLabel, numberLabel, useTranslation } from '../lib/i18n';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,6 +9,8 @@ import { FilterSelect } from '../components/ui/filter-select';
 import { Button } from '../components/ui/button';
 import { Empty, Failure, Loading, LureCard, PageHeading, Pagination } from '../components/common';
 export default function Collection() {
+  useTranslation();
+
   const [params, setParams] = useSearchParams();
   const [search, setSearch] = useState(params.get('search') ?? '');
   const [expanded, setExpanded] = useState(false);
@@ -39,14 +42,14 @@ export default function Collection() {
   return (
     <>
       <PageHeading
-        eyebrow="YOUR TACKLE BOX"
-        title="Your lure collection"
-        description="Find the right lure. Keep the details that make a difference."
+        eyebrow={translate('YOUR TACKLE BOX')}
+        title={translate('Your lure collection')}
+        description={translate('Find the right lure. Keep the details that make a difference.')}
       >
         <Button asChild>
           <Link to="/lures/new">
             <Plus size={18} />
-            Add lure
+            {translate('Add lure')}
           </Link>
         </Button>
       </PageHeading>
@@ -57,7 +60,8 @@ export default function Collection() {
             className={!params.get('type') ? 'active' : ''}
             onClick={() => filter('type', '')}
           >
-            All lures <span>{query.data?.total ?? '–'}</span>
+            {translate('All lures')}
+            <span>{query.data ? numberLabel(query.data.total) : '–'}</span>
           </button>
           {lureTypes.map((t) => (
             <button
@@ -66,7 +70,7 @@ export default function Collection() {
               className={params.get('type') === t ? 'active' : ''}
               onClick={() => filter('type', t)}
             >
-              {t}
+              {translate(t)}
             </button>
           ))}
         </div>
@@ -75,52 +79,54 @@ export default function Collection() {
         <div className="search-field">
           <Search size={18} />
           <input
-            aria-label="Search lures"
-            placeholder="Search by lure name or brand…"
+            aria-label={translate('Search lures')}
+            placeholder={translate('Search by lure name or brand…')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <FilterSelect
-          aria-label="Filter by brand"
+          aria-label={translate('Filter by brand')}
           value={params.get('brand') ?? ''}
           onChange={(e) => filter('brand', e.target.value)}
         >
-          <option value="">All brands</option>
+          <option value="">{translate('All brands')}</option>
           {brands.data?.map((b) => (
             <option key={b}>{b}</option>
           ))}
         </FilterSelect>
         <FilterSelect
-          aria-label="Sort lures"
+          aria-label={translate('Sort lures')}
           value={params.get('sort') ?? 'newest'}
           onChange={(e) => filter('sort', e.target.value)}
         >
-          <option value="newest">Recently added</option>
-          <option value="name">Name A–Z</option>
-          <option value="catches">Most catches</option>
+          <option value="newest">{translate('Recently added')}</option>
+          <option value="name">{translate('Name A–Z')}</option>
+          <option value="catches">{translate('Most catches')}</option>
         </FilterSelect>
         <Button variant="outline" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>
           <SlidersHorizontal size={17} />
-          Filters
+          {translate('Filters')}
         </Button>
       </div>
       {expanded && (
         <div className="extra-filters">
           <label>
-            Lure type
+            {translate('Lure type')}
             <select
               value={params.get('type') ?? ''}
               onChange={(e) => filter('type', e.target.value)}
             >
-              <option value="">All types</option>
+              <option value="">{translate('All types')}</option>
               {lureTypes.map((t) => (
-                <option key={t}>{t}</option>
+                <option key={t} value={t}>
+                  {translate(t)}
+                </option>
               ))}
             </select>
           </label>
           <label>
-            Minimum length (mm)
+            {translate('Minimum length (mm)')}
             <input
               type="number"
               min="0"
@@ -129,7 +135,7 @@ export default function Collection() {
             />
           </label>
           <label>
-            Maximum length (mm)
+            {translate('Maximum length (mm)')}
             <input
               type="number"
               min="0"
@@ -144,13 +150,15 @@ export default function Collection() {
               setParams({});
             }}
           >
-            Clear filters
+            {translate('Clear filters')}
           </Button>
         </div>
       )}
       <div className="results-label">
-        <span>{query.data?.total ?? 0} lures in view</span>
-        <span>Select a lure to explore its catch history.</span>
+        <span>
+          {countLabel(query.data?.total ?? 0, 'lure')} {translate('in view')}
+        </span>
+        <span>{translate('Select a lure to explore its catch history.')}</span>
       </div>
       {query.isLoading ? (
         <Loading />
@@ -165,15 +173,17 @@ export default function Collection() {
       ) : (
         <Empty
           title={
-            params.size ? 'No lures match this cast.' : 'Your collection starts with one lure.'
+            params.size
+              ? translate('No lures match this cast.')
+              : translate('Your collection starts with one lure.')
           }
           description={
             params.size
-              ? 'Try a different search or clear your filters.'
-              : 'Add your first lure and start keeping track of what works.'
+              ? translate('Try a different search or clear your filters.')
+              : translate('Add your first lure and start keeping track of what works.')
           }
           to="/lures/new"
-          label="Add your first lure"
+          label={translate('Add your first lure')}
         />
       )}
       <Pagination

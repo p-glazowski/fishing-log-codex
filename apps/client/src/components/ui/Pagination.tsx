@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../../lib/i18n';
 import { Button } from './button';
 export function Pagination({
   page,
@@ -8,16 +9,18 @@ export function Pagination({
   pages: number;
   setPage: (n: number) => void;
 }) {
+  useTranslation();
+
   return pages > 1 ? (
     <div className="pagination">
       <Button variant="outline" disabled={page === 1} onClick={() => setPage(page - 1)}>
-        Previous
+        {t('Previous')}
       </Button>
       <span>
-        Page {page} of {pages}
+        {t('Page')} {page} {t('of')} {pages}
       </span>
       <Button variant="outline" disabled={page >= pages} onClick={() => setPage(page + 1)}>
-        Next
+        {t('Next')}
       </Button>
     </div>
   ) : null;

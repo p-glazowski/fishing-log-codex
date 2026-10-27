@@ -1,3 +1,4 @@
+import { t, useTranslation, initializeLanguage } from './lib/i18n';
 import React, { Suspense, lazy, Component, type ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
@@ -25,12 +26,12 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean
   render() {
     return this.state.failed ? (
       <main className="fatal-error">
-        <h1>Something went wrong</h1>
+        <h1>{t('Something went wrong')}</h1>
         <Empty
-          title="We hit a snag."
-          description="Your stories are safe. Reload to get back to the water."
+          title={t('We hit a snag.')}
+          description={t('Your stories are safe. Reload to get back to the water.')}
         />
-        <Button onClick={() => location.reload()}>Reload LureLog</Button>
+        <Button onClick={() => location.reload()}>{t('Reload LureLog')}</Button>
       </main>
     ) : (
       this.props.children
@@ -38,6 +39,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean
   }
 }
 function Protected() {
+  useTranslation();
+
   const { user, loading, error, refresh } = useAuth();
   const location = useLocation();
   if (loading) return <Loading />;
@@ -48,9 +51,11 @@ const client = new QueryClient({
   defaultOptions: { queries: { staleTime: 30000, retry: 1, refetchOnWindowFocus: false } },
 });
 const stopThemeSync = initializeTheme();
+const stopLanguageSync = initializeLanguage();
 const root = ReactDOM.createRoot(document.getElementById('root')!);
-root.render(
-  <React.StrictMode>
+function App() {
+  useTranslation();
+  return (
     <ErrorBoundary>
       <QueryClientProvider client={client}>
         <BrowserRouter>
@@ -77,13 +82,13 @@ root.render(
                   path="*"
                   element={
                     <main className="not-found">
-                      <h1>Page not found</h1>
+                      <h1>{t('Page not found')}</h1>
                       <Empty
-                        title="A little off the beaten path."
-                        description="This page isn’t here, but your next adventure is."
+                        title={t('A little off the beaten path.')}
+                        description={t('This page isn’t here, but your next adventure is.')}
                       />
                       <Button asChild>
-                        <Link to="/">Find your way home</Link>
+                        <Link to="/">{t('Find your way home')}</Link>
                       </Button>
                     </main>
                   }
@@ -95,6 +100,11 @@ root.render(
         <Toaster position="bottom-right" richColors closeButton />
       </QueryClientProvider>
     </ErrorBoundary>
+  );
+}
+root.render(
+  <React.StrictMode>
+    <App />
   </React.StrictMode>,
 );
 
@@ -102,6 +112,7 @@ root.render(
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
     stopThemeSync();
+    stopLanguageSync();
     root.unmount();
   });
 }

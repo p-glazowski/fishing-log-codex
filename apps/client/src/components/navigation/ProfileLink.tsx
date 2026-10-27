@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../../lib/i18n';
 import { Link } from 'react-router-dom';
 import type { User } from '@lurelog/shared';
 export function ProfileLink({
@@ -9,6 +10,7 @@ export function ProfileLink({
   compact?: boolean;
   avatarLast?: boolean;
 }) {
+  useTranslation();
   const avatar = (
     <span className="avatar">
       {user.avatar ? <img src={user.avatar.url} alt="" /> : user.name.slice(0, 1).toUpperCase()}
@@ -18,7 +20,7 @@ export function ProfileLink({
     <Link
       to="/profile"
       className={`profile-link ${compact ? 'profile-link-compact' : ''}`}
-      aria-label={`Your profile, ${user.name}`}
+      aria-label={t('Your profile, {{name}}', { name: user.name })}
     >
       {!avatarLast && avatar}
       <span className="profile-name">{user.name}</span>

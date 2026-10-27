@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../../lib/i18n';
 import { NavLink, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -22,6 +23,8 @@ export const mainNavigation = [
   ['/catches', 'Fishing journal', BookOpen],
 ] as const;
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+  useTranslation();
+
   const { user } = useAuth();
   const client = useQueryClient();
   const navigate = useNavigate();
@@ -33,7 +36,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       onNavigate?.();
       navigate('/login');
     } catch (error) {
-      toast.error(errorMessage(error));
+      toast.error(t(errorMessage(error)));
     }
   }
   return (
@@ -42,14 +45,14 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <Logo />
       </div>
       <div className="sidebar-intro">
-        <span className="nav-label">PERSONAL WORKSPACE</span>
-        <span className="private-label">Private collection</span>
+        <span className="nav-label">{t('PERSONAL WORKSPACE')}</span>
+        <span className="private-label">{t('Private collection')}</span>
       </div>
-      <nav aria-label="Main navigation">
+      <nav aria-label={t('Main navigation')}>
         {mainNavigation.map(([to, label, Icon]) => (
           <NavLink key={to} to={to} onClick={onNavigate}>
             <Icon size={20} />
-            {label}
+            {t(label)}
             <ArrowUpRight size={16} className="nav-arrow" />
           </NavLink>
         ))}
@@ -57,22 +60,22 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <Button asChild className="sidebar-add">
         <Link to="/lures/new" onClick={onNavigate}>
           <Plus size={18} />
-          Add a lure
+          {t('Add a lure')}
         </Link>
       </Button>
       <div className="sidebar-bottom">
         <NavLink to="/profile" onClick={onNavigate}>
           <Settings size={18} />
-          Account settings
+          {t('Account settings')}
         </NavLink>
         <button onClick={logout}>
           <LogOut size={18} />
-          Sign out
+          {t('Sign out')}
         </button>
         {user && (
           <div className="sidebar-profile">
             <ProfileLink user={user} />
-            <span>YOUR FIELD JOURNAL</span>
+            <span>{t('YOUR FIELD JOURNAL')}</span>
           </div>
         )}
       </div>

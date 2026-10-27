@@ -1,3 +1,4 @@
+import { t, useTranslation } from '../../lib/i18n';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Fish, BookOpen, ChartNoAxesCombined } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
@@ -29,17 +30,19 @@ const features = [
   },
 ];
 export function LandingFeatures() {
+  useTranslation();
+
   const { user, loading, error } = useAuth();
   return (
     <section className="features-section" id="features">
       <div className="section-intro">
-        <span className="eyebrow">LESS TO REMEMBER. MORE TO DISCOVER.</span>
+        <span className="eyebrow">{t('LESS TO REMEMBER. MORE TO DISCOVER.')}</span>
         <h2>
-          Your fishing life,
+          {t('Your fishing life,')}
           <br />
-          all connected.
+          {t('all connected.')}
         </h2>
-        <p>A practical companion for the time between casts.</p>
+        <p>{t('A practical companion for the time between casts.')}</p>
       </div>
       <div className="feature-rows">
         {features.map(({ number, Icon, title, text, label, path }) => (
@@ -47,11 +50,11 @@ export function LandingFeatures() {
             <span className="feature-number">/{number}</span>
             <Icon className="feature-icon" size={28} />
             <div>
-              <h3>{title}</h3>
-              <p>{text}</p>
+              <h3>{t(title)}</h3>
+              <p>{t(text)}</p>
             </div>
             {!loading && !error && (
-              <Link to={user ? path : '/register'} className="feature-link" aria-label={label}>
+              <Link to={user ? path : '/register'} className="feature-link" aria-label={t(label)}>
                 <ArrowRight size={22} />
               </Link>
             )}
@@ -62,36 +65,40 @@ export function LandingFeatures() {
   );
 }
 export function LandingSteps() {
+  useTranslation();
+
   return (
     <section className="how-section" id="how">
       <div>
-        <span className="eyebrow">SIMPLE BY NATURE</span>
+        <span className="eyebrow">{t('SIMPLE BY NATURE')}</span>
         <h2>
-          A record worth
+          {t('A record worth')}
           <br />
-          coming back to.
+          {t('coming back to.')}
         </h2>
-        <p>Built around fishing, with just enough structure to keep the important details.</p>
+        <p>
+          {t('Built around fishing, with just enough structure to keep the important details.')}
+        </p>
       </div>
       <ol className="steps">
         {[
-          ['01', 'Add your go-to lures', 'Save the model, size, color, and a photo.'],
+          ['01', t('Add your go-to lures'), t('Save the model, size, color, and a photo.')],
           [
             '02',
-            'Make a catch. Keep the moment.',
-            'Log your fish and connect it to the lure you used.',
+            t('Make a catch. Keep the moment.'),
+            t('Log your fish and connect it to the lure you used.'),
           ],
           [
             '03',
-            'Find what works for you',
-            'Look back at your catches and take that experience into your next trip.',
+            t('Find what works for you'),
+            t('Look back at your catches and take that experience into your next trip.'),
           ],
         ].map(([number, title, text]) => (
           <li key={number}>
             <span>{number}</span>
             <div>
-              <h3>{title}</h3>
-              <p>{text}</p>
+              <h3>{t(title)}</h3>
+              <p>{t(text)}</p>
             </div>
           </li>
         ))}
@@ -100,26 +107,28 @@ export function LandingSteps() {
   );
 }
 export function LandingCallToAction() {
+  useTranslation();
+
   const { user, loading, error } = useAuth();
   return (
     <section className="landing-cta">
       <div>
-        <span className="eyebrow">THE NEXT CHAPTER IS YOURS</span>
+        <span className="eyebrow">{t('THE NEXT CHAPTER IS YOURS')}</span>
         <h2>
-          Make a little room
+          {t('Make a little room')}
           <br />
-          for your next great catch.
+          {t('for your next great catch.')}
         </h2>
         <p>
           {user
-            ? 'Your collection and fishing journal are ready when you are.'
-            : 'Start with your favorite lure. The rest follows.'}
+            ? t('Your collection and fishing journal are ready when you are.')
+            : t('Start with your favorite lure. The rest follows.')}
         </p>
       </div>
       {!loading && !error && (
         <Button asChild>
           <Link to={user ? '/dashboard' : '/register'}>
-            {user ? 'Back to your fishing log' : 'Create your free account'}
+            {user ? t('Back to your fishing log') : t('Create your free account')}
             <ArrowRight size={18} />
           </Link>
         </Button>

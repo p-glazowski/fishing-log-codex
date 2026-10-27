@@ -1,3 +1,4 @@
+import { t, speciesLabel, numberLabel, getLocale, useTranslation } from '../../lib/i18n';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '../../components/ui/button';
@@ -6,6 +7,8 @@ import { ArrowLeft, Pencil, Fish, Ruler, MapPin, Calendar, Weight } from 'lucide
 import { api, dateLabel, lureOf } from '../../lib/api';
 import { PageHeading, Loading, Failure, ConfirmDelete } from '../../components/common';
 export function CatchDetails() {
+  useTranslation();
+
   const { id } = useParams();
   const query = useQuery({ queryKey: ['catch', id], queryFn: () => api.catch(id!) });
   const deletion = useDelete(`/catches/${id}`, '/catches');
@@ -17,17 +20,17 @@ export function CatchDetails() {
     <>
       <Link className="back-link" to="/catches">
         <ArrowLeft size={16} />
-        Back to journal
+        {t('Back to journal')}
       </Link>
       <PageHeading
-        eyebrow="A MEMORY FROM THE WATER"
-        title={item.species}
+        eyebrow={t('A MEMORY FROM THE WATER')}
+        title={speciesLabel(item.species)}
         description={dateLabel(item.caughtAt)}
       >
         <Button variant="outline" asChild>
           <Link to={`/catches/${id}/edit`}>
             <Pencil size={17} />
-            Edit catch
+            {t('Edit catch')}
           </Link>
         </Button>
       </PageHeading>
@@ -38,19 +41,19 @@ export function CatchDetails() {
           ) : (
             <div className="fish-placeholder">
               <Fish size={90} />
-              <span>A memory worth keeping</span>
+              <span>{t('A memory worth keeping')}</span>
             </div>
           )}
         </div>
         <section className="panel specifications">
-          <span className="eyebrow">THE CATCH</span>
-          <h2>A day to remember</h2>
+          <span className="eyebrow">{t('THE CATCH')}</span>
+          <h2>{t('A day to remember')}</h2>
           <dl>
             {[
-              [Calendar, 'Caught at', new Date(item.caughtAt).toLocaleString()],
-              [MapPin, 'Location', item.location],
-              [Ruler, 'Length', item.lengthCm ? `${item.lengthCm} cm` : undefined],
-              [Weight, 'Weight', item.weightKg ? `${item.weightKg} kg` : undefined],
+              [Calendar, t('Caught at'), new Date(item.caughtAt).toLocaleString(getLocale())],
+              [MapPin, t('Location'), item.location],
+              [Ruler, t('Length'), item.lengthCm ? `${numberLabel(item.lengthCm)} cm` : undefined],
+              [Weight, t('Weight'), item.weightKg ? `${numberLabel(item.weightKg)} kg` : undefined],
             ].map(([Icon, k, v]) => {
               const I = Icon as typeof Fish;
               return v ? (
@@ -66,12 +69,12 @@ export function CatchDetails() {
           </dl>
           {lure && (
             <Link className="lure-detail-link" to={`/lures/${lure._id}`}>
-              <span className="brand">THE LURE THAT MADE IT HAPPEN</span>
+              <span className="brand">{t('THE LURE THAT MADE IT HAPPEN')}</span>
               <h3>
                 {lure.brand} {lure.name} ↗
               </h3>
               <span>
-                {lure.type} · {lure.lengthMm} mm
+                {t(lure.type)} · {numberLabel(lure.lengthMm)} mm
               </span>
             </Link>
           )}
@@ -79,18 +82,18 @@ export function CatchDetails() {
       </div>
       {(item.notes || item.weather || item.waterConditions) && (
         <section className="panel notes">
-          <span className="eyebrow">FIELD NOTES</span>
+          <span className="eyebrow">{t('FIELD NOTES')}</span>
           {item.notes && <p>{item.notes}</p>}
           <dl>
             {item.weather && (
               <div>
-                <dt>Weather</dt>
+                <dt>{t('Weather')}</dt>
                 <dd>{item.weather}</dd>
               </div>
             )}
             {item.waterConditions && (
               <div>
-                <dt>Water conditions</dt>
+                <dt>{t('Water conditions')}</dt>
                 <dd>{item.waterConditions}</dd>
               </div>
             )}
@@ -99,8 +102,8 @@ export function CatchDetails() {
       )}
       <div className="danger-zone">
         <div>
-          <strong>Remove this memory</strong>
-          <p>This catch and its photo will be permanently deleted.</p>
+          <strong>{t('Remove this memory')}</strong>
+          <p>{t('This catch and its photo will be permanently deleted.')}</p>
         </div>
         <ConfirmDelete kind="catch" busy={deletion.isPending} onConfirm={() => deletion.mutate()} />
       </div>
