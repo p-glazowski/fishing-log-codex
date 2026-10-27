@@ -3412,6 +3412,8 @@ button.picker-option:hover {
 }
 
 .language-select {
+  font-size: 13px;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -3437,8 +3439,11 @@ button.picker-option:hover {
 .language-settings .language-select {
   display: flex;
 }
-.language-settings .language-select select {
+.language-settings .language-select > .filter-select {
   flex: 1;
+}
+.language-settings .language-select select {
+  width: 100%;
 }
 
 .filter-bar > .journal-lure-filter {

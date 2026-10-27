@@ -1,13 +1,14 @@
+import { FilterSelect } from '../ui/filter-select';
 import { Languages } from 'lucide-react';
 import { useTranslation } from '../../lib/i18n';
 
 export function LanguageSelect() {
   const { t, language, setLanguage } = useTranslation();
   return (
-    <label className="language-select">
+    <div className="language-select">
       <Languages size={18} aria-hidden="true" />
       <span className="sr-only">{t('Language')}</span>
-      <select
+      <FilterSelect
         aria-label={t('Language preference')}
         value={language}
         onChange={(event) => setLanguage(event.target.value === 'pl' ? 'pl' : 'en')}
@@ -18,8 +19,8 @@ export function LanguageSelect() {
         <option value="pl" lang="pl">
           Polski
         </option>
-      </select>
-    </label>
+      </FilterSelect>
+    </div>
   );
 }
 export function LanguageSettings() {

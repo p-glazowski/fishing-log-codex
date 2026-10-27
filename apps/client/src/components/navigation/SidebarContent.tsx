@@ -45,8 +45,8 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <Logo />
       </div>
       <div className="sidebar-intro">
-        <span className="nav-label">{t('PERSONAL WORKSPACE')}</span>
-        <span className="private-label">{t('Private collection')}</span>
+        <span className="nav-label">{t('YOUR FISHING CORNER')}</span>
+        <span className="private-label">{t('Lures, catches & memories')}</span>
       </div>
       <nav aria-label={t('Main navigation')}>
         {mainNavigation.map(([to, label, Icon]) => (
@@ -75,7 +75,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         {user && (
           <div className="sidebar-profile">
             <ProfileLink user={user} />
-            <span>{t('YOUR FIELD JOURNAL')}</span>
+            <span>{t('YOUR FISHING JOURNAL')}</span>
           </div>
         )}
       </div>
