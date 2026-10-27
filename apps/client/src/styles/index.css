@@ -964,6 +964,26 @@ form > label {
   padding-bottom: 24px;
   border-bottom: 1px solid var(--border);
 }
+.journal-filters {
+  --journal-filter-gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--journal-filter-gap);
+}
+.journal-filters .filter-bar {
+  gap: var(--journal-filter-gap);
+  margin-bottom: 0;
+}
+.journal-filters .date-filters {
+  gap: var(--journal-filter-gap);
+}
+.journal-filters .journal-date-range {
+  width: 100%;
+  gap: var(--journal-filter-gap);
+}
+.journal-filters .filter-bar :is(input, select) {
+  height: 50px;
+}
 button.journal-date-toggle {
   display: inline-flex;
   align-items: center;

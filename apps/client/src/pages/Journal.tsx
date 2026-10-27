@@ -45,87 +45,89 @@ export default function Journal() {
           </Link>
         </Button>
       </PageHeading>
-      <div className="filter-bar">
-        <div className="search-field">
-          <Search size={18} />
-          <input
-            aria-label={t('Search fish species')}
-            placeholder={t('Search fish species…')}
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
+      <div className="journal-filters">
+        <div className="filter-bar">
+          <div className="search-field">
+            <Search size={18} />
+            <input
+              aria-label={t('Search fish species')}
+              placeholder={t('Search fish species…')}
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+            />
+          </div>
+          <JournalLureFilter
+            value={lure}
+            onChange={(id) => {
+              setLure(id);
               setPage(1);
             }}
           />
+          <FilterSelect
+            aria-label={t('Sort catches')}
+            value={sort}
+            onChange={(e) => {
+              setSort(e.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="date">{t('Newest catches')}</option>
+            <option value="length">{t('Longest fish')}</option>
+            <option value="weight">{t('Heaviest fish')}</option>
+          </FilterSelect>
         </div>
-        <JournalLureFilter
-          value={lure}
-          onChange={(id) => {
-            setLure(id);
-            setPage(1);
-          }}
-        />
-        <FilterSelect
-          aria-label={t('Sort catches')}
-          value={sort}
-          onChange={(e) => {
-            setSort(e.target.value);
-            setPage(1);
-          }}
-        >
-          <option value="date">{t('Newest catches')}</option>
-          <option value="length">{t('Longest fish')}</option>
-          <option value="weight">{t('Heaviest fish')}</option>
-        </FilterSelect>
-      </div>
-      <div className="date-filters">
-        <button
-          type="button"
-          className="journal-date-toggle"
-          aria-expanded={showDateFilters}
-          aria-controls="journal-date-range"
-          onClick={() => setShowDateFilters(!showDateFilters)}
-        >
-          <span>{t('Date filter')}</span>
-          <ChevronDown size={16} className={showDateFilters ? 'is-open' : ''} />
-        </button>
-        {showDateFilters && (
-          <div id="journal-date-range" className="journal-date-range">
-            <label>
-              {t('From')}
-              <input
-                aria-label={t('From date')}
-                type="date"
-                value={from}
-                onChange={(e) => {
-                  setFrom(e.target.value);
-                  setPage(1);
-                }}
-              />
-            </label>
-            <label>
-              {t('To')}
-              <input
-                aria-label={t('To date')}
-                type="date"
-                value={to}
-                onChange={(e) => {
-                  setTo(e.target.value);
-                  setPage(1);
-                }}
-              />
-            </label>
-          </div>
-        )}
-        <div
-          className="journal-catch-total"
-          role="status"
-          aria-label={query.data ? countLabel(query.data.total, 'catch') : t('Catches recorded')}
-        >
-          <Fish size={24} aria-hidden="true" />
-          <div>
-            <strong>{query.data ? numberLabel(query.data.total) : '—'}</strong>
-            <span>{t('Catches recorded')}</span>
+        <div className="date-filters">
+          <button
+            type="button"
+            className="journal-date-toggle"
+            aria-expanded={showDateFilters}
+            aria-controls="journal-date-range"
+            onClick={() => setShowDateFilters(!showDateFilters)}
+          >
+            <span>{t('Date filter')}</span>
+            <ChevronDown size={16} className={showDateFilters ? 'is-open' : ''} />
+          </button>
+          {showDateFilters && (
+            <div id="journal-date-range" className="journal-date-range">
+              <label>
+                {t('From')}
+                <input
+                  aria-label={t('From date')}
+                  type="date"
+                  value={from}
+                  onChange={(e) => {
+                    setFrom(e.target.value);
+                    setPage(1);
+                  }}
+                />
+              </label>
+              <label>
+                {t('To')}
+                <input
+                  aria-label={t('To date')}
+                  type="date"
+                  value={to}
+                  onChange={(e) => {
+                    setTo(e.target.value);
+                    setPage(1);
+                  }}
+                />
+              </label>
+            </div>
+          )}
+          <div
+            className="journal-catch-total"
+            role="status"
+            aria-label={query.data ? countLabel(query.data.total, 'catch') : t('Catches recorded')}
+          >
+            <Fish size={24} aria-hidden="true" />
+            <div>
+              <strong>{query.data ? numberLabel(query.data.total) : '—'}</strong>
+              <span>{t('Catches recorded')}</span>
+            </div>
           </div>
         </div>
       </div>
