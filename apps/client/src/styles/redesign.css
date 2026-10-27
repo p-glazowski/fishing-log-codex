@@ -106,7 +106,9 @@ h2 {
 .nav-arrow {
   display: none;
 }
-.sidebar-add { margin: auto 8px 8px; }
+.sidebar-add {
+  margin: auto 8px 8px;
+}
 .main-wrap {
   margin-left: 224px;
 }
@@ -303,6 +305,26 @@ label {
 }
 .field-guide figcaption {
   background: var(--surface);
+}
+.upload:has(.photo-position-editor) {
+  padding: 12px;
+  border-style: solid;
+}
+.upload > .photo-position-editor {
+  width: 100%;
+  text-align: left;
+}
+.upload .photo-position-frame {
+  aspect-ratio: 4 / 3;
+  margin-top: 12px;
+}
+.upload .photo-position-save {
+  width: 100%;
+  margin-top: 16px;
+  background: #d49a48;
+  color: #182d1f;
+  border: 0;
+  font-weight: 700;
 }
 .field-guide figcaption h2 {
   font-size: 34px;

@@ -56,7 +56,14 @@ export function ImageUpload({
           pick(e.dataTransfer.files[0]);
         }}
       >
-        {preview || existing ? (
+        {adjusting && (preview || existing) && onPositionChange ? (
+          <PhotoPositionEditor
+            src={preview || existing!}
+            value={position ?? { x: 50, y: 50 }}
+            onChange={onPositionChange}
+            onSave={() => setAdjusting(false)}
+          />
+        ) : preview || existing ? (
           <img
             className="upload-preview"
             src={preview || existing}
@@ -99,7 +106,7 @@ export function ImageUpload({
               aria-expanded={adjusting}
               onClick={() => setAdjusting(!adjusting)}
             >
-              {t(adjusting ? 'Done adjusting' : 'Adjust preview')}
+              {t('Adjust preview')}
             </Button>
           )}
           {file && (
@@ -124,13 +131,6 @@ export function ImageUpload({
           }}
         />
       </div>
-      {adjusting && (preview || existing) && onPositionChange && (
-        <PhotoPositionEditor
-          src={preview || existing!}
-          value={position ?? { x: 50, y: 50 }}
-          onChange={onPositionChange}
-        />
-      )}
       {error && (
         <p role="alert" className="field-error">
           {error}
