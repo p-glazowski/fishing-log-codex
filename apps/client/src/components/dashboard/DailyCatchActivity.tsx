@@ -119,7 +119,9 @@ export function DailyCatchActivity({
                         timeZone: 'UTC',
                       })}
                     </th>
-                    <td>{day.count}</td>
+                    <td className={day.count > 0 ? 'activity-count-positive' : undefined}>
+                      {day.count}
+                    </td>
                   </tr>
                 ))}
               </tbody>

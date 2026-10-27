@@ -4,7 +4,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Menu, X, Plus, ChevronRight } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { SidebarContent, mainNavigation } from './navigation/SidebarContent';
-import { ProfileLink } from './navigation/ProfileLink';
+import { ProfileMenu } from './navigation/ProfileMenu';
 export { Logo } from './branding/Logo';
 export default function Layout() {
   useTranslation();
@@ -76,7 +76,7 @@ export default function Layout() {
               <Plus size={16} />
               {t('Log a catch')}
             </Link>
-            {user && <ProfileLink user={user} compact />}
+            {user && <ProfileMenu user={user} />}
           </div>
         </header>
         <main id="main-content" className="main-content" tabIndex={-1}>

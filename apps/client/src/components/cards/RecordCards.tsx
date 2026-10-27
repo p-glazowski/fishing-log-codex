@@ -49,9 +49,11 @@ export function CatchCard({
   list = false,
   headingLevel = 2,
   datePlacement = 'photo',
+  recent = false,
 }: {
   item: FishCatch;
   datePlacement?: 'photo' | 'footer';
+  recent?: boolean;
   list?: boolean;
   headingLevel?: 2 | 3;
 }) {
@@ -60,7 +62,33 @@ export function CatchCard({
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const lure = lureOf(item);
   return (
-    <article className={`catch-card ${list ? 'catch-row' : ''}`}>
+    <article
+      className={`catch-card ${list ? 'catch-row' : ''} ${recent ? 'recent-catch-card' : ''}`}
+      onClick={recent ? () => (window.location.href = `/catches/${item._id}`) : undefined}
+      onKeyDown={
+        recent
+          ? (event) => {
+              if (
+                event.target === event.currentTarget &&
+                (event.key === 'Enter' || event.key === ' ')
+              ) {
+                event.preventDefault();
+                window.location.href = `/catches/${item._id}`;
+              }
+            }
+          : undefined
+      }
+      tabIndex={recent ? 0 : undefined}
+      role={recent ? 'link' : undefined}
+      aria-label={
+        recent
+          ? t('View {{species}} catch from {{date}}', {
+              species: speciesLabel(item.species),
+              date: dateLabel(item.caughtAt),
+            })
+          : undefined
+      }
+    >
       <Link
         className="catch-image"
         to={`/catches/${item._id}`}
@@ -84,17 +112,24 @@ export function CatchCard({
             <span>{t('No photo added')}</span>
           </div>
         )}
-        {datePlacement === 'photo' && (
+        {!recent && datePlacement === 'photo' && (
           <time className="image-tag" dateTime={item.caughtAt}>
             {dateLabel(item.caughtAt)}
           </time>
         )}
       </Link>
       <div className="catch-body">
-        <span className="brand">{item.location || t('On the water')}</span>
-        <Link to={`/catches/${item._id}`}>
-          <Heading>{speciesLabel(item.species)}</Heading>
-        </Link>
+        {item.location && <span className="brand">{item.location}</span>}
+        <div className="recent-catch-title">
+          <Link to={`/catches/${item._id}`}>
+            <Heading>{speciesLabel(item.species)}</Heading>
+          </Link>
+          {recent && (
+            <time className="recent-catch-date" dateTime={item.caughtAt}>
+              {dateLabel(item.caughtAt)}
+            </time>
+          )}
+        </div>
         <p className="catch-measure">
           {item.lengthCm ? `${numberLabel(item.lengthCm)} cm` : t('Length unrecorded')}
           {item.weightKg ? ` · ${numberLabel(item.weightKg)} kg` : ''}
@@ -102,8 +137,21 @@ export function CatchCard({
         {lure && (
           <Link className="lure-link" to={`/lures/${lure._id}`}>
             <Fish size={14} />
-            {lure.brand} {lure.name}
-            <ArrowUpRight size={14} />
+            {recent ? (
+              <span className="recent-lure-details">
+                <span>
+                  {lure.brand} {lure.name}
+                </span>
+                {lure.lengthMm != null && (
+                  <span className="recent-lure-size">{numberLabel(lure.lengthMm)} mm</span>
+                )}
+              </span>
+            ) : (
+              <>
+                {lure.brand} {lure.name}
+              </>
+            )}
+            {!recent && <ArrowUpRight size={14} />}
           </Link>
         )}
         {datePlacement === 'footer' && (

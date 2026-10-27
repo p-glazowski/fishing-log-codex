@@ -38,7 +38,7 @@ dashboardRouter.get('/dashboard/stats', async (req, res) => {
     CatchModel.find({ userId })
       .sort({ caughtAt: -1 })
       .limit(4)
-      .populate({ path: 'lureId', match: { userId }, select: 'name brand' })
+      .populate({ path: 'lureId', match: { userId }, select: 'name brand lengthMm' })
       .lean(),
   ]);
   const ranked = await LureModel.find({ userId, _id: { $in: rank.map((r) => r._id) } }).lean();
