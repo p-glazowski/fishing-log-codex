@@ -1548,6 +1548,13 @@ button.journal-date-toggle {
   -webkit-appearance: none;
   height: 47px;
 }
+.record-form input[type='datetime-local'] {
+  display: block;
+  width: 100%;
+  height: 47px;
+  appearance: none;
+  -webkit-appearance: none;
+}
 .field > input,
 .field > textarea,
 .field > select {
@@ -2882,6 +2889,9 @@ button.picker-option:hover {
   }
   .record-form[data-kind='catch'] .fields-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .record-form input[type='datetime-local'] {
+    height: 50px;
   }
   .form-tip {
     padding: 20px 0;
