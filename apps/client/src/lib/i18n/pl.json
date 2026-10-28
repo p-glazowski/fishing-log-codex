@@ -465,6 +465,8 @@
   "Selected lure unavailable": "Wybrana przynęta jest niedostępna",
   "Could not load lure choices.": "Nie udało się wczytać listy przynęt.",
   "Adjust preview": "Dostosuj podgląd",
+  "Adjust with controls": "Dostosuj za pomocą suwaków",
+  "Drag the frame to choose what appears on catch cards.": "Przeciągnij ramkę, aby wybrać fragment widoczny na kartach połowów.",
   "Done adjusting": "Zakończ dostosowywanie",
   "Card preview": "Podgląd karty",
   "Catch card preview": "Podgląd zdjęcia na karcie połowu",

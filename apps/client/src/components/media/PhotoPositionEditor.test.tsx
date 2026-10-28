@@ -47,25 +47,29 @@ afterEach(() => {
   vi.clearAllMocks();
   vi.unstubAllGlobals();
 });
-it('adjusts the live card crop with accessible sliders and resets it to center', async () => {
+it('positions the mask with accessible controls and resets it to center', async () => {
   const user = userEvent.setup();
   const { container } = render(<ControlledEditor />);
+  const image = screen.getByAltText('Selected upload preview');
+  Object.defineProperties(image, { naturalWidth: { value: 1000 }, naturalHeight: { value: 2000 } });
+  fireEvent.load(image);
+  await user.click(screen.getByText('Adjust with controls'));
   fireEvent.change(screen.getByLabelText('Vertical position'), { target: { value: '10' } });
-  fireEvent.change(screen.getByLabelText('Horizontal position'), { target: { value: '75' } });
-  expect(screen.getByAltText('Catch card preview')).toHaveStyle({ objectPosition: '75% 10%' });
-  expect(screen.getByAltText('Catch thumbnail preview')).toHaveStyle({ objectPosition: '75% 10%' });
+  const mask = container.querySelector('.photo-position-mask')!;
+  expect(mask).toHaveStyle({ width: '100%' });
+  expect(parseFloat((mask as HTMLElement).style.top)).toBeCloseTo(6.67, 2);
   expect(
     (await axe.run(container, { rules: { 'color-contrast': { enabled: false } } })).violations,
   ).toEqual([]);
   await user.click(screen.getByRole('button', { name: 'Center photo' }));
-  expect(screen.getByAltText('Catch card preview')).toHaveStyle({ objectPosition: '50% 50%' });
+  expect(screen.getByLabelText('Vertical position')).toHaveValue('50');
 });
 it.each([
-  { width: 1000, height: 2000, dx: 0, dy: 100, expected: '50% 25%' },
-  { width: 2000, height: 1000, dx: 50, dy: 0, expected: '0% 50%' },
+  { width: 1000, height: 2000, dx: 0, dy: 40, axis: 'Vertical position', expected: 80 },
+  { width: 2000, height: 1000, dx: 25, dy: 0, axis: 'Horizontal position', expected: 100 },
 ])(
-  'drags $width × $height photos using their actual crop overflow',
-  ({ width, height, dx, dy, expected }) => {
+  'drags the crop mask for $width × $height photos',
+  ({ width, height, dx, dy, axis, expected }) => {
     class Pointer extends MouseEvent {
       pointerId: number;
       constructor(type: string, options: PointerEventInit) {
@@ -75,23 +79,24 @@ it.each([
     }
     vi.stubGlobal('PointerEvent', Pointer);
     render(<ControlledEditor />);
-    const image = screen.getByAltText('Catch card preview');
+    const image = screen.getByAltText('Selected upload preview');
     Object.defineProperties(image, {
       naturalWidth: { value: width },
       naturalHeight: { value: height },
     });
+    fireEvent.load(image);
     const frame = image.parentElement!;
     vi.spyOn(frame, 'getBoundingClientRect').mockReturnValue({
-      width: 300,
+      width: 200,
       height: 200,
     } as DOMRect);
     Object.defineProperty(frame, 'setPointerCapture', { value: vi.fn(), configurable: true });
-    fireEvent.pointerDown(frame, { button: 0, pointerId: 1, clientX: 150, clientY: 100 });
-    fireEvent.pointerMove(frame, { pointerId: 1, clientX: 150 + dx, clientY: 100 + dy });
-    expect(image).toHaveStyle({ objectPosition: expected });
+    fireEvent.pointerDown(frame, { button: 0, pointerId: 1, clientX: 100, clientY: 100 });
+    fireEvent.pointerMove(frame, { pointerId: 1, clientX: 100 + dx, clientY: 100 + dy });
+    expect(screen.getByLabelText(axis)).toHaveValue(String(expected));
     fireEvent.pointerUp(frame, { pointerId: 1 });
     fireEvent.pointerMove(frame, { pointerId: 1, clientX: 800, clientY: 800 });
-    expect(image).toHaveStyle({ objectPosition: expected });
+    expect(screen.getByLabelText(axis)).toHaveValue(String(expected));
   },
 );
 it('saves the position on an existing catch without uploading or replacing the full photo', async () => {
@@ -120,7 +125,7 @@ it('saves the position on an existing catch without uploading or replacing the f
     </QueryClientProvider>,
   );
   await user.click(screen.getByRole('button', { name: 'Adjust preview' }));
-  expect(screen.getByAltText('Catch card preview')).toHaveStyle({ objectPosition: '20% 70%' });
+  expect(screen.getByLabelText('Vertical position')).toHaveValue('70');
   fireEvent.change(screen.getByLabelText('Vertical position'), { target: { value: '15' } });
   await user.click(screen.getByRole('button', { name: 'Save changes' }));
   await screen.findByText('Saved catch');
@@ -180,11 +185,11 @@ it('centers a replacement photo, restores the old crop on removal, and saves a n
   const file = new File(['photo'], 'portrait.png', { type: 'image/png' });
   await user.click(screen.getByRole('button', { name: 'Adjust preview' }));
   await user.upload(picker, file);
-  expect(screen.getByAltText('Catch card preview')).toHaveStyle({ objectPosition: '50% 50%' });
+  expect(screen.getByLabelText('Vertical position')).toHaveValue('50');
   await user.click(screen.getByRole('button', { name: 'Remove selected image' }));
-  expect(screen.getByAltText('Catch card preview')).toHaveStyle({ objectPosition: '20% 70%' });
+  expect(screen.getByLabelText('Vertical position')).toHaveValue('70');
   await user.upload(picker, file);
-  expect(screen.getByAltText('Catch card preview')).toHaveStyle({ objectPosition: '50% 50%' });
+  expect(screen.getByLabelText('Vertical position')).toHaveValue('50');
   fireEvent.change(screen.getByLabelText('Vertical position'), { target: { value: '80' } });
   await user.click(screen.getByRole('button', { name: 'Save changes' }));
   await screen.findByText('Replacement saved');

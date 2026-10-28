@@ -58,7 +58,13 @@ export function ImageUpload({
           pick(e.dataTransfer.files[0]);
         }}
       >
-        {preview || existing ? (
+        {adjusting && (preview || existing) && onPositionChange ? (
+          <PhotoPositionEditor
+            src={preview || existing!}
+            value={position ?? { x: 50, y: 50 }}
+            onChange={onPositionChange}
+          />
+        ) : preview || existing ? (
           <img
             className="upload-preview"
             src={preview || existing}
@@ -132,13 +138,6 @@ export function ImageUpload({
           }}
         />
       </div>
-      {adjusting && (preview || existing) && onPositionChange && (
-        <PhotoPositionEditor
-          src={preview || existing!}
-          value={position ?? { x: 50, y: 50 }}
-          onChange={onPositionChange}
-        />
-      )}
       {error && (
         <p role="alert" className="field-error">
           {error}
