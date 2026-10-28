@@ -10,12 +10,14 @@ export function ImageUpload({
   existing,
   position,
   onPositionChange,
+  compact = false,
 }: {
   file: File | null;
   onChange: (file: File | null) => void;
   existing?: string;
   position?: PhotoPosition;
   onPositionChange?: (position: PhotoPosition) => void;
+  compact?: boolean;
 }) {
   useTranslation();
 
@@ -65,10 +67,16 @@ export function ImageUpload({
         ) : (
           <UploadCloud size={30} />
         )}
-        <strong>{file ? file.name : t('Give your story a photo')}</strong>
+        <strong>
+          {file ? file.name : t(compact ? 'Drag a photo here' : 'Give your story a photo')}
+        </strong>
         <p>
-          {t('Drag an image here, or choose one below.')}
-          <br />
+          {!compact && (
+            <>
+              {t('Drag an image here, or choose one below.')}
+              <br />
+            </>
+          )}
           {t('JPEG, PNG or WebP · up to 5 MB')}
         </p>
         <div className="upload-actions">

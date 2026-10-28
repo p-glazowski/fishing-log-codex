@@ -1511,6 +1511,9 @@ button.journal-date-toggle {
   color: var(--muted);
   margin-top: 8px;
 }
+.record-form[data-kind='catch'] .form-section-heading {
+  margin-bottom: 20px;
+}
 .form-section-heading > svg {
   color: var(--primary);
 }
@@ -1590,6 +1593,13 @@ button.journal-date-toggle {
 }
 .form-aside > .btn-ghost {
   margin-top: 8px;
+}
+.record-form[data-kind='catch'] .form-aside > .panel {
+  margin-bottom: 20px;
+}
+.record-form[data-kind='catch'] .upload {
+  gap: 12px;
+  padding: 24px 16px;
 }
 .upload {
   display: flex;

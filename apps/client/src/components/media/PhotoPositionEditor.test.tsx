@@ -235,6 +235,11 @@ it.each([null, undefined])('saves crop edits when optional measurements are %s',
     </QueryClientProvider>,
   );
   expect(screen.getByLabelText(/Fish weight/)).toHaveValue(null);
+  if (empty === null) {
+    fireEvent.change(screen.getByLabelText(/Date & time \(local\)/), {
+      target: { value: '2026-07-15T14:30' },
+    });
+  }
   await user.click(screen.getByRole('button', { name: 'Adjust preview' }));
   fireEvent.change(screen.getByLabelText('Vertical position'), { target: { value: '25' } });
   await user.click(screen.getByRole('button', { name: 'Save changes' }));
@@ -243,6 +248,12 @@ it.each([null, undefined])('saves crop edits when optional measurements are %s',
   expect(saved.weightKg == null).toBe(true);
   expect(saved.lengthCm == null).toBe(true);
   expect(saved.photoPosition).toEqual({ x: 20, y: 25 });
+  expect(saved.caughtAt).toBe(
+    empty === null ? new Date('2026-07-15T14:30').toISOString() : catchRecord.caughtAt,
+  );
+  if (empty === null && process.env.TZ === 'Europe/Warsaw') {
+    expect(saved.caughtAt).toBe('2026-07-15T12:30:00.000Z');
+  }
   unmount();
   client.clear();
 });

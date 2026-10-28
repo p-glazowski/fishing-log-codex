@@ -27,10 +27,14 @@ export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
         <ArrowLeft size={16} />
         {isLure ? t('Back to collection') : t('Back to journal')}
       </Link>
-      {isLure && !edit ? (
+      {!edit ? (
         <header className="add-lure-heading">
-          <h1>{t('Add a new lure')}</h1>
-          <p>{t('Save its details now, and track the catches it brings later.')}</p>
+          <h1>{isLure ? t('Add a new lure') : t('Log a new catch')}</h1>
+          <p>
+            {isLure
+              ? t('Save its details now, and track the catches it brings later.')
+              : t('Record your catch and the lure that brought it in.')}
+          </p>
         </header>
       ) : (
         <PageHeading
