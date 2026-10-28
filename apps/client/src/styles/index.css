@@ -921,8 +921,26 @@ form > label {
   padding: 20px 20px 0;
 }
 .lure-body :is(h2, h3) {
-  margin: 8px 0;
+  margin: 0 0 8px;
   font-size: 18px;
+}
+.lure-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lure-meta .brand {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.lure-size {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.lure-meta + .spec-line {
+  margin-top: 4px;
 }
 .lure-body a:hover :is(h2, h3),
 .catch-body a:hover :is(h2, h3) {
