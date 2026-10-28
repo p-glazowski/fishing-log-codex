@@ -1764,17 +1764,6 @@ button.picker-option:hover {
   grid-template-columns: minmax(0, 1.2fr) minmax(300px, 1fr);
   gap: 24px;
 }
-.lure-detail-photo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  min-width: 0;
-}
-.lure-detail-photo .detail-image {
-  width: 100%;
-  flex: 1;
-}
 .detail-image {
   min-height: 360px;
   display: flex;
@@ -1894,6 +1883,13 @@ button.picker-option:hover {
   margin-top: 40px;
   padding-top: 24px;
   border-top: 1px solid var(--border);
+}
+.lure-management-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  flex-shrink: 0;
 }
 .danger-zone strong {
   font-size: 14px;
@@ -2916,6 +2912,9 @@ button.picker-option:hover {
     align-items: start;
   }
   .danger-zone .btn {
+    width: 100%;
+  }
+  .lure-management-actions {
     width: 100%;
   }
   .profile-grid {
