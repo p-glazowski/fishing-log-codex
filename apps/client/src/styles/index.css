@@ -1632,12 +1632,18 @@ button.journal-date-toggle {
   font-size: 12px;
 }
 .upload-actions {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  width: 100%;
+  gap: 8px;
+}
+.upload-action-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr));
   gap: 8px;
 }
 .upload-actions .btn {
+  width: 100%;
+  min-width: 0;
   font-size: 12px;
   padding: 8px 12px;
 }

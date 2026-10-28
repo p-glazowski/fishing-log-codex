@@ -86,14 +86,16 @@ export function ImageUpload({
           {t('JPEG, PNG or WebP · up to 5 MB')}
         </p>
         <div className="upload-actions">
-          <Button type="button" variant="outline" onClick={() => input.current?.click()}>
-            <ImagePlus size={16} />
-            {t('Choose photo')}
-          </Button>
-          <Button type="button" variant="outline" onClick={() => camera.current?.click()}>
-            <Camera size={16} />
-            {t('Take photo')}
-          </Button>
+          <div className="upload-action-row">
+            <Button type="button" variant="outline" onClick={() => input.current?.click()}>
+              <ImagePlus size={16} />
+              {t('Choose photo')}
+            </Button>
+            <Button type="button" variant="outline" onClick={() => camera.current?.click()}>
+              <Camera size={16} />
+              {t('Take photo')}
+            </Button>
+          </div>
           <input
             ref={camera}
             hidden
@@ -106,25 +108,30 @@ export function ImageUpload({
             }}
           />
 
-          {(preview || existing) && onPositionChange && (
-            <Button
-              type="button"
-              variant="outline"
-              aria-expanded={adjusting}
-              onClick={() => setAdjusting(!adjusting)}
-            >
-              {t(adjusting ? 'Done adjusting' : 'Adjust preview')}
-            </Button>
-          )}
-          {file && (
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => onChange(null)}
-              aria-label={t('Remove selected image')}
-            >
-              <X size={18} />
-            </Button>
+          {(((preview || existing) && onPositionChange) || file) && (
+            <div className="upload-action-row">
+              {(preview || existing) && onPositionChange && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  aria-expanded={adjusting}
+                  onClick={() => setAdjusting(!adjusting)}
+                >
+                  {t(adjusting ? 'Done adjusting' : 'Adjust preview')}
+                </Button>
+              )}
+              {file && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => onChange(null)}
+                  aria-label={t('Remove selected image')}
+                >
+                  <X size={16} />
+                  {t('Remove')}
+                </Button>
+              )}
+            </div>
           )}
         </div>
         <input
