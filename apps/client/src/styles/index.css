@@ -685,6 +685,12 @@ form > label {
   color: var(--muted);
   margin-top: 8px;
 }
+.lure-catches-heading {
+  flex-wrap: wrap;
+}
+.lure-catches-heading .btn {
+  flex-shrink: 0;
+}
 .empty {
   display: flex;
   flex-direction: column;

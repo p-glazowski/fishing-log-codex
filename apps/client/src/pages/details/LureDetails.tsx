@@ -101,14 +101,14 @@ export function LureDetails() {
           <p>{lure.description}</p>
         </section>
       )}
-      <div className="section-heading">
+      <div className="section-heading lure-catches-heading">
         <div>
           <h2>{t('The stories behind this lure')}</h2>
           <p>{t('Every fish, every memory.')}</p>
         </div>
-        <Link className="text-action" to={`/catches?lure=${id}`}>
-          {t('View in journal ↗')}
-        </Link>
+        <Button variant="outline" asChild>
+          <Link to={`/catches?lure=${id}`}>{t('View in journal')}</Link>
+        </Button>
       </div>
       {catches.isLoading ? (
         <Loading />
