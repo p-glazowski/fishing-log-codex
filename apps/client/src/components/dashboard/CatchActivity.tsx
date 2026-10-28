@@ -9,9 +9,13 @@ export function CatchActivity({ stats }: { stats: Stats }) {
   useTranslation();
 
   const [daily, setDaily] = useState(false);
-  const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
+  const currentMonth = () => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  };
+  const [month, setMonth] = useState(currentMonth);
   const [period, setPeriod] = useState('year');
-  const year = new Date().getUTCFullYear();
+  const year = new Date().getFullYear();
   const chart = Array.from({ length: period === 'year' ? 12 : 24 }, (_, i) => {
     const date = new Date(Date.UTC(year - (period === 'year' ? 0 : 1), i, 1));
     const key = date.toISOString().slice(0, 7);
@@ -51,7 +55,7 @@ export function CatchActivity({ stats }: { stats: Stats }) {
         <Button
           variant="outline"
           onClick={() => {
-            setMonth(new Date().toISOString().slice(0, 7));
+            setMonth(currentMonth());
             setDaily(true);
           }}
         >

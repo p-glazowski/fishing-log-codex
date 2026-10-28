@@ -44,7 +44,7 @@ export function DailyCatchActivity({
         <div>
           <span className="eyebrow">{t('YOUR MONTH, DAY BY DAY')}</span>
           <h2>{t('Catch activity')}</h2>
-          <p>{t('Recorded catches by day · UTC')}</p>
+          <p>{t('Recorded catches by day · local time')}</p>
         </div>
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft size={16} />
@@ -101,7 +101,7 @@ export function DailyCatchActivity({
             <summary>{t('View daily catch totals')}</summary>
             <table>
               <caption>
-                {t('Daily catch totals ·')} {title} · UTC
+                {t('Daily catch totals ·')} {title}
               </caption>
               <thead>
                 <tr>

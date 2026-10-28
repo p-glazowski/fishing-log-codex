@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
-import { render, screen, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, waitFor, cleanup, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -154,12 +154,24 @@ describe('record forms', () => {
     await user.click(screen.getByRole('combobox', { name: /Lure used/ }));
     await user.click(await screen.findByRole('option', { name: /Rapala Original Floater/ }));
     await user.type(screen.getByLabelText(/Fish species/), 'Wild River Char');
+    if (process.env.TZ === 'Europe/Warsaw') {
+      fireEvent.change(screen.getByLabelText(/Date & time \(local\)/), {
+        target: { value: '2026-03-29T02:30' },
+      });
+      await user.click(screen.getByRole('button', { name: 'Save catch' }));
+      expect(await screen.findByText('Choose a valid local date and time.')).toBeVisible();
+      expect(data).not.toHaveBeenCalled();
+    }
+    fireEvent.change(screen.getByLabelText(/Date & time \(local\)/), {
+      target: { value: '2026-07-15T14:30' },
+    });
     await user.click(screen.getByRole('button', { name: 'Save catch' }));
     expect(await screen.findByText('Catch saved')).toBeVisible();
     const args = vi.mocked(data).mock.calls.find((c) => c[0] === '/catches');
     expect(JSON.parse(args![1]!.body as string)).toMatchObject({
       species: 'Wild River Char',
       lureId: lure._id,
+      caughtAt: new Date('2026-07-15T14:30').toISOString(),
     });
   });
   it('shows a useful empty state before logging a catch without lures', async () => {
@@ -171,10 +183,9 @@ describe('record forms', () => {
 describe('collection synchronization', () => {
   it('links the lure card and its catch action to their respective pages', async () => {
     mount(<Collection />, '/lures');
-    expect(await screen.findByRole('link', { name: 'View Rapala Original Floater' })).toHaveAttribute(
-      'href',
-      `/lures/${lure._id}`,
-    );
+    expect(
+      await screen.findByRole('link', { name: 'View Rapala Original Floater' }),
+    ).toHaveAttribute('href', `/lures/${lure._id}`);
     expect(screen.getByRole('link', { name: 'Log catch' })).toHaveAttribute(
       'href',
       `/lures/${lure._id}/catches/new`,

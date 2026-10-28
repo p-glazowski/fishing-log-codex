@@ -80,7 +80,7 @@ export function RecordEssentials({ kind }: { kind: 'lure' | 'catch' }) {
           </div>
           <Field
             name="caughtAt"
-            label={translate('Date & time (UTC)')}
+            label={translate('Date & time (local)')}
             type="datetime-local"
             required
           />

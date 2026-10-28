@@ -15,10 +15,18 @@ async function listCatches(req: Request, res: Response) {
   } else if (q.lure) filter.lureId = id(q.lure);
   if (q.search) filter.species = { $regex: escape(q.search), $options: 'i' };
   if (q.species) filter.species = q.species;
-  if (q.from || q.to)
+  if (q.from || q.to || q.fromInstant || q.toExclusive)
     filter.caughtAt = {
-      ...(q.from ? { $gte: new Date(q.from) } : {}),
-      ...(q.to ? { $lte: new Date(q.to + 'T23:59:59.999Z') } : {}),
+      ...(q.fromInstant
+        ? { $gte: new Date(q.fromInstant) }
+        : q.from
+          ? { $gte: new Date(q.from) }
+          : {}),
+      ...(q.toExclusive
+        ? { $lt: new Date(q.toExclusive) }
+        : q.to
+          ? { $lte: new Date(q.to + 'T23:59:59.999Z') }
+          : {}),
     };
   const sort: Record<string, 1 | -1> =
     q.sort === 'length'

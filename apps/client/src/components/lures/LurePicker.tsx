@@ -46,7 +46,7 @@ export default function LurePicker() {
         <span className="required">*</span>
       </label>
       <p id={`${id}-help`} className="picker-help">
-        {t('Search your collection by lure name or brand, then select a lure.')}
+        {t('Search by lure name or brand.')}
       </p>
       <div className="picker-input">
         <Search size={17} />

@@ -1,9 +1,8 @@
-import { useId, useRef } from 'react';
+import { useId, useRef, useState } from 'react';
 import type { PhotoPosition } from '@lurelog/shared';
 import { useTranslation, numberLabel } from '../../lib/i18n';
 import { Button } from '../ui/button';
 
-export const photoPositionStyle = (position: PhotoPosition) => `${position.x}% ${position.y}%`;
 const clamp = (value: number) => Math.round(Math.max(0, Math.min(100, value)) * 100) / 100;
 export function PhotoPositionEditor({
   src,
@@ -16,7 +15,7 @@ export function PhotoPositionEditor({
 }) {
   const { t } = useTranslation();
   const id = useId();
-  const image = useRef<HTMLImageElement>(null);
+  const [dimensions, setDimensions] = useState({ src: '', width: 0, height: 0 });
   const drag = useRef<{
     pointer: number;
     x: number;
@@ -25,29 +24,26 @@ export function PhotoPositionEditor({
     overflowX: number;
     overflowY: number;
   } | null>(null);
+  const ratio =
+    dimensions.src === src && dimensions.height ? dimensions.width / dimensions.height : 0;
+  const width = ratio > 1.5 ? 150 / ratio : 100;
+  const height = ratio && ratio < 1.5 ? (ratio / 1.5) * 100 : 100;
   return (
-    <section className="photo-position-editor" aria-labelledby={`${id}-title`}>
-      <h3 id={`${id}-title`}>{t('Card preview')}</h3>
-      <p id={`${id}-help`}>
-        {t('Drag the photo to keep the person and fish visible, or use the sliders below.')}
-      </p>
+    <div className="photo-position-editor">
+      <p id={`${id}-help`}>{t('Drag the frame to choose what appears on catch cards.')}</p>
       <div
-        className="photo-position-frame"
+        className="photo-position-image"
         aria-describedby={`${id}-help`}
         onPointerDown={(event) => {
-          if (event.button !== 0 || !image.current?.naturalWidth) return;
-          const frame = event.currentTarget.getBoundingClientRect();
-          const scale = Math.max(
-            frame.width / image.current.naturalWidth,
-            frame.height / image.current.naturalHeight,
-          );
+          if (event.button !== 0 || !ratio) return;
+          const bounds = event.currentTarget.getBoundingClientRect();
           drag.current = {
             pointer: event.pointerId,
             x: event.clientX,
             y: event.clientY,
             value,
-            overflowX: Math.max(0, image.current.naturalWidth * scale - frame.width),
-            overflowY: Math.max(0, image.current.naturalHeight * scale - frame.height),
+            overflowX: (bounds.width * (100 - width)) / 100,
+            overflowY: (bounds.height * (100 - height)) / 100,
           };
           event.currentTarget.setPointerCapture(event.pointerId);
           event.preventDefault();
@@ -56,14 +52,12 @@ export function PhotoPositionEditor({
           const start = drag.current;
           if (!start || start.pointer !== event.pointerId) return;
           onChange({
-            x:
-              start.overflowX > 0
-                ? clamp(start.value.x - ((event.clientX - start.x) / start.overflowX) * 100)
-                : start.value.x,
-            y:
-              start.overflowY > 0
-                ? clamp(start.value.y - ((event.clientY - start.y) / start.overflowY) * 100)
-                : start.value.y,
+            x: start.overflowX
+              ? clamp(start.value.x + ((event.clientX - start.x) / start.overflowX) * 100)
+              : start.value.x,
+            y: start.overflowY
+              ? clamp(start.value.y + ((event.clientY - start.y) / start.overflowY) * 100)
+              : start.value.y,
           });
         }}
         onPointerUp={() => {
@@ -77,26 +71,33 @@ export function PhotoPositionEditor({
         }}
       >
         <img
-          ref={image}
+          className="upload-preview"
           src={src}
-          alt={t('Catch card preview')}
+          alt={t('Selected upload preview')}
           draggable={false}
-          style={{ objectPosition: photoPositionStyle(value) }}
+          onLoad={(event) =>
+            setDimensions({
+              src,
+              width: event.currentTarget.naturalWidth,
+              height: event.currentTarget.naturalHeight,
+            })
+          }
         />
+        {ratio > 0 && (
+          <span
+            className="photo-position-mask"
+            aria-hidden="true"
+            style={{
+              width: `${width}%`,
+              height: `${height}%`,
+              left: `${((100 - width) * value.x) / 100}%`,
+              top: `${((100 - height) * value.y) / 100}%`,
+            }}
+          />
+        )}
       </div>
-      <div className="photo-position-secondary">
-        <img
-          src={src}
-          alt={t('Catch thumbnail preview')}
-          draggable={false}
-          style={{ objectPosition: photoPositionStyle(value) }}
-        />
-        <span>
-          {t('Recent catches')}
-          <small>{t('Thumbnail preview')}</small>
-        </span>
-      </div>
-      <div className="photo-position-controls">
+      <details className="photo-position-controls">
+        <summary>{t('Adjust with controls')}</summary>
         <label htmlFor={`${id}-horizontal`}>
           {t('Horizontal position')}
           <input
@@ -121,20 +122,20 @@ export function PhotoPositionEditor({
             onChange={(event) => onChange({ ...value, y: Number(event.target.value) })}
           />
         </label>
-      </div>
-      <div className="photo-position-footer">
-        <span role="status">
-          {t('Position')}: {numberLabel(value.x)}% / {numberLabel(value.y)}%
-        </span>
-        <Button type="button" variant="ghost" size="sm" onClick={() => onChange({ x: 50, y: 50 })}>
-          {t('Center photo')}
-        </Button>
-      </div>
-      <p className="photo-position-note">
-        {t(
-          'Only the preview changes. Your full photo is preserved. Check both people and fish stay inside the frame.',
-        )}
-      </p>
-    </section>
+        <div className="photo-position-footer">
+          <span role="status">
+            {t('Position')}: {numberLabel(value.x)}% / {numberLabel(value.y)}%
+          </span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => onChange({ x: 50, y: 50 })}
+          >
+            {t('Center photo')}
+          </Button>
+        </div>
+      </details>
+    </div>
   );
 }

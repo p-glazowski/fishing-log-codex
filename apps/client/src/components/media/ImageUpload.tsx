@@ -10,12 +10,14 @@ export function ImageUpload({
   existing,
   position,
   onPositionChange,
+  compact = false,
 }: {
   file: File | null;
   onChange: (file: File | null) => void;
   existing?: string;
   position?: PhotoPosition;
   onPositionChange?: (position: PhotoPosition) => void;
+  compact?: boolean;
 }) {
   useTranslation();
 
@@ -56,7 +58,13 @@ export function ImageUpload({
           pick(e.dataTransfer.files[0]);
         }}
       >
-        {preview || existing ? (
+        {adjusting && (preview || existing) && onPositionChange ? (
+          <PhotoPositionEditor
+            src={preview || existing!}
+            value={position ?? { x: 50, y: 50 }}
+            onChange={onPositionChange}
+          />
+        ) : preview || existing ? (
           <img
             className="upload-preview"
             src={preview || existing}
@@ -65,21 +73,29 @@ export function ImageUpload({
         ) : (
           <UploadCloud size={30} />
         )}
-        <strong>{file ? file.name : t('Give your story a photo')}</strong>
+        <strong>
+          {file ? file.name : t(compact ? 'Drag a photo here' : 'Give your story a photo')}
+        </strong>
         <p>
-          {t('Drag an image here, or choose one below.')}
-          <br />
+          {!compact && (
+            <>
+              {t('Drag an image here, or choose one below.')}
+              <br />
+            </>
+          )}
           {t('JPEG, PNG or WebP · up to 5 MB')}
         </p>
         <div className="upload-actions">
-          <Button type="button" variant="outline" onClick={() => input.current?.click()}>
-            <ImagePlus size={16} />
-            {t('Choose photo')}
-          </Button>
-          <Button type="button" variant="outline" onClick={() => camera.current?.click()}>
-            <Camera size={16} />
-            {t('Take photo')}
-          </Button>
+          <div className="upload-action-row">
+            <Button type="button" variant="outline" onClick={() => input.current?.click()}>
+              <ImagePlus size={16} />
+              {t('Choose photo')}
+            </Button>
+            <Button type="button" variant="outline" onClick={() => camera.current?.click()}>
+              <Camera size={16} />
+              {t('Take photo')}
+            </Button>
+          </div>
           <input
             ref={camera}
             hidden
@@ -92,25 +108,30 @@ export function ImageUpload({
             }}
           />
 
-          {(preview || existing) && onPositionChange && (
-            <Button
-              type="button"
-              variant="outline"
-              aria-expanded={adjusting}
-              onClick={() => setAdjusting(!adjusting)}
-            >
-              {t(adjusting ? 'Done adjusting' : 'Adjust preview')}
-            </Button>
-          )}
-          {file && (
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => onChange(null)}
-              aria-label={t('Remove selected image')}
-            >
-              <X size={18} />
-            </Button>
+          {(((preview || existing) && onPositionChange) || file) && (
+            <div className="upload-action-row">
+              {(preview || existing) && onPositionChange && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  aria-expanded={adjusting}
+                  onClick={() => setAdjusting(!adjusting)}
+                >
+                  {t(adjusting ? 'Done adjusting' : 'Adjust preview')}
+                </Button>
+              )}
+              {file && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onChange(null)}
+                  aria-label={t('Remove selected image')}
+                >
+                  <X size={16} />
+                  {t('Remove')}
+                </Button>
+              )}
+            </div>
           )}
         </div>
         <input
@@ -124,13 +145,6 @@ export function ImageUpload({
           }}
         />
       </div>
-      {adjusting && (preview || existing) && onPositionChange && (
-        <PhotoPositionEditor
-          src={preview || existing!}
-          value={position ?? { x: 50, y: 50 }}
-          onChange={onPositionChange}
-        />
-      )}
       {error && (
         <p role="alert" className="field-error">
           {error}

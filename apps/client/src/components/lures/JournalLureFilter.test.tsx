@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -54,6 +54,23 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.clearAllMocks();
   setLanguage('en');
+});
+it('filters a local calendar day using its actual daylight-saving boundaries', async () => {
+  const user = userEvent.setup();
+  mount();
+  await user.click(screen.getByRole('button', { name: /Date filter/ }));
+  fireEvent.change(screen.getByLabelText('From date'), { target: { value: '2026-03-29' } });
+  fireEvent.change(screen.getByLabelText('To date'), { target: { value: '2026-03-29' } });
+  const start = new Date('2026-03-29T00:00:00');
+  const end = new Date('2026-03-30T00:00:00');
+  await waitFor(() => {
+    const query = new URLSearchParams(vi.mocked(api.catches).mock.lastCall![0]);
+    expect(query.get('fromInstant')).toBe(start.toISOString());
+    expect(query.get('toExclusive')).toBe(end.toISOString());
+    if (process.env.TZ === 'Europe/Warsaw') {
+      expect(end.getTime() - start.getTime()).toBe(23 * 60 * 60 * 1000);
+    }
+  });
 });
 it('groups brand casing, distinguishes sizes/colors and filters by the selected ID', async () => {
   const user = userEvent.setup();

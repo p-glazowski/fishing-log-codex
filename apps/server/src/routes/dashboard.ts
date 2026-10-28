@@ -3,8 +3,10 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import { LureModel, CatchModel } from '../models/index.js';
 import { send } from '../utils/http.js';
+import { timeZoneSchema } from '../validators/query.js';
 export const dashboardRouter = Router();
 dashboardRouter.get('/dashboard/stats', async (req, res) => {
+  const timeZone = timeZoneSchema.parse(req.query.timeZone);
   const userId = new mongoose.Types.ObjectId(req.userId);
   const match = { $match: { userId } };
   const [totalLures, totalCatches, species, activity, rank, recentCatches] = await Promise.all([
@@ -20,7 +22,7 @@ dashboardRouter.get('/dashboard/stats', async (req, res) => {
       match,
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m', date: '$caughtAt', timezone: 'UTC' } },
+          _id: { $dateToString: { format: '%Y-%m', date: '$caughtAt', timezone: timeZone } },
           count: { $sum: 1 },
         },
       },
@@ -59,6 +61,7 @@ dashboardRouter.get('/dashboard/stats', async (req, res) => {
 
 dashboardRouter.get('/dashboard/activity', async (req, res) => {
   const month = activityMonthSchema.parse(req.query.month);
+  const timeZone = timeZoneSchema.parse(req.query.timeZone);
   const start = new Date(`${month}-01T00:00:00.000Z`);
   const end = new Date(start);
   end.setUTCMonth(end.getUTCMonth() + 1);
@@ -66,21 +69,25 @@ dashboardRouter.get('/dashboard/activity', async (req, res) => {
     {
       $match: {
         userId: new mongoose.Types.ObjectId(req.userId),
-        caughtAt: { $gte: start, $lt: end },
+        caughtAt: {
+          $gte: new Date(start.getTime() - 86400000),
+          $lt: new Date(end.getTime() + 86400000),
+        },
       },
     },
     {
       $group: {
-        _id: { $dateToString: { format: '%Y-%m-%d', date: '$caughtAt', timezone: 'UTC' } },
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$caughtAt', timezone: timeZone } },
         count: { $sum: 1 },
       },
     },
   ]);
-  const byDate = new Map(counts.map((point) => [point._id, point.count]));
+  const monthCounts = counts.filter((point) => point._id.startsWith(`${month}-`));
+  const byDate = new Map(monthCounts.map((point) => [point._id, point.count]));
   const dayCount = new Date(end.getTime() - 86400000).getUTCDate();
   const days = Array.from({ length: dayCount }, (_, index) => {
     const date = `${month}-${String(index + 1).padStart(2, '0')}`;
     return { date, count: byDate.get(date) ?? 0 };
   });
-  send(res, { month, total: counts.reduce((sum, point) => sum + point.count, 0), days });
+  send(res, { month, total: monthCounts.reduce((sum, point) => sum + point.count, 0), days });
 });

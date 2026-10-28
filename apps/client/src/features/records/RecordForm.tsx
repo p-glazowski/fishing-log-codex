@@ -17,6 +17,10 @@ import { api, ApiError, data, json, errorMessage, upload, lureOf } from '../../l
 import { Button } from '../../components/ui/button';
 import { ImageUpload } from '../../components/media/ImageUpload';
 import { RecordEssentials, RecordAdditional } from './RecordFields';
+function localDateTime(value: Date) {
+  const pad = (part: number) => String(part).padStart(2, '0');
+  return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}T${pad(value.getHours())}:${pad(value.getMinutes())}`;
+}
 export function RecordForm({
   kind,
   initial,
@@ -42,11 +46,11 @@ export function RecordForm({
     ? Object.fromEntries(Object.entries(initial).filter(([key]) => key in schema.shape))
     : isLure
       ? { type: 'Hard Bait' }
-      : { caughtAt: new Date().toISOString().slice(0, 16), lureId: lureId ?? '' };
+      : { caughtAt: localDateTime(new Date()), lureId: lureId ?? '' };
   if (initial && !isLure) {
     const fish = initial as FishCatch;
     initialValues.lureId = typeof fish.lureId === 'string' ? fish.lureId : lureOf(fish)?._id;
-    initialValues.caughtAt = new Date(fish.caughtAt).toISOString().slice(0, 16);
+    initialValues.caughtAt = localDateTime(new Date(fish.caughtAt));
   }
   if (initialValues.purchaseDate)
     initialValues.purchaseDate = String(initialValues.purchaseDate).slice(0, 10);
@@ -54,10 +58,20 @@ export function RecordForm({
     resolver: zodResolver(schema) as unknown as Resolver<FieldValues>,
     defaultValues: initialValues,
   });
+  const { dirtyFields } = form.formState;
   async function submit(values: FieldValues) {
     setSaving(true);
     setError('');
     try {
+      if (
+        !isLure &&
+        typeof values.caughtAt === 'string' &&
+        (!initial || dirtyFields.caughtAt) &&
+        localDateTime(new Date(values.caughtAt)) !== values.caughtAt
+      ) {
+        form.setError('caughtAt', { message: t('Choose a valid local date and time.') });
+        return;
+      }
       if (!isLure) {
         try {
           await api.lure(String(values.lureId));
@@ -78,8 +92,12 @@ export function RecordForm({
       if (!isLure) values.photoPosition = photoPosition;
       const base = isLure ? '/lures' : '/catches';
       let recordId = initial?._id ?? savedId.current;
-      if (!isLure && typeof values.caughtAt === 'string' && !values.caughtAt.endsWith('Z'))
-        values.caughtAt = new Date(values.caughtAt + 'Z').toISOString();
+      if (!isLure && typeof values.caughtAt === 'string') {
+        values.caughtAt =
+          initial && !dirtyFields.caughtAt
+            ? (initial as FishCatch).caughtAt
+            : new Date(values.caughtAt).toISOString();
+      }
       if (!recordId) {
         const result = await data<{ _id: string }>(base, { method: 'POST', body: json(values) });
         recordId = result._id;
@@ -130,8 +148,8 @@ export function RecordForm({
             <div className="form-section-heading">
               <span className="step-number">02</span>
               <div>
-                <h2>{isLure ? t('A little more detail') : t('Set the scene')}</h2>
-                <p>{t('Optional details you’ll be glad you kept.')}</p>
+                <h2>{isLure ? t('A little more detail') : t('Additional details')}</h2>
+                <p>{isLure ? t('Optional details you’ll be glad you kept.') : t('Optional')}</p>
               </div>
             </div>
             <RecordAdditional kind={kind} />
@@ -139,15 +157,14 @@ export function RecordForm({
         </div>
         <aside className="form-aside">
           <section className="panel form-section">
-            <h2>{isLure ? t('Lure photo') : t('Keep the moment')}</h2>
+            <h2>{isLure ? t('Lure photo') : t('Catch photo')}</h2>
             <p className="muted">
-              {isLure
-                ? t('Make it easy to spot your favorite.')
-                : t('A photo brings the story back to life.')}
+              {isLure ? t('Make it easy to spot your favorite.') : t('Optional')}
             </p>
             <ImageUpload
               file={file}
               existing={image}
+              compact={!isLure}
               onChange={(next) => {
                 setFile(next);
                 if (!isLure) setPhotoPosition(next ? { x: 50, y: 50 } : originalPosition);
@@ -156,14 +173,12 @@ export function RecordForm({
               onPositionChange={!isLure ? setPhotoPosition : undefined}
             />
           </section>
-          <div className="form-tip">
-            <Info size={19} />
-            <p>
-              {isLure
-                ? t('Start with the basics. You can add more details anytime.')
-                : t('Every catch counts. Photos and measurements are optional.')}
-            </p>
-          </div>
+          {isLure && (
+            <div className="form-tip">
+              <Info size={19} />
+              <p>{t('Start with the basics. You can add more details anytime.')}</p>
+            </div>
+          )}
           {error && (
             <div className="error-banner" role="alert">
               {error}

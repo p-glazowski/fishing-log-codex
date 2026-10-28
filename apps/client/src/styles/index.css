@@ -1511,6 +1511,9 @@ button.journal-date-toggle {
   color: var(--muted);
   margin-top: 8px;
 }
+.record-form[data-kind='catch'] .form-section-heading {
+  margin-bottom: 20px;
+}
 .form-section-heading > svg {
   color: var(--primary);
 }
@@ -1544,6 +1547,13 @@ button.journal-date-toggle {
   appearance: none;
   -webkit-appearance: none;
   height: 47px;
+}
+.record-form input[type='datetime-local'] {
+  display: block;
+  width: 100%;
+  height: 47px;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .field > input,
 .field > textarea,
@@ -1591,6 +1601,13 @@ button.journal-date-toggle {
 .form-aside > .btn-ghost {
   margin-top: 8px;
 }
+.record-form[data-kind='catch'] .form-aside > .panel {
+  margin-bottom: 20px;
+}
+.record-form[data-kind='catch'] .upload {
+  gap: 12px;
+  padding: 24px 16px;
+}
 .upload {
   display: flex;
   flex-direction: column;
@@ -1615,12 +1632,18 @@ button.journal-date-toggle {
   font-size: 12px;
 }
 .upload-actions {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  width: 100%;
+  gap: 8px;
+}
+.upload-action-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr));
   gap: 8px;
 }
 .upload-actions .btn {
+  width: 100%;
+  min-width: 0;
   font-size: 12px;
   padding: 8px 12px;
 }
@@ -2873,6 +2896,9 @@ button.picker-option:hover {
   .record-form[data-kind='catch'] .fields-grid {
     grid-template-columns: minmax(0, 1fr);
   }
+  .record-form input[type='datetime-local'] {
+    height: 50px;
+  }
   .form-tip {
     padding: 20px 0;
   }
@@ -3624,47 +3650,51 @@ button.picker-option:hover {
 }
 
 .photo-position-editor {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-}
-.photo-position-editor h3 {
-  font-size: 15px;
-  margin-bottom: 8px;
+  width: 100%;
 }
 .photo-position-editor > p {
   color: var(--muted);
   font-size: 12px;
-  line-height: 1.6;
+  line-height: 1.5;
+  margin-bottom: 12px;
 }
-.photo-position-frame {
+.photo-position-image {
   position: relative;
-  aspect-ratio: 3 / 2;
+  display: inline-block;
+  max-width: 100%;
   overflow: hidden;
-  margin-top: 16px;
-  border-radius: var(--radius);
-  background: var(--soft);
+  vertical-align: top;
   cursor: grab;
   touch-action: none;
   user-select: none;
+  border-radius: 4px;
 }
-.photo-position-frame:active {
+.photo-position-image:active {
   cursor: grabbing;
 }
-.photo-position-frame img {
+.photo-position-image img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+.photo-position-mask {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1000px rgb(0 0 0 / 55%);
   pointer-events: none;
 }
 .photo-position-controls {
-  display: grid;
-  gap: 12px;
-  margin-top: 16px;
+  margin-top: 12px;
+  text-align: left;
+  font-size: 12px;
+}
+.photo-position-controls summary {
+  cursor: pointer;
 }
 .photo-position-controls label {
+  margin-top: 12px;
   font-size: 12px;
 }
 .photo-position-controls input[type='range'] {
@@ -3687,9 +3717,6 @@ button.picker-option:hover {
   font-size: 11px;
   color: var(--muted);
 }
-.photo-position-note {
-  margin-top: 12px;
-}
 
 /* Keep the journal frame identical to the crop editor at every breakpoint. */
 .catch-grid .catch-image {
@@ -3700,31 +3727,6 @@ button.picker-option:hover {
   position: absolute;
   inset: 0;
 }
-.photo-position-secondary {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 12px;
-}
-.photo-position-secondary img {
-  width: 80px;
-  height: 100px;
-  flex-shrink: 0;
-  object-fit: cover;
-  border-radius: var(--radius);
-}
-.photo-position-secondary span {
-  font-size: 12px;
-  font-weight: 600;
-}
-.photo-position-secondary small {
-  display: block;
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 400;
-}
-
 .journal-catch-total {
   display: flex;
   align-items: center;
