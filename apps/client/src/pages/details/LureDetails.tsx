@@ -42,12 +42,6 @@ export function LureDetails() {
           date: dateLabel(lure.createdAt),
         })}
       >
-        <Button variant="outline" asChild>
-          <Link to={`/lures/${id}/edit`}>
-            <Pencil size={16} />
-            {t('Edit lure')}
-          </Link>
-        </Button>
         <Button asChild>
           <Link to={`/lures/${id}/catches/new`}>
             <Plus size={17} />
@@ -56,8 +50,16 @@ export function LureDetails() {
         </Button>
       </PageHeading>
       <div className="detail-grid">
-        <div className="detail-image">
-          <Photo src={lure.image?.url} alt={lure.name} type={lure.type} />
+        <div className="lure-detail-photo">
+          <div className="detail-image">
+            <Photo src={lure.image?.url} alt={lure.name} type={lure.type} />
+          </div>
+          <Button variant="outline" asChild>
+            <Link to={`/lures/${id}/edit`}>
+              <Pencil size={16} />
+              {t('Edit lure')}
+            </Link>
+          </Button>
         </div>
         <section className="panel specifications">
           <span className="eyebrow">{t('IN YOUR TACKLE BOX')}</span>

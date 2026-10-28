@@ -1764,6 +1764,17 @@ button.picker-option:hover {
   grid-template-columns: minmax(0, 1.2fr) minmax(300px, 1fr);
   gap: 24px;
 }
+.lure-detail-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+.lure-detail-photo .detail-image {
+  width: 100%;
+  flex: 1;
+}
 .detail-image {
   min-height: 360px;
   display: flex;
