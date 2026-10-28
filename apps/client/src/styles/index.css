@@ -858,6 +858,7 @@ form > label {
   gap: 24px;
 }
 .lure-card {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -896,18 +897,25 @@ form > label {
   font-size: 9px;
   font-weight: 500;
 }
-.image-arrow {
+.lure-image .image-tag {
   position: absolute;
   bottom: 12px;
   right: 12px;
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--primary);
-  border: 1px solid var(--border);
+  top: auto;
+  left: auto;
+}
+.lure-card-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.lure-card:has(.lure-card-link:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.lure-card .card-bottom .text-action {
+  position: relative;
+  z-index: 1;
 }
 .lure-body {
   padding: 20px 20px 0;

@@ -172,6 +172,18 @@ describe('record forms', () => {
   });
 });
 describe('collection synchronization', () => {
+  it('links the lure card and its catch action to their respective pages', async () => {
+    mount(<Collection />, '/lures');
+    expect(await screen.findByRole('link', { name: 'View Rapala Original Floater' })).toHaveAttribute(
+      'href',
+      `/lures/${lure._id}`,
+    );
+    expect(screen.getByRole('link', { name: 'Log catch' })).toHaveAttribute(
+      'href',
+      `/lures/${lure._id}/catches/new`,
+    );
+    expect(screen.queryByText('Ready for the water')).not.toBeInTheDocument();
+  });
   it('filters by type and searches through the server API', async () => {
     const user = userEvent.setup();
     mount(<Collection />, '/lures');
