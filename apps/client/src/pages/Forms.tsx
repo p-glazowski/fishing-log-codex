@@ -27,27 +27,30 @@ export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
         <ArrowLeft size={16} />
         {isLure ? t('Back to collection') : t('Back to journal')}
       </Link>
-      <PageHeading
-        eyebrow={
-          isLure && !edit ? undefined : edit ? t('REFINE THE DETAILS') : t('ANOTHER STORY TO TELL')
-        }
-        title={
-          edit
-            ? isLure
-              ? t('Edit lure')
-              : t('Edit catch')
-            : isLure
-              ? t('Add a new lure')
-              : t('Log a new catch')
-        }
-        description={
-          isLure && !edit
-            ? undefined
-            : isLure
+      {isLure && !edit ? (
+        <header className="add-lure-heading">
+          <h1>{t('Add a new lure')}</h1>
+          <p>{t('Save its details now, and track the catches it brings later.')}</p>
+        </header>
+      ) : (
+        <PageHeading
+          eyebrow={edit ? t('REFINE THE DETAILS') : t('ANOTHER STORY TO TELL')}
+          title={
+            edit
+              ? isLure
+                ? t('Edit lure')
+                : t('Edit catch')
+              : isLure
+                ? t('Add a new lure')
+                : t('Log a new catch')
+          }
+          description={
+            isLure
               ? t('The details today. The possibilities tomorrow.')
               : t('Keep the details of a day well spent.')
-        }
-      />
+          }
+        />
+      )}
       <RecordForm
         key={`${kind}-${id ?? 'new'}`}
         kind={kind}

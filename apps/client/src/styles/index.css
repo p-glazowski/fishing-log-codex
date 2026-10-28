@@ -618,6 +618,20 @@ form > label {
   color: var(--muted);
   max-width: 640px;
 }
+.add-lure-heading {
+  border-left: 3px solid var(--primary);
+  padding: 4px 0 4px 20px;
+  margin-bottom: 32px;
+}
+.add-lure-heading h1 {
+  margin: 0;
+}
+.add-lure-heading p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
 .heading-actions {
   display: flex;
   align-items: center;
