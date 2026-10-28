@@ -128,20 +128,20 @@ export function LureDetails() {
           label={t('Log a catch')}
         />
       )}
+      <div className="lure-edit-action">
+        <Button variant="outline" asChild>
+          <Link to={`/lures/${id}/edit`}>
+            <Pencil size={16} />
+            {t('Edit lure')}
+          </Link>
+        </Button>
+      </div>
       <div className="danger-zone">
         <div>
           <strong>{t('Remove from your collection')}</strong>
           <p>{t('Deleting a lure also removes its catches and photos.')}</p>
         </div>
-        <div className="lure-management-actions">
-          <Button variant="outline" asChild>
-            <Link to={`/lures/${id}/edit`}>
-              <Pencil size={16} />
-              {t('Edit lure')}
-            </Link>
-          </Button>
-          <ConfirmDelete kind="lure" busy={deletion.isPending} onConfirm={() => deletion.mutate()} />
-        </div>
+        <ConfirmDelete kind="lure" busy={deletion.isPending} onConfirm={() => deletion.mutate()} />
       </div>
     </>
   );

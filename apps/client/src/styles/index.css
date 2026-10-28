@@ -1884,12 +1884,13 @@ button.picker-option:hover {
   padding-top: 24px;
   border-top: 1px solid var(--border);
 }
-.lure-management-actions {
+.lure-edit-action {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
-  flex-shrink: 0;
+  justify-content: flex-end;
+  margin-top: 40px;
+}
+.lure-edit-action + .danger-zone {
+  margin-top: 24px;
 }
 .danger-zone strong {
   font-size: 14px;
@@ -2914,7 +2915,7 @@ button.picker-option:hover {
   .danger-zone .btn {
     width: 100%;
   }
-  .lure-management-actions {
+  .lure-edit-action .btn {
     width: 100%;
   }
   .profile-grid {
