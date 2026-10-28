@@ -1509,6 +1509,9 @@ button.journal-date-toggle {
 .field > select {
   font-size: 14px;
 }
+.record-form .field > select {
+  height: 47px;
+}
 .required {
   color: var(--danger);
   margin-left: 4px;
