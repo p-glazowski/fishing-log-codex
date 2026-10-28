@@ -29,11 +29,7 @@ export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
       </Link>
       <PageHeading
         eyebrow={
-          edit
-            ? t('REFINE THE DETAILS')
-            : isLure
-              ? t('MAKE ROOM IN THE TACKLE BOX')
-              : t('ANOTHER STORY TO TELL')
+          isLure && !edit ? undefined : edit ? t('REFINE THE DETAILS') : t('ANOTHER STORY TO TELL')
         }
         title={
           edit
@@ -45,9 +41,11 @@ export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
               : t('Log a new catch')
         }
         description={
-          isLure
-            ? t('The details today. The possibilities tomorrow.')
-            : t('Keep the details of a day well spent.')
+          isLure && !edit
+            ? undefined
+            : isLure
+              ? t('The details today. The possibilities tomorrow.')
+              : t('Keep the details of a day well spent.')
         }
       />
       <RecordForm
