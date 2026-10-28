@@ -1,4 +1,5 @@
 import { t, numberLabel, useTranslation } from '../../lib/i18n';
+import { useLayoutEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '../../components/ui/button';
@@ -18,6 +19,9 @@ export function LureDetails() {
   useTranslation();
 
   const { id } = useParams();
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [id]);
   const query = useQuery({ queryKey: ['lure', id], queryFn: () => api.lure(id!) });
   const catches = useQuery({
     queryKey: ['lure-catches', id],
@@ -42,12 +46,6 @@ export function LureDetails() {
           date: dateLabel(lure.createdAt),
         })}
       >
-        <Button variant="outline" asChild>
-          <Link to={`/lures/${id}/edit`}>
-            <Pencil size={16} />
-            {t('Edit lure')}
-          </Link>
-        </Button>
         <Button asChild>
           <Link to={`/lures/${id}/catches/new`}>
             <Plus size={17} />
@@ -107,14 +105,14 @@ export function LureDetails() {
           <p>{lure.description}</p>
         </section>
       )}
-      <div className="section-heading">
+      <div className="section-heading lure-catches-heading">
         <div>
           <h2>{t('The stories behind this lure')}</h2>
           <p>{t('Every fish, every memory.')}</p>
         </div>
-        <Link className="text-action" to={`/catches?lure=${id}`}>
-          {t('View in journal ↗')}
-        </Link>
+        <Button variant="outline" asChild>
+          <Link to={`/catches?lure=${id}`}>{t('View in journal')}</Link>
+        </Button>
       </div>
       {catches.isLoading ? (
         <Loading />
@@ -134,6 +132,14 @@ export function LureDetails() {
           label={t('Log a catch')}
         />
       )}
+      <div className="lure-edit-action">
+        <Button variant="outline" asChild>
+          <Link to={`/lures/${id}/edit`}>
+            <Pencil size={16} />
+            {t('Edit lure')}
+          </Link>
+        </Button>
+      </div>
       <div className="danger-zone">
         <div>
           <strong>{t('Remove from your collection')}</strong>

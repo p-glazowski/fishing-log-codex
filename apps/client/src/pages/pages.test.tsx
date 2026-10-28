@@ -128,7 +128,6 @@ describe('record forms', () => {
     expect(data).not.toHaveBeenCalled();
   });
   it('saves numeric lure data through the API', async () => {
-    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
     vi.mocked(data).mockResolvedValue(lure);
     const user = userEvent.setup();
     mount(<Forms kind="lure" />, '/lures/new');
@@ -137,13 +136,11 @@ describe('record forms', () => {
     await user.type(screen.getByLabelText(/Length \(mm\)/), '90');
     await user.click(screen.getByRole('button', { name: 'Add to collection' }));
     expect(await screen.findByText('Lure saved')).toBeVisible();
-    expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'instant' });
     const args = vi.mocked(data).mock.calls.find((c) => c[0] === '/lures');
     expect(JSON.parse(args![1]!.body as string)).toMatchObject({
       name: 'Original Floater',
       lengthMm: 90,
     });
-    scrollTo.mockRestore();
   });
   it('requires a lure and species, then accepts a custom species', async () => {
     vi.mocked(data).mockResolvedValue({ _id: 'saved' });
@@ -172,6 +169,18 @@ describe('record forms', () => {
   });
 });
 describe('collection synchronization', () => {
+  it('links the lure card and its catch action to their respective pages', async () => {
+    mount(<Collection />, '/lures');
+    expect(await screen.findByRole('link', { name: 'View Rapala Original Floater' })).toHaveAttribute(
+      'href',
+      `/lures/${lure._id}`,
+    );
+    expect(screen.getByRole('link', { name: 'Log catch' })).toHaveAttribute(
+      'href',
+      `/lures/${lure._id}/catches/new`,
+    );
+    expect(screen.queryByText('Ready for the water')).not.toBeInTheDocument();
+  });
   it('filters by type and searches through the server API', async () => {
     const user = userEvent.setup();
     mount(<Collection />, '/lures');

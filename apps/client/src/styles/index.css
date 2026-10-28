@@ -685,6 +685,12 @@ form > label {
   color: var(--muted);
   margin-top: 8px;
 }
+.lure-catches-heading {
+  flex-wrap: wrap;
+}
+.lure-catches-heading .btn {
+  flex-shrink: 0;
+}
 .empty {
   display: flex;
   flex-direction: column;
@@ -858,6 +864,7 @@ form > label {
   gap: 24px;
 }
 .lure-card {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -896,25 +903,54 @@ form > label {
   font-size: 9px;
   font-weight: 500;
 }
-.image-arrow {
+.lure-image .image-tag {
   position: absolute;
   bottom: 12px;
   right: 12px;
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--primary);
-  border: 1px solid var(--border);
+  top: auto;
+  left: auto;
+}
+.lure-card-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.lure-card:has(.lure-card-link:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.lure-card .card-bottom .text-action {
+  position: relative;
+  z-index: 1;
 }
 .lure-body {
   padding: 20px 20px 0;
 }
 .lure-body :is(h2, h3) {
-  margin: 8px 0;
+  margin: 0;
   font-size: 18px;
+}
+.lure-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+.lure-meta .lure-card-link {
+  min-width: 0;
+}
+.lure-body > .brand {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.lure-size {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.lure-meta + .spec-line {
+  margin-top: 4px;
 }
 .lure-body a:hover :is(h2, h3),
 .catch-body a:hover :is(h2, h3) {
@@ -1853,6 +1889,14 @@ button.picker-option:hover {
   margin-top: 40px;
   padding-top: 24px;
   border-top: 1px solid var(--border);
+}
+.lure-edit-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 40px;
+}
+.lure-edit-action + .danger-zone {
+  margin-top: 24px;
 }
 .danger-zone strong {
   font-size: 14px;
@@ -2875,6 +2919,9 @@ button.picker-option:hover {
     align-items: start;
   }
   .danger-zone .btn {
+    width: 100%;
+  }
+  .lure-edit-action .btn {
     width: 100%;
   }
   .profile-grid {

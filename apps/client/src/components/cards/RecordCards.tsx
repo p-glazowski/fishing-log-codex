@@ -10,26 +10,25 @@ export function LureCard({ lure, headingLevel = 2 }: { lure: Lure; headingLevel?
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   return (
     <article className="lure-card">
-      <Link
-        to={`/lures/${lure._id}`}
-        className="lure-image"
-        aria-label={t('View {{brand}} {{name}}', { brand: lure.brand, name: lure.name })}
-      >
+      <div className="lure-image">
         <Photo src={lure.image?.url} alt={lure.name} type={t(lure.type)} />
         <span className="image-tag">{t(lure.type)}</span>
-        <span className="image-arrow">
-          <ArrowUpRight size={18} />
-        </span>
-      </Link>
+      </div>
       <div className="lure-body">
         <span className="brand">{lure.brand}</span>
-        <Link to={`/lures/${lure._id}`}>
-          <Heading>{lure.name}</Heading>
-        </Link>
-        <div className="spec-line">
-          {numberLabel(lure.lengthMm)} mm <span>•</span>{' '}
-          {lure.color || lure.buoyancy || t('Ready for the water')}
+        <div className="lure-meta">
+          <Link
+            className="lure-card-link"
+            to={`/lures/${lure._id}`}
+            aria-label={t('View {{brand}} {{name}}', { brand: lure.brand, name: lure.name })}
+          >
+            <Heading>{lure.name}</Heading>
+          </Link>
+          <span className="lure-size">{numberLabel(lure.lengthMm)} mm</span>
         </div>
+        {(lure.color || lure.buoyancy) && (
+          <div className="spec-line">{lure.color || t(lure.buoyancy!)}</div>
+        )}
         <div className="card-bottom">
           <span>
             <Fish size={15} />
