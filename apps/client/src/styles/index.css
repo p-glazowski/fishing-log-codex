@@ -921,7 +921,7 @@ form > label {
   padding: 20px 20px 0;
 }
 .lure-body :is(h2, h3) {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 18px;
 }
 .lure-meta {
@@ -929,10 +929,14 @@ form > label {
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
+  margin-top: 8px;
 }
-.lure-meta .brand {
-  overflow-wrap: anywhere;
+.lure-meta .lure-card-link {
   min-width: 0;
+}
+.lure-body > .brand {
+  display: block;
+  overflow-wrap: anywhere;
 }
 .lure-size {
   flex-shrink: 0;

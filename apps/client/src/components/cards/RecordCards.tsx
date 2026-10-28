@@ -15,15 +15,15 @@ export function LureCard({ lure, headingLevel = 2 }: { lure: Lure; headingLevel?
         <span className="image-tag">{t(lure.type)}</span>
       </div>
       <div className="lure-body">
-        <Link
-          className="lure-card-link"
-          to={`/lures/${lure._id}`}
-          aria-label={t('View {{brand}} {{name}}', { brand: lure.brand, name: lure.name })}
-        >
-          <Heading>{lure.name}</Heading>
-        </Link>
+        <span className="brand">{lure.brand}</span>
         <div className="lure-meta">
-          <span className="brand">{lure.brand}</span>
+          <Link
+            className="lure-card-link"
+            to={`/lures/${lure._id}`}
+            aria-label={t('View {{brand}} {{name}}', { brand: lure.brand, name: lure.name })}
+          >
+            <Heading>{lure.name}</Heading>
+          </Link>
           <span className="lure-size">{numberLabel(lure.lengthMm)} mm</span>
         </div>
         {(lure.color || lure.buoyancy) && (
