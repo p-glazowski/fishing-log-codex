@@ -1,4 +1,5 @@
 import { t, numberLabel, useTranslation } from '../../lib/i18n';
+import { useLayoutEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '../../components/ui/button';
@@ -18,6 +19,9 @@ export function LureDetails() {
   useTranslation();
 
   const { id } = useParams();
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [id]);
   const query = useQuery({ queryKey: ['lure', id], queryFn: () => api.lure(id!) });
   const catches = useQuery({
     queryKey: ['lure-catches', id],

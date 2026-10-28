@@ -89,7 +89,6 @@ export function RecordForm({
       await client.invalidateQueries({ predicate: (q) => q.queryKey[0] !== 'session' });
       toast.success(t('Record saved'));
       navigate(`${base}/${recordId}`);
-      if (isLure && !initial) window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     } catch (e) {
       setError(
         [

@@ -84,10 +84,20 @@ function mount(kind: 'lure' | 'catch', failDelete = false) {
   return { client, fetchMock, recordPath };
 }
 
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+});
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
   vi.unstubAllGlobals();
+});
+
+it('opens a lure detail page at the top regardless of the previous page', async () => {
+  mount('lure');
+  expect(await screen.findByRole('heading', { name: 'Original Floater' })).toBeVisible();
+  expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'instant' });
 });
 
 describe.each(['lure', 'catch'] as const)('%s deletion', (kind) => {
