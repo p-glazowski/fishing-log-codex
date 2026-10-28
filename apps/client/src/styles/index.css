@@ -1504,6 +1504,11 @@ button.journal-date-toggle {
 .field-wide {
   grid-column: 1/-1;
 }
+.record-form input[name='purchaseDate'] {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 47px;
+}
 .field > input,
 .field > textarea,
 .field > select {
