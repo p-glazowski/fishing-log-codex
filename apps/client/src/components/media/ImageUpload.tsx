@@ -123,7 +123,7 @@ export function ImageUpload({
               {file && (
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant="outline"
                   onClick={() => onChange(null)}
                   aria-label={t('Remove selected image')}
                 >
