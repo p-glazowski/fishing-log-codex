@@ -289,6 +289,24 @@ describe('private fishing workspace', () => {
       expect(empty.total).toBe(0);
       const monthly = (await alice.get('/api/v1/dashboard/stats')).body.data.activity;
       expect(monthly.find((point: { month: string }) => point.month === '2024-02').count).toBe(3);
+      const local = (
+        await alice.get('/api/v1/dashboard/activity?month=2024-02&timeZone=Europe%2FWarsaw')
+      ).body.data;
+      expect(local.total).toBe(3);
+      expect(local.days[0]).toEqual({ date: '2024-02-01', count: 3 });
+      expect(local.days[28]).toEqual({ date: '2024-02-29', count: 0 });
+      const localMonthly = (await alice.get('/api/v1/dashboard/stats?timeZone=Europe%2FWarsaw'))
+        .body.data.activity;
+      expect(localMonthly.find((point: { month: string }) => point.month === '2024-02').count).toBe(
+        3,
+      );
+      const filtered = await alice.get('/api/v1/catches').query({
+        lure: activityLure,
+        fromInstant: '2024-01-31T23:00:00.000Z',
+        toExclusive: '2024-02-01T23:00:00.000Z',
+      });
+      expect(filtered.body.total).toBe(3);
+      expect((await alice.get('/api/v1/dashboard/stats?timeZone=invalid-zone')).status).toBe(422);
       for (const query of ['', '?month=2024-13', '?month=bad', '?month=2024-02&month=2024-03']) {
         expect((await alice.get('/api/v1/dashboard/activity' + query)).status).toBe(422);
       }

@@ -37,13 +37,16 @@ export async function data<T>(path: string, options?: RequestInit) {
   return (await request<{ data: T }>(path, options)).data;
 }
 export const json = (body: unknown) => JSON.stringify(body);
+const timeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 export const api = {
   me: () => data<User>('/auth/me'),
   lure: (id: string, options?: RequestInit) => data<Lure>(`/lures/${id}`, options),
   catch: (id: string) => data<FishCatch>(`/catches/${id}`),
-  stats: () => data<Stats>('/dashboard/stats'),
+  stats: () => data<Stats>(`/dashboard/stats?timeZone=${encodeURIComponent(timeZone())}`),
   activity: (month: string) =>
-    data<DailyActivity>(`/dashboard/activity?month=${encodeURIComponent(month)}`),
+    data<DailyActivity>(
+      `/dashboard/activity?month=${encodeURIComponent(month)}&timeZone=${encodeURIComponent(timeZone())}`,
+    ),
   lures: (query = '', options?: RequestInit) => request<Page<Lure>>(`/lures?${query}`, options),
   catches: (query = '') => {
     const params = new URLSearchParams(query);
@@ -59,9 +62,12 @@ export async function upload(path: string, file: File) {
 export const errorMessage = (e: unknown) =>
   e instanceof Error ? e.message : 'Something went wrong';
 export const dateLabel = (value: string) =>
-  new Date(value).toLocaleDateString(getLocale(), {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+  new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T00:00:00` : value).toLocaleDateString(
+    getLocale(),
+    {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    },
+  );
 export const lureOf = (item: FishCatch) => (typeof item.lureId === 'object' ? item.lureId : null);

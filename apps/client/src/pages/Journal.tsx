@@ -8,6 +8,11 @@ import { JournalLureFilter } from '../components/lures/JournalLureFilter';
 import { FilterSelect } from '../components/ui/filter-select';
 import { Button } from '../components/ui/button';
 import { PageHeading, Loading, Failure, Empty, CatchCard, Pagination } from '../components/common';
+function localDayBoundary(value: string, nextDay = false) {
+  const date = new Date(`${value}T00:00:00`);
+  if (nextDay) date.setDate(date.getDate() + 1);
+  return date.toISOString();
+}
 export default function Journal() {
   useTranslation();
 
@@ -24,8 +29,8 @@ export default function Journal() {
     sort,
     page: String(page),
     ...(lure ? { lure } : {}),
-    ...(from ? { from } : {}),
-    ...(to ? { to } : {}),
+    ...(from ? { fromInstant: localDayBoundary(from) } : {}),
+    ...(to ? { toExclusive: localDayBoundary(to, true) } : {}),
   });
   const query = useQuery({
     queryKey: ['catches', params.toString()],
