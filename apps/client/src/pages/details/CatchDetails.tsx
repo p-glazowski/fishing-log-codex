@@ -1,5 +1,6 @@
 import { t, speciesLabel, numberLabel, getLocale, useTranslation } from '../../lib/i18n';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
+import { returnPath, backLabel } from '../../lib/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '../../components/ui/button';
 import { useDelete } from './useDelete';
@@ -10,6 +11,8 @@ export function CatchDetails() {
   useTranslation();
 
   const { id } = useParams();
+  const location = useLocation();
+  const back = returnPath(location.state, '/catches');
   const query = useQuery({ queryKey: ['catch', id], queryFn: () => api.catch(id!) });
   const deletion = useDelete(`/catches/${id}`, '/catches');
   if (query.isLoading) return <Loading />;
@@ -18,9 +21,9 @@ export function CatchDetails() {
   const lure = lureOf(item);
   return (
     <>
-      <Link className="back-link" to="/catches">
+      <Link className="back-link" to={back}>
         <ArrowLeft size={16} />
-        {t('Back to journal')}
+        {t(backLabel(back))}
       </Link>
       <PageHeading
         eyebrow={t('A MEMORY FROM THE WATER')}
@@ -28,7 +31,7 @@ export function CatchDetails() {
         description={dateLabel(item.caughtAt)}
       >
         <Button variant="outline" asChild>
-          <Link to={`/catches/${id}/edit`}>
+          <Link to={`/catches/${id}/edit`} state={location.state}>
             <Pencil size={17} />
             {t('Edit catch')}
           </Link>

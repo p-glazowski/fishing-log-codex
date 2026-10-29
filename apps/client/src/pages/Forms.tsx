@@ -7,6 +7,7 @@ import { api } from '../lib/api';
 import { Loading, Failure, PageHeading } from '../components/common';
 import { RecordForm } from '../features/records/RecordForm';
 import { FirstSteps } from '../components/dashboard/FirstSteps';
+import { returnPath, backLabel } from '../lib/navigation';
 export { Field } from '../components/forms/Field';
 export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
   useTranslation();
@@ -15,6 +16,9 @@ export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
   const location = useLocation();
   const edit = location.pathname.endsWith('/edit');
   const isLure = kind === 'lure';
+  const back = edit
+    ? `/${isLure ? 'lures' : 'catches'}/${id}`
+    : returnPath(location.state, !isLure && id ? `/lures/${id}` : isLure ? '/lures' : '/catches');
   const query = useQuery<Lure | FishCatch>({
     queryKey: [kind, id],
     queryFn: () => (isLure ? api.lure(id!) : api.catch(id!)),
@@ -35,9 +39,9 @@ export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
   if (edit && query.isError) return <Failure error={query.error} />;
   return (
     <>
-      <Link className="back-link" to={isLure ? '/lures' : '/catches'}>
+      <Link className="back-link" to={back} state={location.state}>
         <ArrowLeft size={16} />
-        {isLure ? t('Back to collection') : t('Back to journal')}
+        {t(backLabel(back))}
       </Link>
       {!edit ? (
         <header className="add-lure-heading">

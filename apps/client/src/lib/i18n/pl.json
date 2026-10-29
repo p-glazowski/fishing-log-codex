@@ -496,5 +496,15 @@
   "Leave without saving?": "Wyjść bez zapisywania?",
   "Your changes have not been saved.": "Twoje zmiany nie zostały zapisane.",
   "Keep editing": "Kontynuuj edycję",
-  "Discard changes": "Odrzuć zmiany"
+  "Discard changes": "Odrzuć zmiany",
+  "Your catches and the lures behind them.": "Twoje połowy i przynęty, na które je złowiono.",
+  "matching filters": "pasujące do filtrów",
+  "Clear date filter": "Wyczyść filtr dat",
+  "Lure filter active": "Aktywny filtr przynęty",
+  "Choose a valid date range.": "Wybierz prawidłowy zakres dat.",
+  "Log your first catch with a lure from your collection.": "Zapisz pierwszy połów z przynętą ze swojej kolekcji.",
+  "Back to overview": "Wróć do przeglądu",
+  "Back to lure": "Wróć do przynęty",
+  "Back to catch": "Wróć do połowu",
+  "Loading…": "Wczytywanie…"
 }

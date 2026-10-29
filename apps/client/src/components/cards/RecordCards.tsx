@@ -1,11 +1,12 @@
 import { t, speciesLabel, useTranslation, countLabel, numberLabel } from '../../lib/i18n';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Fish, Plus, ArrowUpRight } from 'lucide-react';
 import type { Lure, FishCatch } from '@lurelog/shared';
 import { dateLabel, lureOf } from '../../lib/api';
 import { Photo } from '../media/LureArt';
 export function LureCard({ lure, headingLevel = 2 }: { lure: Lure; headingLevel?: 2 | 3 }) {
   useTranslation();
+  const location = useLocation();
 
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   return (
@@ -20,6 +21,7 @@ export function LureCard({ lure, headingLevel = 2 }: { lure: Lure; headingLevel?
           <Link
             className="lure-card-link"
             to={`/lures/${lure._id}`}
+            state={{ returnTo: location.pathname + location.search }}
             aria-label={t('View {{brand}} {{name}}', { brand: lure.brand, name: lure.name })}
           >
             <Heading>{lure.name}</Heading>
@@ -60,6 +62,8 @@ export function CatchCard({
 
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const lure = lureOf(item);
+  const location = useLocation();
+  const state = { returnTo: location.pathname + location.search };
   return (
     <article
       className={`catch-card ${list ? 'catch-row' : ''} ${recent ? 'recent-catch-card' : ''}`}
@@ -67,6 +71,7 @@ export function CatchCard({
       <Link
         className="catch-image"
         to={`/catches/${item._id}`}
+        state={state}
         aria-label={t('View {{species}} catch from {{date}}', {
           species: speciesLabel(item.species),
           date: dateLabel(item.caughtAt),
@@ -96,7 +101,7 @@ export function CatchCard({
       <div className="catch-body">
         {item.location && <span className="brand">{item.location}</span>}
         <div className="recent-catch-title">
-          <Link to={`/catches/${item._id}`}>
+          <Link to={`/catches/${item._id}`} state={state}>
             <Heading>{speciesLabel(item.species)}</Heading>
           </Link>
           {recent && (
@@ -110,7 +115,7 @@ export function CatchCard({
           {item.weightKg ? ` · ${numberLabel(item.weightKg)} kg` : ''}
         </p>
         {lure && (
-          <Link className="lure-link" to={`/lures/${lure._id}`}>
+          <Link className="lure-link" to={`/lures/${lure._id}`} state={state}>
             <Fish size={14} />
             {recent ? (
               <span className="recent-lure-details">

@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import axe from 'axe-core';
 import Journal from '../../pages/Journal';
 import { api } from '../../lib/api';
-import { setLanguage } from '../../lib/i18n';
+import { setLanguage, t } from '../../lib/i18n';
 vi.mock('../../lib/api', async (original) => {
   const actual = await original<typeof import('../../lib/api')>();
   return { ...actual, api: { ...actual.api, lures: vi.fn(), lure: vi.fn(), catches: vi.fn() } };
@@ -32,13 +32,15 @@ const clients: QueryClient[] = [];
 function mount(path = '/catches') {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   clients.push(client);
-  return render(
+  const view = render(
     <QueryClientProvider client={client}>
       <MemoryRouter initialEntries={[path]}>
         <Journal />
       </MemoryRouter>
     </QueryClientProvider>,
   );
+  fireEvent.click(screen.getByRole('button', { name: new RegExp('^' + t('Filters')) }));
+  return view;
 }
 beforeEach(() => {
   setLanguage('en');
@@ -56,9 +58,7 @@ afterEach(() => {
   setLanguage('en');
 });
 it('filters a local calendar day using its actual daylight-saving boundaries', async () => {
-  const user = userEvent.setup();
   mount();
-  await user.click(screen.getByRole('button', { name: /Date filter/ }));
   fireEvent.change(screen.getByLabelText('From date'), { target: { value: '2026-03-29' } });
   fireEvent.change(screen.getByLabelText('To date'), { target: { value: '2026-03-29' } });
   const start = new Date('2026-03-29T00:00:00');

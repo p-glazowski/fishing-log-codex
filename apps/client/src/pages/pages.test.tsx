@@ -186,6 +186,22 @@ describe('record forms', () => {
   });
 });
 describe('collection synchronization', () => {
+  it('keeps the All lures count independent of the selected type', async () => {
+    vi.mocked(api.lures).mockImplementation(async (query) => ({
+      data: [lure],
+      total: new URLSearchParams(query).has('type') ? 1 : 4,
+      page: 1,
+      pages: 1,
+    }));
+    const user = userEvent.setup();
+    mount(<Collection />, '/lures');
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /All lures/ })).toHaveTextContent('4'),
+    );
+    await user.click(screen.getByRole('button', { name: 'Hard Bait' }));
+    await waitFor(() => expect(screen.getByText('1 lure in view')).toBeVisible());
+    expect(screen.getByRole('button', { name: /All lures/ })).toHaveTextContent('4');
+  });
   it('links the lure card and its catch action to their respective pages', async () => {
     mount(<Collection />, '/lures');
     expect(

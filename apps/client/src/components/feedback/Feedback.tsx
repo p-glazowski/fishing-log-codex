@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { t, useTranslation } from '../../lib/i18n';
 import { Link } from 'react-router-dom';
 import { Fish, Plus, AlertCircle } from 'lucide-react';
@@ -30,11 +31,13 @@ export function Empty({
   description,
   to,
   label,
+  children,
 }: {
   title: string;
   description: string;
   to?: string;
   label?: string;
+  children?: ReactNode;
 }) {
   useTranslation();
 
@@ -45,6 +48,7 @@ export function Empty({
       </span>
       <h2>{title}</h2>
       <p>{description}</p>
+      {children}
       {to && (
         <Button asChild>
           <Link to={to}>

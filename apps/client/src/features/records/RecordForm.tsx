@@ -1,6 +1,7 @@
 import { t, canonicalSpecies, useTranslation } from '../../lib/i18n';
 import { useState, useRef } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { returnPath } from '../../lib/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { FormProvider, useForm, type FieldValues, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -37,6 +38,7 @@ export function RecordForm({
   const schema = isLure ? lureSchema : catchSchema;
   const client = useQueryClient();
   const navigate = useNavigate();
+  const location = useLocation();
   const [params] = useSearchParams();
   const originalPosition = (initial as FishCatch)?.photoPosition ?? { x: 50, y: 50 };
   const [photoPosition, setPhotoPosition] = useState<PhotoPosition>(originalPosition);
@@ -116,7 +118,9 @@ export function RecordForm({
       const continueToCatch = isLure && !initial && params.get('next') === 'catch';
       allowNavigation();
       toast.success(t(continueToCatch ? 'Lure added. Now log your catch.' : 'Record saved'));
-      navigate(continueToCatch ? `/lures/${recordId}/catches/new` : `${base}/${recordId}`);
+      navigate(continueToCatch ? `/lures/${recordId}/catches/new` : `${base}/${recordId}`, {
+        state: location.state,
+      });
     } catch (e) {
       setError(
         [
@@ -206,12 +210,13 @@ export function RecordForm({
           </Button>
           <Button variant="ghost" asChild className="full-width">
             <Link
+              state={location.state}
               to={
                 initial
                   ? `/${isLure ? 'lures' : 'catches'}/${initial._id}`
                   : isLure
                     ? '/lures'
-                    : '/catches'
+                    : returnPath(location.state, lureId ? `/lures/${lureId}` : '/catches')
               }
             >
               {t('Cancel')}

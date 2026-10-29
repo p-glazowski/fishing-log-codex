@@ -4013,3 +4013,69 @@ button.picker-option:hover {
     font-size: 16px !important;
   }
 }
+
+/* Search stays visible; secondary journal filters open as one compact group. */
+.journal-search-row {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+.journal-search-row .search-field {
+  flex: 1;
+  min-width: 0;
+}
+.journal-filter-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  padding: 20px;
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.journal-filter-panel > label {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+.journal-filter-panel input,
+.journal-filter-panel select {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+.filter-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.active-filter {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 8px;
+  background: var(--soft);
+  border-radius: var(--radius);
+}
+.active-filter button {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+@media (max-width: 600px) {
+  .journal-filter-panel {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+  .journal-search-row .btn {
+    padding-inline: 12px;
+  }
+}

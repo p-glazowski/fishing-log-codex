@@ -1,5 +1,6 @@
 import { t, numberLabel, useTranslation } from '../../lib/i18n';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
+import { returnPath, backLabel } from '../../lib/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '../../components/ui/button';
 import { useDelete } from './useDelete';
@@ -18,6 +19,8 @@ export function LureDetails() {
   useTranslation();
 
   const { id } = useParams();
+  const location = useLocation();
+  const back = returnPath(location.state, '/lures');
   const query = useQuery({ queryKey: ['lure', id], queryFn: () => api.lure(id!) });
   const catches = useQuery({
     queryKey: ['lure-catches', id],
@@ -30,9 +33,9 @@ export function LureDetails() {
   const all = catches.data?.data ?? [];
   return (
     <>
-      <Link className="back-link" to="/lures">
+      <Link className="back-link" to={back}>
         <ArrowLeft size={16} />
-        {t('Back to collection')}
+        {t(backLabel(back))}
       </Link>
       <PageHeading
         eyebrow={lure.brand}
@@ -130,7 +133,7 @@ export function LureDetails() {
       )}
       <div className="lure-edit-action">
         <Button variant="outline" asChild>
-          <Link to={`/lures/${id}/edit`}>
+          <Link to={`/lures/${id}/edit`} state={location.state}>
             <Pencil size={16} />
             {t('Edit lure')}
           </Link>

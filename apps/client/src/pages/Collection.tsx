@@ -1,7 +1,8 @@
 import { t as translate, countLabel, numberLabel, useTranslation } from '../lib/i18n';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useDebouncedValue } from '../lib/useDebouncedValue';
 import { Plus, Search, SlidersHorizontal } from 'lucide-react';
 import { lureTypes } from '@lurelog/shared';
 import { api, data } from '../lib/api';
@@ -12,32 +13,26 @@ export default function Collection() {
   useTranslation();
 
   const [params, setParams] = useSearchParams();
-  const [search, setSearch] = useState(params.get('search') ?? '');
+  const search = params.get('search') ?? '';
+  const debouncedSearch = useDebouncedValue(search);
   const [expanded, setExpanded] = useState(false);
   const page = Number(params.get('page') ?? 1);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (search !== (params.get('search') ?? '')) {
-        const next = new URLSearchParams(params);
-        if (search) next.set('search', search);
-        else next.delete('search');
-        next.delete('page');
-        setParams(next, { replace: true });
-      }
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [search, params, setParams]);
   function filter(key: string, value: string) {
     const next = new URLSearchParams(params);
     if (value) next.set(key, value);
     else next.delete(key);
     next.delete('page');
-    setParams(next);
+    setParams(next, { replace: key === 'search', preventScrollReset: true });
   }
+  const requestParams = new URLSearchParams(params);
+  if (debouncedSearch) requestParams.set('search', debouncedSearch);
+  else requestParams.delete('search');
   const query = useQuery({
-    queryKey: ['lures', params.toString()],
-    queryFn: () => api.lures(params.toString()),
+    queryKey: ['lures', requestParams.toString()],
+    queryFn: () => api.lures(requestParams.toString()),
+    placeholderData: keepPreviousData,
   });
+  const total = useQuery({ queryKey: ['lure-availability'], queryFn: () => api.lures('limit=1') });
   const brands = useQuery({ queryKey: ['brands'], queryFn: () => data<string[]>('/lure-filters') });
   return (
     <>
@@ -61,7 +56,7 @@ export default function Collection() {
             onClick={() => filter('type', '')}
           >
             {translate('All lures')}
-            <span>{query.data ? numberLabel(query.data.total) : '–'}</span>
+            <span>{total.data ? numberLabel(total.data.total) : '–'}</span>
           </button>
           {lureTypes.map((t) => (
             <button
@@ -82,7 +77,7 @@ export default function Collection() {
             aria-label={translate('Search lures')}
             placeholder={translate('Search by lure name or brand…')}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => filter('search', e.target.value)}
           />
         </div>
         <FilterSelect
@@ -112,20 +107,6 @@ export default function Collection() {
       {expanded && (
         <div className="extra-filters">
           <label>
-            {translate('Lure type')}
-            <FilterSelect
-              value={params.get('type') ?? ''}
-              onChange={(e) => filter('type', e.target.value)}
-            >
-              <option value="">{translate('All types')}</option>
-              {lureTypes.map((t) => (
-                <option key={t} value={t}>
-                  {translate(t)}
-                </option>
-              ))}
-            </FilterSelect>
-          </label>
-          <label>
             {translate('Minimum length (mm)')}
             <input
               type="number"
@@ -143,16 +124,12 @@ export default function Collection() {
               onChange={(e) => filter('maxSize', e.target.value)}
             />
           </label>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setSearch('');
-              setParams({});
-            }}
-          >
-            {translate('Clear filters')}
-          </Button>
         </div>
+      )}
+      {params.size > 0 && (
+        <Button variant="ghost" size="sm" onClick={() => setParams({})}>
+          {translate('Clear filters')}
+        </Button>
       )}
       <div className="results-label">
         <span>
@@ -160,7 +137,8 @@ export default function Collection() {
         </span>
         <span>{translate('Select a lure to explore its catch history.')}</span>
       </div>
-      {query.isLoading ? (
+      {query.isLoading ||
+      ((search !== debouncedSearch || query.isFetching) && !query.data?.data.length) ? (
         <Loading />
       ) : query.isError ? (
         <Failure error={query.error} retry={() => void query.refetch()} />
@@ -182,9 +160,13 @@ export default function Collection() {
               ? translate('Try a different search or clear your filters.')
               : translate('Add your first lure and start keeping track of what works.')
           }
-          to="/lures/new"
+          to={params.size ? undefined : '/lures/new'}
           label={translate('Add your first lure')}
-        />
+        >
+          {params.size > 0 && (
+            <Button onClick={() => setParams({})}>{translate('Clear filters')}</Button>
+          )}
+        </Empty>
       )}
       <Pagination
         page={page}
