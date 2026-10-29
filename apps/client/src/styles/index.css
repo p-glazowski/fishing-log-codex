@@ -4209,3 +4209,55 @@ button.picker-option:hover {
   place-items: center;
   color: var(--muted);
 }
+
+.landing-preview {
+  max-width: 1264px;
+  margin: 0 auto;
+  padding: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.landing-preview h2 {
+  font-size: 36px;
+  line-height: 1.2;
+  letter-spacing: -1.2px;
+  margin: 16px 0;
+}
+.landing-preview p {
+  color: var(--muted);
+  max-width: 420px;
+  margin-bottom: 24px;
+}
+.landing-preview figure {
+  margin: 0;
+  text-align: center;
+}
+.landing-preview img {
+  display: block;
+  width: min(100%, 360px);
+  height: auto;
+  margin: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.landing-preview figcaption {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 767px) {
+  .landing-preview {
+    margin: 0 20px;
+    padding: 24px;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .landing-preview h2 {
+    font-size: 28px;
+  }
+}
