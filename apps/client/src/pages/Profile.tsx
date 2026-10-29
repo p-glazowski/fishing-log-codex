@@ -13,6 +13,7 @@ import { Button } from '../components/ui/button';
 import { LanguageSettings } from '../components/settings/LanguageSettings';
 import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 import { useUnsavedChanges } from '../components/navigation/UnsavedChanges';
+import { PasswordField } from '../components/forms/PasswordField';
 import { PhotoRemovalNotice } from '../components/media/PhotoRemovalNotice';
 export default function Profile() {
   useTranslation();
@@ -151,29 +152,18 @@ export default function Profile() {
             </div>
           </div>
           <form noValidate onSubmit={password.handleSubmit(changePassword)}>
-            <label>
-              {t('Current password')}
-              <input
-                type="password"
-                autoComplete="current-password"
-                {...password.register('currentPassword')}
-              />
-              <span className="field-error">
-                {validationMessage(password.formState.errors.currentPassword?.message)}
-              </span>
-            </label>
-            <label>
-              {t('New password')}
-              <input
-                type="password"
-                autoComplete="new-password"
-                placeholder={t('At least 12 characters')}
-                {...password.register('newPassword')}
-              />
-              <span className="field-error">
-                {validationMessage(password.formState.errors.newPassword?.message)}
-              </span>
-            </label>
+            <PasswordField
+              label={t('Current password')}
+              registration={password.register('currentPassword')}
+              error={password.formState.errors.currentPassword?.message}
+            />
+            <PasswordField
+              label={t('New password')}
+              registration={password.register('newPassword')}
+              error={password.formState.errors.newPassword?.message}
+              autoComplete="new-password"
+              placeholder={t('At least 12 characters')}
+            />
             {password.formState.errors.root && (
               <p role="alert" className="error-banner">
                 {t(password.formState.errors.root.message)}

@@ -1,9 +1,9 @@
 import { LanguageSelect } from '../components/settings/LanguageSettings';
-import { t, useTranslation, validationMessage } from '../lib/i18n';
+import { t, useTranslation } from '../lib/i18n';
 import { useEffect } from 'react';
 import { useAuth } from '../lib/auth';
-import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { registerSchema, loginSchema } from '@lurelog/shared';
@@ -12,20 +12,30 @@ import { useQueryClient } from '@tanstack/react-query';
 import { data, json, errorMessage } from '../lib/api';
 import { Logo } from '../components/branding/Logo';
 import { Button } from '../components/ui/button';
+import { AuthTextField } from '../components/forms/AuthTextField';
+import { PasswordField } from '../components/forms/PasswordField';
+import { returnPath } from '../lib/navigation';
 export default function Auth({ register = false }: { register?: boolean }) {
+  return <AuthScreen key={register ? 'register' : 'login'} register={register} />;
+}
+function AuthScreen({ register }: { register: boolean }) {
   useTranslation();
 
   const schema = register ? registerSchema : loginSchema;
   type Values = z.infer<typeof registerSchema>;
   const form = useForm<Values>({
+    shouldFocusError: false,
+    defaultValues: register ? { name: '', email: '', password: '' } : { email: '', password: '' },
     resolver: zodResolver(schema) as unknown as import('react-hook-form').Resolver<Values>,
   });
   const navigate = useNavigate();
+  const location = useLocation();
   const client = useQueryClient();
   const { user: sessionUser } = useAuth();
   useEffect(() => {
-    if (sessionUser) navigate('/dashboard', { replace: true });
-  }, [sessionUser, navigate]);
+    if (sessionUser)
+      navigate(returnPath({ returnTo: location.state?.from }, '/dashboard'), { replace: true });
+  }, [sessionUser, navigate, location.state]);
   async function submit(values: Values) {
     try {
       const user = await data(`/auth/${register ? 'register' : 'login'}`, {
@@ -54,54 +64,55 @@ export default function Auth({ register = false }: { register?: boolean }) {
               ? t('A little organization. A lot more adventure.')
               : t('Your collection and your memories are waiting.')}
           </p>
-          <form onSubmit={form.handleSubmit(submit)} noValidate>
-            {register && (
-              <label>
-                {t('Your name')}
-                <input autoComplete="name" placeholder="Alex Fisher" {...form.register('name')} />
-                <span className="field-error">
-                  {validationMessage(form.formState.errors.name?.message)}
-                </span>
-              </label>
-            )}
-            <label>
-              {t('Email address')}
-              <input
+          <FormProvider {...form}>
+            <form
+              onSubmit={form.handleSubmit(submit, (errors) => {
+                for (const name of ['name', 'email', 'password'] as const) {
+                  if (errors[name]) {
+                    form.setFocus(name);
+                    break;
+                  }
+                }
+              })}
+              noValidate
+            >
+              {register && (
+                <AuthTextField
+                  name="name"
+                  label={t('Your name')}
+                  autoComplete="name"
+                  placeholder="Alex Fisher"
+                />
+              )}
+              <AuthTextField
+                name="email"
+                label={t('Email address')}
                 type="email"
                 autoComplete="email"
                 placeholder="you@example.com"
-                {...form.register('email')}
               />
-              <span className="field-error">
-                {validationMessage(form.formState.errors.email?.message)}
-              </span>
-            </label>
-            <label>
-              {t('Password')}
-              <input
-                type="password"
+              <PasswordField
+                label={t('Password')}
+                registration={form.register('password')}
+                error={form.formState.errors.password?.message}
                 autoComplete={register ? 'new-password' : 'current-password'}
                 placeholder={register ? t('At least 12 characters') : t('Your password')}
-                {...form.register('password')}
               />
-              <span className="field-error">
-                {validationMessage(form.formState.errors.password?.message)}
-              </span>
-            </label>
-            {form.formState.errors.root && (
-              <p role="alert" className="error-banner">
-                {t(form.formState.errors.root.message)}
-              </p>
-            )}
-            <Button className="full-width" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting
-                ? t('One moment…')
-                : register
-                  ? t('Create your free account')
-                  : t('Sign in')}
-              <ArrowRight size={18} />
-            </Button>
-          </form>
+              {form.formState.errors.root && (
+                <p role="alert" className="error-banner">
+                  {t(form.formState.errors.root.message)}
+                </p>
+              )}
+              <Button className="full-width" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting
+                  ? t('One moment…')
+                  : register
+                    ? t('Create your free account')
+                    : t('Sign in')}
+                <ArrowRight size={18} />
+              </Button>
+            </form>
+          </FormProvider>
           <p className="auth-switch">
             {register ? t('Already have an account?') : t('New around here?')}{' '}
             <Link to={register ? '/login' : '/register'}>

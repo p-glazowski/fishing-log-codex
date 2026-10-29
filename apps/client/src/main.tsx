@@ -56,7 +56,11 @@ function Protected() {
   const location = useLocation();
   if (loading) return <Loading />;
   if (error) return <Failure error={error} retry={() => void refresh()} />;
-  return user ? <Layout /> : <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  return user ? (
+    <Layout />
+  ) : (
+    <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />
+  );
 }
 const client = new QueryClient({
   defaultOptions: { queries: { staleTime: 30000, retry: 1, refetchOnWindowFocus: false } },

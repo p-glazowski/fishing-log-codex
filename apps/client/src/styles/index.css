@@ -4185,3 +4185,27 @@ button.picker-option:hover {
   color: var(--muted);
   font-size: 13px;
 }
+.auth-field,
+.password-field {
+  margin-bottom: 24px;
+}
+.auth-field > label,
+.password-field > label {
+  margin-bottom: 0;
+}
+.password-input {
+  position: relative;
+}
+.password-input > input {
+  padding-right: 52px;
+}
+.password-toggle {
+  position: absolute;
+  right: 4px;
+  top: 8px;
+  width: 44px;
+  height: 47px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}

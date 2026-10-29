@@ -510,5 +510,17 @@
   "Saving…": "Zapisywanie…",
   "Remove photo": "Usuń zdjęcie",
   "Photo will be removed when you save.": "Zdjęcie zostanie usunięte po zapisaniu zmian.",
-  "Undo": "Cofnij"
+  "Undo": "Cofnij",
+  "Enter at least 2 characters for your name": "Imię musi mieć co najmniej 2 znaki",
+  "Enter a valid email address": "Podaj prawidłowy adres e-mail",
+  "Enter your password": "Wpisz hasło",
+  "Enter your current password": "Wpisz obecne hasło",
+  "Use at least {{count}} characters": "Wpisz co najmniej {{count}} znaków",
+  "Use at most {{count}} characters": "Wpisz maksymalnie {{count}} znaków",
+  "Enter a number greater than zero.": "Podaj liczbę większą od zera.",
+  "Enter a smaller number.": "Podaj mniejszą liczbę.",
+  "Enter a valid number.": "Podaj prawidłową liczbę.",
+  "Check this field.": "Sprawdź wartość tego pola.",
+  "Show {{label}}": "Pokaż: {{label}}",
+  "Hide {{label}}": "Ukryj: {{label}}"
 }

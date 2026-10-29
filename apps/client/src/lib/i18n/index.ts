@@ -84,17 +84,18 @@ export function countLabel(value: number, noun: 'catch' | 'lure' | 'species') {
   return `${numberLabel(value)} ${chosen[category] ?? chosen.other}`;
 }
 export function validationMessage(message: string | undefined) {
-  if (!message || language === 'en') return message;
+  if (!message) return '';
   const translated = t(message);
   if (translated !== message) return translated;
-  if (/email/i.test(message)) return 'Podaj prawidłowy adres e-mail';
-  if (/Too small.*string.*>=(\d+)/.test(message))
-    return `Wpisz co najmniej ${message.match(/>=(\d+)/)?.[1]} znaków`;
-  if (/Too big.*string.*<=(\d+)/.test(message))
-    return `Wpisz maksymalnie ${message.match(/<=(\d+)/)?.[1]} znaków`;
-  if (/Too small.*number/.test(message)) return 'Podaj liczbę większą od zera';
-  if (/Too big.*number/.test(message)) return 'Podana liczba jest zbyt duża';
-  if (/Invalid input|Invalid option/.test(message)) return 'Sprawdź wartość tego pola';
+  if (/email/i.test(message)) return t('Enter a valid email address');
+  const minimum = message.match(/Too small.*string.*>=(\d+)/);
+  if (minimum) return t('Use at least {{count}} characters', { count: minimum[1] });
+  const maximum = message.match(/Too big.*string.*<=(\d+)/);
+  if (maximum) return t('Use at most {{count}} characters', { count: maximum[1] });
+  if (/Too small.*number/.test(message)) return t('Enter a number greater than zero.');
+  if (/Too big.*number/.test(message)) return t('Enter a smaller number.');
+  if (/expected number/.test(message)) return t('Enter a valid number.');
+  if (/Invalid input|Invalid option/.test(message)) return t('Check this field.');
   return translated;
 }
 

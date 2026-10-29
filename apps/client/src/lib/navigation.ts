@@ -1,6 +1,6 @@
 export function returnPath(state: unknown, fallback: string) {
   const value = (state as { returnTo?: unknown } | null)?.returnTo;
-  return typeof value === 'string' && /^\/(?:lures|catches|dashboard)(?:[/?]|$)/.test(value)
+  return typeof value === 'string' && /^\/(?:lures|catches|dashboard|profile)(?:[/?]|$)/.test(value)
     ? value
     : fallback;
 }
