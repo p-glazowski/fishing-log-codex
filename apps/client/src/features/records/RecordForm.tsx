@@ -1,6 +1,6 @@
 import { t, canonicalSpecies, useTranslation } from '../../lib/i18n';
 import { useState, useRef } from 'react';
-import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { returnPath } from '../../lib/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { FormProvider, useForm, type FieldValues, type Resolver } from 'react-hook-form';
@@ -12,12 +12,12 @@ import {
   type FishCatch,
   type PhotoPosition,
 } from '@lurelog/shared';
-import { Check, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { api, ApiError, data, json, errorMessage, upload, lureOf } from '../../lib/api';
-import { Button } from '../../components/ui/button';
 import { ImageUpload } from '../../components/media/ImageUpload';
-import { RecordEssentials, RecordAdditional } from './RecordFields';
+import { RecordEssentials } from './RecordFields';
+import { RecordAdditionalSection } from './RecordAdditionalSection';
+import { RecordActions } from './RecordActions';
 import { useUnsavedChanges } from '../../components/navigation/UnsavedChanges';
 function localDateTime(value: Date) {
   const pad = (part: number) => String(part).padStart(2, '0');
@@ -64,7 +64,7 @@ export function RecordForm({
   });
   const { dirtyFields } = form.formState;
   const allowNavigation = useUnsavedChanges(
-    form.formState.isDirty ||
+    Object.keys(dirtyFields).length > 0 ||
       !!file ||
       photoPosition.x !== originalPosition.x ||
       photoPosition.y !== originalPosition.y,
@@ -143,86 +143,47 @@ export function RecordForm({
         className="record-form"
         data-kind={kind}
       >
-        <div className="form-main">
-          <section className="panel form-section">
-            <div className="form-section-heading">
-              <span className="step-number">01</span>
-              <div>
-                <h2>{isLure ? t('The essentials') : t('The catch')}</h2>
-                <p>
-                  {isLure
-                    ? t('A few details to give your lure a home.')
-                    : t('Start with the fish and the lure that made it happen.')}
-                </p>
-              </div>
+        <section className="panel form-section record-essentials">
+          <div className="form-section-heading">
+            <span className="step-number">01</span>
+            <div>
+              <h2>{isLure ? t('The essentials') : t('The catch')}</h2>
             </div>
-            <RecordEssentials kind={kind} />
-          </section>
-          <section className="panel form-section">
-            <div className="form-section-heading">
-              <span className="step-number">02</span>
-              <div>
-                <h2>{isLure ? t('A little more detail') : t('Additional details')}</h2>
-                <p>{isLure ? t('Optional details you’ll be glad you kept.') : t('Optional')}</p>
-              </div>
-            </div>
-            <RecordAdditional kind={kind} />
-          </section>
-        </div>
-        <aside className="form-aside">
-          <section className="panel form-section">
-            <h2>{isLure ? t('Lure photo') : t('Catch photo')}</h2>
-            <p className="muted">
-              {isLure ? t('Make it easy to spot your favorite.') : t('Optional')}
-            </p>
-            <ImageUpload
-              file={file}
-              existing={image}
-              compact={!isLure}
-              onChange={(next) => {
-                setFile(next);
-                if (!isLure) setPhotoPosition(next ? { x: 50, y: 50 } : originalPosition);
-              }}
-              position={!isLure ? photoPosition : undefined}
-              onPositionChange={!isLure ? setPhotoPosition : undefined}
-            />
-          </section>
-          {isLure && (
-            <div className="form-tip">
-              <Info size={19} />
-              <p>{t('Start with the basics. You can add more details anytime.')}</p>
-            </div>
-          )}
-          {error && (
-            <div className="error-banner" role="alert">
-              {error}
-            </div>
-          )}
-          <Button className="full-width" disabled={saving}>
-            <Check size={18} />
-            {saving
-              ? t('Saving your story…')
-              : initial
-                ? t('Save changes')
-                : isLure
-                  ? t('Add to collection')
-                  : t('Save catch')}
-          </Button>
-          <Button variant="ghost" asChild className="full-width">
-            <Link
-              state={location.state}
-              to={
-                initial
-                  ? `/${isLure ? 'lures' : 'catches'}/${initial._id}`
-                  : isLure
-                    ? '/lures'
-                    : returnPath(location.state, lureId ? `/lures/${lureId}` : '/catches')
-              }
-            >
-              {t('Cancel')}
-            </Link>
-          </Button>
-        </aside>
+          </div>
+          <RecordEssentials kind={kind} />
+        </section>
+        <section className="panel form-section record-photo">
+          <h2>{isLure ? t('Lure photo') : t('Catch photo')}</h2>
+          <p className="muted">
+            {isLure ? t('Make it easy to spot your favorite.') : t('Optional')}
+          </p>
+          <ImageUpload
+            file={file}
+            existing={image}
+            compact={!isLure}
+            onChange={(next) => {
+              setFile(next);
+              if (!isLure) setPhotoPosition(next ? { x: 50, y: 50 } : originalPosition);
+            }}
+            position={!isLure ? photoPosition : undefined}
+            onPositionChange={!isLure ? setPhotoPosition : undefined}
+          />
+        </section>
+        <RecordAdditionalSection kind={kind} initial={initial} />
+        <RecordActions
+          kind={kind}
+          editing={!!initial}
+          saving={saving}
+          error={error}
+          state={location.state}
+          cancelTo={
+            initial
+              ? `/${isLure ? 'lures' : 'catches'}/${initial._id}`
+              : isLure
+                ? '/lures'
+                : returnPath(location.state, lureId ? `/lures/${lureId}` : '/catches')
+          }
+        />
       </form>
     </FormProvider>
   );

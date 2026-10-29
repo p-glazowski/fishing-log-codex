@@ -26,7 +26,11 @@ export default function Profile() {
   const password = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
   });
-  useUnsavedChanges(profile.formState.isDirty || password.formState.isDirty || !!file);
+  useUnsavedChanges(
+    Object.keys(profile.formState.dirtyFields).length > 0 ||
+      Object.keys(password.formState.dirtyFields).length > 0 ||
+      !!file,
+  );
   async function saveProfile(values: z.infer<typeof profileSchema>) {
     try {
       await data('/users/me', { method: 'PATCH', body: json(values) });

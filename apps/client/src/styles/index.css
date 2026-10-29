@@ -1538,6 +1538,7 @@ button.journal-date-toggle {
 .record-form {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  grid-template-areas: 'essentials photo' 'additional actions';
   gap: 24px;
   align-items: start;
 }
@@ -1640,7 +1641,7 @@ button.journal-date-toggle {
   position: sticky;
   top: 24px;
 }
-.form-aside .form-section > p {
+.record-photo > p {
   margin: 8px 0 24px;
 }
 .form-tip {
@@ -1656,7 +1657,7 @@ button.journal-date-toggle {
 .record-form[data-kind='catch'] .form-aside > .panel {
   margin-bottom: 20px;
 }
-.record-form[data-kind='catch'] .upload {
+.record-form[data-kind='catch'] .record-photo .upload {
   gap: 12px;
   padding: 24px 16px;
 }
@@ -4077,5 +4078,100 @@ button.picker-option:hover {
   }
   .journal-search-row .btn {
     padding-inline: 12px;
+  }
+}
+
+.record-additional > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  list-style: none;
+  min-height: 44px;
+}
+.record-additional > summary::-webkit-details-marker {
+  display: none;
+}
+.record-additional summary strong {
+  font-size: 18px;
+  font-family: 'Manrope', sans-serif;
+}
+.record-additional summary small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.record-additional[open] > summary {
+  margin-bottom: 24px;
+}
+.record-additional[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.record-actions {
+  margin-top: 20px;
+}
+.record-actions > .btn-ghost {
+  margin-top: 8px;
+}
+@media (max-width: 1023px) {
+  .record-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .record-form .form-main,
+  .record-form .form-aside {
+    display: contents;
+  }
+  .record-essentials {
+    order: 1;
+  }
+  .record-photo {
+    order: 2;
+    margin-bottom: 0 !important;
+  }
+  .record-additional {
+    order: 3;
+  }
+  .record-actions {
+    order: 4;
+    position: sticky;
+    bottom: calc(76px + env(safe-area-inset-bottom));
+    z-index: 20;
+    margin: 0;
+    padding: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .record-actions .btn-ghost {
+    min-height: 36px;
+    padding-block: 4px;
+  }
+  .record-actions .error-banner {
+    margin-top: 0;
+  }
+}
+
+.record-essentials {
+  grid-area: essentials;
+}
+.record-photo {
+  grid-area: photo;
+}
+.record-additional {
+  grid-area: additional;
+}
+.record-actions {
+  grid-area: actions;
+}
+@media (max-width: 1023px) {
+  .record-form {
+    grid-template-areas: 'essentials' 'photo' 'additional' 'actions';
+  }
+}
+@media (max-width: 1023px) {
+  .record-form :is(input, textarea, select, summary) {
+    scroll-margin-block: 100px 220px;
   }
 }

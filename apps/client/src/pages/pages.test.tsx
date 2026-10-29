@@ -154,6 +154,10 @@ describe('record forms', () => {
     await user.click(await screen.findByRole('combobox', { name: /Lure used/ }));
     await user.click(await screen.findByRole('option', { name: /Rapala Original Floater/ }));
     await user.type(screen.getByLabelText(/Fish species/), 'Wild River Char');
+    expect(screen.getByLabelText('Weather')).not.toBeVisible();
+    await user.click(screen.getByText('Additional details'));
+    await user.type(screen.getByLabelText('Weather'), 'Overcast');
+    await user.type(screen.getByLabelText('Your story'), 'Caught beside the reeds.');
     if (process.env.TZ === 'Europe/Warsaw') {
       fireEvent.change(screen.getByLabelText(/Date & time \(local\)/), {
         target: { value: '2026-03-29T02:30' },
@@ -170,6 +174,8 @@ describe('record forms', () => {
     const args = vi.mocked(data).mock.calls.find((c) => c[0] === '/catches');
     expect(JSON.parse(args![1]!.body as string)).toMatchObject({
       species: 'Wild River Char',
+      weather: 'Overcast',
+      notes: 'Caught beside the reeds.',
       lureId: lure._id,
       caughtAt: new Date('2026-07-15T14:30').toISOString(),
     });
