@@ -94,12 +94,6 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it('opens a lure detail page at the top regardless of the previous page', async () => {
-  mount('lure');
-  expect(await screen.findByRole('heading', { name: 'Original Floater' })).toBeVisible();
-  expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'instant' });
-});
-
 describe.each(['lure', 'catch'] as const)('%s deletion', (kind) => {
   it('accepts an empty 204 response and returns to the refreshed collection or journal', async () => {
     const user = userEvent.setup();

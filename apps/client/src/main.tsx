@@ -1,7 +1,17 @@
 import { t, useTranslation, initializeLanguage } from './lib/i18n';
 import React, { Suspense, lazy, Component, type ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+  Outlet,
+  ScrollRestoration,
+  Route,
+  Navigate,
+  Link,
+  useLocation,
+} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { AuthProvider, useAuth } from './lib/auth';
@@ -53,51 +63,75 @@ const client = new QueryClient({
 const stopThemeSync = initializeTheme();
 const stopLanguageSync = initializeLanguage();
 const root = ReactDOM.createRoot(document.getElementById('root')!);
+function AppFrame() {
+  useTranslation();
+  return (
+    <AuthProvider>
+      <Suspense fallback={<Loading />}>
+        <Outlet />
+      </Suspense>
+      <ScrollRestoration
+        getKey={(location) =>
+          ['/lures', '/catches'].includes(location.pathname)
+            ? location.pathname + location.search
+            : location.key
+        }
+      />
+      <Toaster position="bottom-right" richColors closeButton />
+    </AuthProvider>
+  );
+}
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      element={<AppFrame />}
+      errorElement={
+        <main className="fatal-error">
+          <h1>{t('Something went wrong')}</h1>
+          <Button onClick={() => location.reload()}>{t('Reload LureLog')}</Button>
+        </main>
+      }
+    >
+      <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<Auth />} />
+      <Route path="/register" element={<Auth register />} />
+      <Route element={<Protected />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/lures" element={<Collection />} />
+        <Route path="/lures/new" element={<Forms kind="lure" />} />
+        <Route path="/lures/:id" element={<Details kind="lure" />} />
+        <Route path="/lures/:id/edit" element={<Forms kind="lure" />} />
+        <Route path="/lures/:id/catches/new" element={<Forms kind="catch" />} />
+        <Route path="/catches" element={<Journal />} />
+        <Route path="/catches/new" element={<Forms kind="catch" />} />
+        <Route path="/catches/:id" element={<Details kind="catch" />} />
+        <Route path="/catches/:id/edit" element={<Forms kind="catch" />} />
+        <Route path="/profile" element={<Profile />} />
+      </Route>
+      <Route
+        path="*"
+        element={
+          <main className="not-found">
+            <h1>{t('Page not found')}</h1>
+            <Empty
+              title={t('A little off the beaten path.')}
+              description={t('This page isn’t here, but your next adventure is.')}
+            />
+            <Button asChild>
+              <Link to="/">{t('Find your way home')}</Link>
+            </Button>
+          </main>
+        }
+      />
+    </Route>,
+  ),
+);
 function App() {
   useTranslation();
   return (
     <ErrorBoundary>
       <QueryClientProvider client={client}>
-        <BrowserRouter>
-          <AuthProvider>
-            <Suspense fallback={<Loading />}>
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/login" element={<Auth />} />
-                <Route path="/register" element={<Auth register />} />
-                <Route element={<Protected />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/lures" element={<Collection />} />
-                  <Route path="/lures/new" element={<Forms kind="lure" />} />
-                  <Route path="/lures/:id" element={<Details kind="lure" />} />
-                  <Route path="/lures/:id/edit" element={<Forms kind="lure" />} />
-                  <Route path="/lures/:id/catches/new" element={<Forms kind="catch" />} />
-                  <Route path="/catches" element={<Journal />} />
-                  <Route path="/catches/new" element={<Forms kind="catch" />} />
-                  <Route path="/catches/:id" element={<Details kind="catch" />} />
-                  <Route path="/catches/:id/edit" element={<Forms kind="catch" />} />
-                  <Route path="/profile" element={<Profile />} />
-                </Route>
-                <Route
-                  path="*"
-                  element={
-                    <main className="not-found">
-                      <h1>{t('Page not found')}</h1>
-                      <Empty
-                        title={t('A little off the beaten path.')}
-                        description={t('This page isn’t here, but your next adventure is.')}
-                      />
-                      <Button asChild>
-                        <Link to="/">{t('Find your way home')}</Link>
-                      </Button>
-                    </main>
-                  }
-                />
-              </Routes>
-            </Suspense>
-          </AuthProvider>
-        </BrowserRouter>
-        <Toaster position="bottom-right" richColors closeButton />
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </ErrorBoundary>
   );
@@ -114,5 +148,6 @@ if (import.meta.hot) {
     stopThemeSync();
     stopLanguageSync();
     root.unmount();
+    router.dispose();
   });
 }

@@ -63,30 +63,6 @@ export function CatchCard({
   return (
     <article
       className={`catch-card ${list ? 'catch-row' : ''} ${recent ? 'recent-catch-card' : ''}`}
-      onClick={recent ? () => (window.location.href = `/catches/${item._id}`) : undefined}
-      onKeyDown={
-        recent
-          ? (event) => {
-              if (
-                event.target === event.currentTarget &&
-                (event.key === 'Enter' || event.key === ' ')
-              ) {
-                event.preventDefault();
-                window.location.href = `/catches/${item._id}`;
-              }
-            }
-          : undefined
-      }
-      tabIndex={recent ? 0 : undefined}
-      role={recent ? 'link' : undefined}
-      aria-label={
-        recent
-          ? t('View {{species}} catch from {{date}}', {
-              species: speciesLabel(item.species),
-              date: dateLabel(item.caughtAt),
-            })
-          : undefined
-      }
     >
       <Link
         className="catch-image"
@@ -140,7 +116,7 @@ export function CatchCard({
               <span className="recent-lure-details">
                 <span>
                   {lure.brand} {lure.name}
-                </span>
+                </span>{' '}
                 {lure.lengthMm != null && (
                   <span className="recent-lure-size">{numberLabel(lure.lengthMm)} mm</span>
                 )}

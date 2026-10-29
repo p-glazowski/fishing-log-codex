@@ -3984,9 +3984,22 @@ button.picker-option:hover {
 }
 
 .recent-catch-card {
+  position: relative;
   cursor: pointer;
 }
-.recent-catch-card:focus-visible {
+.recent-list .recent-catch-card .catch-body {
+  position: static;
+}
+.recent-catch-card .recent-catch-title > a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.recent-catch-card .lure-link {
+  position: relative;
+  z-index: 1;
+}
+.recent-catch-card .recent-catch-title > a:focus-visible::after {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
