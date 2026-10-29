@@ -4228,27 +4228,10 @@ button.picker-option:hover {
   letter-spacing: -1.2px;
   margin: 16px 0;
 }
-.landing-preview p {
+.landing-preview > div:first-child > p {
   color: var(--muted);
   max-width: 420px;
   margin-bottom: 24px;
-}
-.landing-preview figure {
-  margin: 0;
-  text-align: center;
-}
-.landing-preview img {
-  display: block;
-  width: min(100%, 360px);
-  height: auto;
-  margin: auto;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-.landing-preview figcaption {
-  margin-top: 12px;
-  color: var(--muted);
-  font-size: 12px;
 }
 @media (max-width: 767px) {
   .landing-preview {
@@ -4259,5 +4242,79 @@ button.picker-option:hover {
   }
   .landing-preview h2 {
     font-size: 28px;
+  }
+}
+
+/* Landing sections share the same outer gutters and a consistent vertical rhythm. */
+.landing-preview {
+  width: calc(100% - 96px);
+}
+.landing-preview-example {
+  width: 100%;
+  max-width: 440px;
+  justify-self: center;
+}
+.landing-preview-example .first-steps {
+  margin: 0;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.landing-preview-example .first-steps h3 {
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 12px 0;
+}
+.landing-preview-example .first-steps-list {
+  margin: 24px 0;
+}
+.landing-preview-example .first-steps-list li {
+  padding: 16px;
+}
+.landing-preview-example .first-steps-list h4 {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.landing-preview-example .first-steps > .btn {
+  width: 100%;
+}
+.landing-preview-caption {
+  text-align: center;
+  font-size: 12px;
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+@media (max-width: 1279px) {
+  .landing-preview {
+    width: calc(100% - 64px);
+  }
+}
+@media (max-width: 767px) {
+  .landing-preview {
+    width: auto;
+    margin: 0 24px;
+  }
+  .landing-preview-example .first-steps {
+    padding: 20px;
+  }
+  .landing-preview-example .first-steps h3 {
+    font-size: 22px;
+  }
+}
+.features-section {
+  border-top: 0;
+}
+@media (max-width: 479px) {
+  .landing-preview {
+    margin: 0 20px;
+    padding: 20px 16px;
+  }
+  .landing-preview-example .first-steps {
+    padding: 16px;
+  }
+  .landing-preview-example .first-steps-list li {
+    padding: 12px;
+    gap: 8px;
   }
 }

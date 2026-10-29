@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Fish, BookOpen, ChartNoAxesCombined } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { Button } from '../ui/button';
+import { FirstSteps } from '../dashboard/FirstSteps';
 const features = [
   {
     number: '01',
@@ -66,6 +67,7 @@ export function LandingFeatures() {
 }
 export function LandingPreview() {
   useTranslation();
+  const { user, loading, error } = useAuth();
   return (
     <section className="landing-preview" aria-labelledby="preview-title">
       <div>
@@ -80,16 +82,14 @@ export function LandingPreview() {
           {t('See how it works')} <ArrowRight size={16} aria-hidden="true" />
         </a>
       </div>
-      <figure>
-        <img
-          src="/images/first-steps-preview.webp"
-          width="360"
-          height="420"
-          loading="lazy"
-          alt={t('LureLog dashboard showing the steps to add a lure and log a catch.')}
+      <div className="landing-preview-example">
+        <FirstSteps
+          preview
+          previewLink={user ? '/lures/new' : '/register'}
+          showAction={!loading && !error}
         />
-        <figcaption>{t('The first steps in your fishing log')}</figcaption>
-      </figure>
+        <p className="landing-preview-caption">{t('The first steps in your fishing log')}</p>
+      </div>
     </section>
   );
 }
