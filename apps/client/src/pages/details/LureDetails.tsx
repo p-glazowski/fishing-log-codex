@@ -24,7 +24,7 @@ export function LureDetails() {
   const query = useQuery({ queryKey: ['lure', id], queryFn: () => api.lure(id!) });
   const catches = useQuery({
     queryKey: ['lure-catches', id],
-    queryFn: () => api.catches(`lure=${id}&limit=100`),
+    queryFn: () => api.catches(`lure=${id}&limit=6`),
   });
   const deletion = useDelete(`/lures/${id}`, '/lures');
   if (query.isLoading) return <Loading />;
@@ -45,6 +45,12 @@ export function LureDetails() {
           date: dateLabel(lure.createdAt),
         })}
       >
+        <Button variant="outline" asChild>
+          <Link to={`/lures/${id}/edit`} state={location.state}>
+            <Pencil size={16} />
+            {t('Edit lure')}
+          </Link>
+        </Button>
         <Button asChild>
           <Link to={`/lures/${id}/catches/new`}>
             <Plus size={17} />
@@ -131,14 +137,6 @@ export function LureDetails() {
           label={t('Log a catch')}
         />
       )}
-      <div className="lure-edit-action">
-        <Button variant="outline" asChild>
-          <Link to={`/lures/${id}/edit`} state={location.state}>
-            <Pencil size={16} />
-            {t('Edit lure')}
-          </Link>
-        </Button>
-      </div>
       <div className="danger-zone">
         <div>
           <strong>{t('Remove from your collection')}</strong>
