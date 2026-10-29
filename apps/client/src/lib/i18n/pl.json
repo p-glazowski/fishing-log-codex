@@ -522,5 +522,16 @@
   "Enter a valid number.": "Podaj prawidłową liczbę.",
   "Check this field.": "Sprawdź wartość tego pola.",
   "Show {{label}}": "Pokaż: {{label}}",
-  "Hide {{label}}": "Ukryj: {{label}}"
+  "Hide {{label}}": "Ukryj: {{label}}",
+  "← Back to sign in": "← Wróć do logowania",
+  "Choose a new password.": "Wybierz nowe hasło.",
+  "Forgot your password?": "Nie pamiętasz hasła?",
+  "Your password has been reset. Please sign in.": "Hasło zostało zmienione. Zaloguj się.",
+  "If an account exists for that email, a reset link has been sent.": "Jeśli konto z tym adresem istnieje, wysłaliśmy link do zmiany hasła.",
+  "Enter a new password for your account.": "Wpisz nowe hasło do swojego konta.",
+  "Enter your email and we’ll send you a reset link.": "Wpisz adres e-mail, a wyślemy Ci link do zmiany hasła.",
+  "This reset link is invalid or has expired.": "Ten link jest nieprawidłowy lub wygasł.",
+  "Reset password": "Zmień hasło",
+  "Send reset link": "Wyślij link",
+  "Request a new link": "Poproś o nowy link"
 }

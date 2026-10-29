@@ -34,6 +34,13 @@ export const registerSchema = z
 export const loginSchema = registerSchema
   .pick({ email: true, password: true })
   .extend({ password: z.string().min(1, 'Enter your password').max(128) });
+export const forgotPasswordSchema = registerSchema.pick({ email: true });
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().regex(/^[a-f0-9]{64}$/),
+    password: registerSchema.shape.password,
+  })
+  .strict();
 export const profileSchema = registerSchema.pick({ name: true, email: true });
 export const passwordSchema = z
   .object({

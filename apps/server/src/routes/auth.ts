@@ -2,7 +2,16 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import rateLimit from 'express-rate-limit';
 import bcrypt from 'bcryptjs';
-import { registerSchema, loginSchema, profileSchema, passwordSchema } from '@lurelog/shared';
+import { randomBytes, createHash } from 'node:crypto';
+import { sendRecoveryEmail } from '../services/mail.js';
+import {
+  registerSchema,
+  loginSchema,
+  profileSchema,
+  passwordSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from '@lurelog/shared';
 import { UserModel } from '../models/index.js';
 import { auth, HttpError, cookieName, cookieOptions, setSession } from '../middleware/security.js';
 import { send, userSafe } from '../utils/http.js';
@@ -48,6 +57,53 @@ authRouter.post('/auth/login', authLimit, async (req, res) => {
   setSession(res, user);
   send(res, userSafe(user));
 });
+const recoveryLimit = () =>
+  rateLimit({
+    windowMs: 15 * 60000,
+    limit: 5,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+  });
+const hashToken = (token: string) => createHash('sha256').update(token).digest('hex');
+authRouter.post('/auth/forgot-password', recoveryLimit(), async (req, res) => {
+  const { email } = forgotPasswordSchema.parse(req.body);
+  const token = randomBytes(32).toString('hex');
+  const hash = hashToken(token);
+  const user = await UserModel.findOneAndUpdate(
+    { email },
+    { $set: { resetTokenHash: hash, resetTokenExpires: new Date(Date.now() + 30 * 60000) } },
+  );
+  if (user) {
+    try {
+      await sendRecoveryEmail(user.email, token);
+    } catch (error) {
+      await UserModel.updateOne(
+        { _id: user._id, resetTokenHash: hash },
+        { $unset: { resetTokenHash: 1, resetTokenExpires: 1 } },
+      );
+      console.error(
+        'Password recovery email delivery failed:',
+        error instanceof Error ? error.message : 'unknown error',
+      );
+    }
+  }
+  send(res, { message: 'If an account exists for that email, a reset link has been sent.' });
+});
+authRouter.post('/auth/reset-password', recoveryLimit(), async (req, res) => {
+  const { token, password } = resetPasswordSchema.parse(req.body);
+  const passwordHash = await bcrypt.hash(password, 12);
+  const user = await UserModel.findOneAndUpdate(
+    { resetTokenHash: hashToken(token), resetTokenExpires: { $gt: new Date() } },
+    {
+      $set: { passwordHash },
+      $unset: { resetTokenHash: 1, resetTokenExpires: 1 },
+      $inc: { sessionVersion: 1 },
+    },
+  );
+  if (!user) throw new HttpError(400, 'This reset link is invalid or has expired.');
+  res.clearCookie(cookieName, cookieOptions);
+  send(res, { message: 'Password reset. Please sign in.' });
+});
 authRouter.post('/auth/logout', auth, async (req, res) => {
   await UserModel.updateOne({ _id: req.userId }, { $inc: { sessionVersion: 1 } });
   res.clearCookie(cookieName, cookieOptions);
@@ -60,10 +116,17 @@ authRouter.patch('/users/me', auth, async (req, res) =>
   send(
     res,
     userSafe(
-      await UserModel.findByIdAndUpdate(req.userId, profileSchema.parse(req.body), {
-        returnDocument: 'after',
-        runValidators: true,
-      }),
+      await UserModel.findByIdAndUpdate(
+        req.userId,
+        {
+          $set: profileSchema.parse(req.body),
+          $unset: { resetTokenHash: 1, resetTokenExpires: 1 },
+        },
+        {
+          returnDocument: 'after',
+          runValidators: true,
+        },
+      ),
     ),
   ),
 );
@@ -73,6 +136,7 @@ authRouter.patch('/auth/password', auth, authLimit, async (req, res) => {
   if (!user || !(await bcrypt.compare(body.currentPassword, user.passwordHash)))
     throw new HttpError(400, 'Current password is incorrect');
   user.passwordHash = await bcrypt.hash(body.newPassword, 12);
+  user.set({ resetTokenHash: undefined, resetTokenExpires: undefined });
   user.sessionVersion = (user.sessionVersion ?? 0) + 1;
   await user.save();
   setSession(res, user);

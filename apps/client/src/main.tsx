@@ -22,6 +22,7 @@ import { UnsavedChangesProvider } from './components/navigation/UnsavedChanges';
 import './styles/index.css';
 const Landing = lazy(() => import('./pages/Landing'));
 const Auth = lazy(() => import('./pages/Auth'));
+const PasswordRecovery = lazy(() => import('./pages/PasswordRecovery'));
 const Layout = lazy(() => import('./components/Layout'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Collection = lazy(() => import('./pages/Collection'));
@@ -101,6 +102,8 @@ const router = createBrowserRouter(
     >
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Auth />} />
+      <Route path="/forgot-password" element={<PasswordRecovery />} />
+      <Route path="/reset-password" element={<PasswordRecovery reset />} />
       <Route path="/register" element={<Auth register />} />
       <Route element={<Protected />}>
         <Route path="/dashboard" element={<Dashboard />} />

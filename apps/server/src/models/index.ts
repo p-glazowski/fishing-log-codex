@@ -15,6 +15,8 @@ const userSchema = new Schema(
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true, select: false },
     sessionVersion: { type: Number, default: 0, select: false },
+    resetTokenHash: { type: String, select: false },
+    resetTokenExpires: { type: Date, select: false },
     avatar: imageSchema,
   },
   { timestamps: true },

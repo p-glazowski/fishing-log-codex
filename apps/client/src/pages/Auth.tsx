@@ -98,6 +98,11 @@ function AuthScreen({ register }: { register: boolean }) {
                 autoComplete={register ? 'new-password' : 'current-password'}
                 placeholder={register ? t('At least 12 characters') : t('Your password')}
               />
+              {!register && (
+                <p className="auth-switch">
+                  <Link to="/forgot-password">{t('Forgot your password?')}</Link>
+                </p>
+              )}
               {form.formState.errors.root && (
                 <p role="alert" className="error-banner">
                   {t(form.formState.errors.root.message)}

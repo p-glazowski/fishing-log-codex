@@ -2,6 +2,12 @@
 
 A private fishing tackle collection and catch journal, built with React, TypeScript, Express, and MongoDB. Real accounts, real persistence, private image delivery, and statistics calculated from your own catches.
 
+## Password recovery
+
+Account records and bcrypt password hashes are stored in MongoDB; plaintext passwords are never stored. A reset link expires after 30 minutes and can be used once. Resetting a password signs out all existing sessions.
+
+For local development without SMTP, recovery messages are written to `apps/server/uploads/dev-mail` (or `dev-mail` beneath the configured `UPLOAD_DIR`). These files contain usable reset links: keep them private and delete them after testing. To send real emails, configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, and `SMTP_FROM` in `.env`. Use port 587 with `SMTP_SECURE=false` for STARTTLS or port 465 with `SMTP_SECURE=true` for implicit TLS. Production requires SMTP configuration for recovery; delivery failures are logged server-side while the response remains the same for existing and nonexistent accounts. Verify delivery with your provider before launch.
+
 ## Run locally
 
 Requires Node **22.12+** (Node 24 LTS recommended) and npm 10+. Use the committed lockfile for reproducible versions.
@@ -63,7 +69,7 @@ Integration tests start their own isolated MongoDB replica set, require no runni
 
 ## Features
 
-- Registration, login, seven-day HTTP-only cookie sessions, logout, profile/avatar editing, and password changes that invalidate other sessions.
+- Registration, login, seven-day HTTP-only cookie sessions, logout, profile/avatar editing, password changes, and email-based password recovery that invalidates existing sessions.
 - Lure create/read/edit/delete, personal collection cards, name/brand search, brand/type/size filters, sorting, and server pagination.
 - Lure details with exact all-time catch counts, species count, largest length, technical specs, notes, and recent catch history. Open the journal link for the complete paginated history.
 - Multiple catches per lure, custom species, catch date/time, lengths, weights, locations, weather, water conditions, and notes.
@@ -107,16 +113,16 @@ The UI uses React Router, TanStack Query, React Hook Form, Zod, Lucide, Motion, 
 
 All JSON success responses use `{ "data": ... }`. List endpoints additionally return `total`, `page`, and `pages`. Deletes return 204. Failures use `{ "error": { "code": "...", "message": "...", "details": ... } }` (details only for validation).
 
-| Method             | Route (prefix `/api/v1`)                                             |
-| ------------------ | -------------------------------------------------------------------- |
-| GET                | `/csrf`, `/health`                                                   |
-| POST               | `/auth/register`, `/auth/login`, `/auth/logout`                      |
-| GET                | `/auth/me`, `/users/me`                                              |
-| PATCH              | `/auth/password`, `/users/me`                                        |
-| GET, POST          | `/lures`, `/catches`                                                 |
-| GET, PATCH, DELETE | `/lures/:id`, `/catches/:id`                                         |
-| GET                | `/lures/:id/catches`, `/lure-filters`, `/config`, `/dashboard/stats` |
-| POST multipart     | `/lures/:id/image`, `/catches/:id/photo`, `/users/me/avatar`         |
+| Method             | Route (prefix `/api/v1`)                                                                         |
+| ------------------ | ------------------------------------------------------------------------------------------------ |
+| GET                | `/csrf`, `/health`                                                                               |
+| POST               | `/auth/register`, `/auth/login`, `/auth/logout`, `/auth/forgot-password`, `/auth/reset-password` |
+| GET                | `/auth/me`, `/users/me`                                                                          |
+| PATCH              | `/auth/password`, `/users/me`                                                                    |
+| GET, POST          | `/lures`, `/catches`                                                                             |
+| GET, PATCH, DELETE | `/lures/:id`, `/catches/:id`                                                                     |
+| GET                | `/lures/:id/catches`, `/lure-filters`, `/config`, `/dashboard/stats`                             |
+| POST multipart     | `/lures/:id/image`, `/catches/:id/photo`, `/users/me/avatar`                                     |
 
 Uploads use a single multipart field named `image`. `/media/:imageId` is an authenticated, ownership-checked image endpoint outside the API prefix. It never exposes an uploads directory or Cloudinary credentials/URLs.
 

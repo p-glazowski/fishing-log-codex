@@ -16,7 +16,7 @@ Each item passed relevant frontend tests, production compilation, and lint befor
 
 Still required to complete the user's request:
 
-1. Public-signup password recovery. The user explicitly selected **Public signup; add recovery**. No recovery implementation exists yet. Use SMTP configuration, secure random single-use tokens stored as hashes with expiry, rate limiting and non-enumerating responses; invalidate sessions after reset. Test expiry, replay, concurrency, email delivery failure and ownership boundaries. Development delivery must remain local; production delivery needs configured SMTP credentials/sender. Nodemailer was evaluated but its preliminary dependency-only changes were removed so the branch stays coherent.
+1. Password recovery is implemented with expiring single-use links, session revocation, local development mail and configurable SMTP. Production delivery still needs SMTP credentials and an end-to-end provider check.
 2. Landing page: show a representative real app preview, simplify repeated copy and signup wording. Preserve the palette. Smaller remaining polish includes moving Edit lure near the heading and limiting its catch preview.
 3. Update README/UI contract/verification documentation for final behavior, remove obsolete UTC descriptions, run final full checks, and smoke-test production configuration when hosting is available.
 
