@@ -12,6 +12,7 @@ import { PageHeading, ImageUpload } from '../components/common';
 import { Button } from '../components/ui/button';
 import { LanguageSettings } from '../components/settings/LanguageSettings';
 import { AppearanceSettings } from '../components/settings/AppearanceSettings';
+import { useUnsavedChanges } from '../components/navigation/UnsavedChanges';
 export default function Profile() {
   useTranslation();
 
@@ -25,10 +26,12 @@ export default function Profile() {
   const password = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
   });
+  useUnsavedChanges(profile.formState.isDirty || password.formState.isDirty || !!file);
   async function saveProfile(values: z.infer<typeof profileSchema>) {
     try {
       await data('/users/me', { method: 'PATCH', body: json(values) });
       await refresh();
+      profile.reset(values);
       toast.success(t('Profile updated'));
     } catch (e) {
       profile.setError('root', { message: errorMessage(e) });

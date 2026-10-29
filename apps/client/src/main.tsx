@@ -18,6 +18,7 @@ import { AuthProvider, useAuth } from './lib/auth';
 import { initializeTheme } from './lib/theme';
 import { Loading, Failure, Empty } from './components/common';
 import { Button } from './components/ui/button';
+import { UnsavedChangesProvider } from './components/navigation/UnsavedChanges';
 import './styles/index.css';
 const Landing = lazy(() => import('./pages/Landing'));
 const Auth = lazy(() => import('./pages/Auth'));
@@ -67,17 +68,19 @@ function AppFrame() {
   useTranslation();
   return (
     <AuthProvider>
-      <Suspense fallback={<Loading />}>
-        <Outlet />
-      </Suspense>
-      <ScrollRestoration
-        getKey={(location) =>
-          ['/lures', '/catches'].includes(location.pathname)
-            ? location.pathname + location.search
-            : location.key
-        }
-      />
-      <Toaster position="bottom-right" richColors closeButton />
+      <UnsavedChangesProvider>
+        <Suspense fallback={<Loading />}>
+          <Outlet />
+        </Suspense>
+        <ScrollRestoration
+          getKey={(location) =>
+            ['/lures', '/catches'].includes(location.pathname)
+              ? location.pathname + location.search
+              : location.key
+          }
+        />
+        <Toaster position="bottom-right" richColors closeButton />
+      </UnsavedChangesProvider>
     </AuthProvider>
   );
 }

@@ -492,5 +492,9 @@
   "Complete": "Gotowe",
   "Save its name, brand, type, and length.": "Zapisz jej nazwę, markę, typ i długość.",
   "Choose that lure and record your fish.": "Wybierz tę przynętę i zapisz złowioną rybę.",
-  "Lure added. Now log your catch.": "Przynęta dodana. Teraz zapisz połów."
+  "Lure added. Now log your catch.": "Przynęta dodana. Teraz zapisz połów.",
+  "Leave without saving?": "Wyjść bez zapisywania?",
+  "Your changes have not been saved.": "Twoje zmiany nie zostały zapisane.",
+  "Keep editing": "Kontynuuj edycję",
+  "Discard changes": "Odrzuć zmiany"
 }

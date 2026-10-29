@@ -17,6 +17,7 @@ import { api, ApiError, data, json, errorMessage, upload, lureOf } from '../../l
 import { Button } from '../../components/ui/button';
 import { ImageUpload } from '../../components/media/ImageUpload';
 import { RecordEssentials, RecordAdditional } from './RecordFields';
+import { useUnsavedChanges } from '../../components/navigation/UnsavedChanges';
 function localDateTime(value: Date) {
   const pad = (part: number) => String(part).padStart(2, '0');
   return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}T${pad(value.getHours())}:${pad(value.getMinutes())}`;
@@ -60,6 +61,12 @@ export function RecordForm({
     defaultValues: initialValues,
   });
   const { dirtyFields } = form.formState;
+  const allowNavigation = useUnsavedChanges(
+    form.formState.isDirty ||
+      !!file ||
+      photoPosition.x !== originalPosition.x ||
+      photoPosition.y !== originalPosition.y,
+  );
   async function submit(values: FieldValues) {
     setSaving(true);
     setError('');
@@ -107,6 +114,7 @@ export function RecordForm({
       if (file) await upload(`${base}/${recordId}/${isLure ? 'image' : 'photo'}`, file);
       await client.invalidateQueries({ predicate: (q) => q.queryKey[0] !== 'session' });
       const continueToCatch = isLure && !initial && params.get('next') === 'catch';
+      allowNavigation();
       toast.success(t(continueToCatch ? 'Lure added. Now log your catch.' : 'Record saved'));
       navigate(continueToCatch ? `/lures/${recordId}/catches/new` : `${base}/${recordId}`);
     } catch (e) {
