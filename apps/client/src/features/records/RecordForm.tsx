@@ -15,6 +15,7 @@ import {
 import { toast } from 'sonner';
 import { api, ApiError, data, json, errorMessage, upload, lureOf } from '../../lib/api';
 import { ImageUpload } from '../../components/media/ImageUpload';
+import { PhotoRemovalNotice } from '../../components/media/PhotoRemovalNotice';
 import { RecordEssentials } from './RecordFields';
 import { RecordAdditionalSection } from './RecordAdditionalSection';
 import { RecordActions } from './RecordActions';
@@ -43,6 +44,7 @@ export function RecordForm({
   const originalPosition = (initial as FishCatch)?.photoPosition ?? { x: 50, y: 50 };
   const [photoPosition, setPhotoPosition] = useState<PhotoPosition>(originalPosition);
   const [file, setFile] = useState<File | null>(null);
+  const [removeImage, setRemoveImage] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const savedId = useRef<string | null>(null);
@@ -66,6 +68,7 @@ export function RecordForm({
   const allowNavigation = useUnsavedChanges(
     Object.keys(dirtyFields).length > 0 ||
       !!file ||
+      removeImage ||
       photoPosition.x !== originalPosition.x ||
       photoPosition.y !== originalPosition.y,
   );
@@ -114,6 +117,8 @@ export function RecordForm({
         savedId.current = recordId;
       } else await data(`${base}/${recordId}`, { method: 'PATCH', body: json(values) });
       if (file) await upload(`${base}/${recordId}/${isLure ? 'image' : 'photo'}`, file);
+      else if (removeImage)
+        await data(`${base}/${recordId}/${isLure ? 'image' : 'photo'}`, { method: 'DELETE' });
       await client.invalidateQueries({ predicate: (q) => q.queryKey[0] !== 'session' });
       const continueToCatch = isLure && !initial && params.get('next') === 'catch';
       allowNavigation();
@@ -159,7 +164,8 @@ export function RecordForm({
           </p>
           <ImageUpload
             file={file}
-            existing={image}
+            existing={removeImage ? undefined : image}
+            onRemoveExisting={() => setRemoveImage(true)}
             compact={!isLure}
             onChange={(next) => {
               setFile(next);
@@ -168,6 +174,7 @@ export function RecordForm({
             position={!isLure ? photoPosition : undefined}
             onPositionChange={!isLure ? setPhotoPosition : undefined}
           />
+          {removeImage && !file && <PhotoRemovalNotice onUndo={() => setRemoveImage(false)} />}
         </section>
         <RecordAdditionalSection kind={kind} initial={initial} />
         <RecordActions

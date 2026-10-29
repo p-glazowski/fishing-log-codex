@@ -4175,3 +4175,13 @@ button.picker-option:hover {
     scroll-margin-block: 100px 220px;
   }
 }
+.photo-removal-notice {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}

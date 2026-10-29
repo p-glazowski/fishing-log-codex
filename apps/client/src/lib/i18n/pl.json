@@ -507,5 +507,8 @@
   "Back to lure": "Wróć do przynęty",
   "Back to catch": "Wróć do połowu",
   "Loading…": "Wczytywanie…",
-  "Saving…": "Zapisywanie…"
+  "Saving…": "Zapisywanie…",
+  "Remove photo": "Usuń zdjęcie",
+  "Photo will be removed when you save.": "Zdjęcie zostanie usunięte po zapisaniu zmian.",
+  "Undo": "Cofnij"
 }

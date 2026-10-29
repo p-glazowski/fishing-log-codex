@@ -13,12 +13,14 @@ import { Button } from '../components/ui/button';
 import { LanguageSettings } from '../components/settings/LanguageSettings';
 import { AppearanceSettings } from '../components/settings/AppearanceSettings';
 import { useUnsavedChanges } from '../components/navigation/UnsavedChanges';
+import { PhotoRemovalNotice } from '../components/media/PhotoRemovalNotice';
 export default function Profile() {
   useTranslation();
 
   const { user, refresh } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [imageBusy, setImageBusy] = useState(false);
+  const [removeAvatar, setRemoveAvatar] = useState(false);
   const profile = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: { name: user?.name, email: user?.email },
@@ -29,7 +31,8 @@ export default function Profile() {
   useUnsavedChanges(
     Object.keys(profile.formState.dirtyFields).length > 0 ||
       Object.keys(password.formState.dirtyFields).length > 0 ||
-      !!file,
+      !!file ||
+      removeAvatar,
   );
   async function saveProfile(values: z.infer<typeof profileSchema>) {
     try {
@@ -51,12 +54,14 @@ export default function Profile() {
     }
   }
   async function saveAvatar() {
-    if (!file) return;
+    if (!file && !removeAvatar) return;
     setImageBusy(true);
     try {
-      await upload('/users/me/avatar', file);
+      if (file) await upload('/users/me/avatar', file);
+      else await data('/users/me/avatar', { method: 'DELETE' });
       await refresh();
       setFile(null);
+      setRemoveAvatar(false);
       toast.success(t('Avatar updated'));
     } catch (e) {
       toast.error(t(errorMessage(e)));
@@ -122,8 +127,14 @@ export default function Profile() {
         <section className="panel form-section">
           <h2>{t('Your avatar')}</h2>
           <p className="muted">{t('Put a face to your fishing story.')}</p>
-          <ImageUpload file={file} onChange={setFile} existing={user?.avatar?.url} />
-          {file && (
+          <ImageUpload
+            file={file}
+            onChange={setFile}
+            existing={removeAvatar ? undefined : user?.avatar?.url}
+            onRemoveExisting={() => setRemoveAvatar(true)}
+          />
+          {removeAvatar && !file && <PhotoRemovalNotice onUndo={() => setRemoveAvatar(false)} />}
+          {(file || removeAvatar) && (
             <Button onClick={saveAvatar} disabled={imageBusy}>
               {imageBusy ? t('Uploading…') : t('Save avatar')}
             </Button>

@@ -31,6 +31,20 @@ for (const [route, kind, field] of [
   ['/catches/:id/photo', 'catch', 'photo'],
   ['/users/me/avatar', 'user', 'avatar'],
 ] as const) {
+  uploadRouter.delete(route, uploadLimit, async (req, res) => {
+    const filter = kind === 'user' ? { _id: req.userId } : owned(req);
+    const model = (
+      kind === 'lure' ? LureModel : kind === 'catch' ? CatchModel : UserModel
+    ) as mongoose.Model<unknown>;
+    await mongoose.connection.transaction(async (session) => {
+      const old = await model
+        .findOneAndUpdate(filter, { $unset: { [field]: 1 } }, { session })
+        .lean();
+      if (!old) return notFound();
+      await queueImage((old as Record<string, unknown>)[field], session);
+    });
+    res.status(204).end();
+  });
   uploadRouter.post(route, uploadLimit, upload.single('image'), async (req, res) => {
     const filter = kind === 'user' ? { _id: req.userId } : owned(req);
     const model = (
