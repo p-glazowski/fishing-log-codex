@@ -484,5 +484,13 @@
   "YOUR FISHING JOURNAL": "TWÓJ DZIENNIK WĘDKARSKI",
   "YOUR FISHING CORNER": "TWÓJ WĘDKARSKI ZAKĄTEK",
   "Lures, catches & memories": "Przynęty, połowy i wspomnienia",
-  "Fishing journal navigation": "Nawigacja dziennika wędkarskiego"
+  "Fishing journal navigation": "Nawigacja dziennika wędkarskiego",
+  "GET STARTED": "NA POCZĄTEK",
+  "Your lure is ready. Log your first catch.": "Przynęta jest gotowa. Zapisz pierwszy połów.",
+  "First, add a lure.": "Najpierw dodaj przynętę.",
+  "Every catch is linked to a lure in your collection.": "Każdy połów jest przypisany do przynęty z Twojej kolekcji.",
+  "Complete": "Gotowe",
+  "Save its name, brand, type, and length.": "Zapisz jej nazwę, markę, typ i długość.",
+  "Choose that lure and record your fish.": "Wybierz tę przynętę i zapisz złowioną rybę.",
+  "Lure added. Now log your catch.": "Przynęta dodana. Teraz zapisz połów."
 }

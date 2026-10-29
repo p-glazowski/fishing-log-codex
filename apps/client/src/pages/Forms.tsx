@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { api } from '../lib/api';
 import { Loading, Failure, PageHeading } from '../components/common';
 import { RecordForm } from '../features/records/RecordForm';
+import { FirstSteps } from '../components/dashboard/FirstSteps';
 export { Field } from '../components/forms/Field';
 export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
   useTranslation();
@@ -19,6 +20,17 @@ export default function Forms({ kind }: { kind: 'lure' | 'catch' }) {
     queryFn: () => (isLure ? api.lure(id!) : api.catch(id!)),
     enabled: edit && !!id,
   });
+  const needsLure = !isLure && !edit;
+  const collection = useQuery({
+    queryKey: ['lure-availability'],
+    queryFn: () => api.lures('limit=1'),
+    enabled: needsLure,
+    staleTime: 0,
+  });
+  if (needsLure && collection.isLoading) return <Loading />;
+  if (needsLure && collection.isError)
+    return <Failure error={collection.error} retry={() => void collection.refetch()} />;
+  if (needsLure && collection.data?.total === 0) return <FirstSteps catchEntry />;
   if (edit && query.isLoading) return <Loading />;
   if (edit && query.isError) return <Failure error={query.error} />;
   return (

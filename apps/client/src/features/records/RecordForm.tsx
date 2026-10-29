@@ -1,6 +1,6 @@
 import { t, canonicalSpecies, useTranslation } from '../../lib/i18n';
 import { useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { FormProvider, useForm, type FieldValues, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -36,6 +36,7 @@ export function RecordForm({
   const schema = isLure ? lureSchema : catchSchema;
   const client = useQueryClient();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const originalPosition = (initial as FishCatch)?.photoPosition ?? { x: 50, y: 50 };
   const [photoPosition, setPhotoPosition] = useState<PhotoPosition>(originalPosition);
   const [file, setFile] = useState<File | null>(null);
@@ -105,8 +106,9 @@ export function RecordForm({
       } else await data(`${base}/${recordId}`, { method: 'PATCH', body: json(values) });
       if (file) await upload(`${base}/${recordId}/${isLure ? 'image' : 'photo'}`, file);
       await client.invalidateQueries({ predicate: (q) => q.queryKey[0] !== 'session' });
-      toast.success(t('Record saved'));
-      navigate(`${base}/${recordId}`);
+      const continueToCatch = isLure && !initial && params.get('next') === 'catch';
+      toast.success(t(continueToCatch ? 'Lure added. Now log your catch.' : 'Record saved'));
+      navigate(continueToCatch ? `/lures/${recordId}/catches/new` : `${base}/${recordId}`);
     } catch (e) {
       setError(
         [

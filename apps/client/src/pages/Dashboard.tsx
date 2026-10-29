@@ -10,6 +10,7 @@ import { StatsCards } from '../components/dashboard/StatsCards';
 import { CatchActivity } from '../components/dashboard/CatchActivity';
 import { SpeciesBreakdown } from '../components/dashboard/SpeciesBreakdown';
 import { TopLures } from '../components/dashboard/TopLures';
+import { FirstSteps } from '../components/dashboard/FirstSteps';
 export default function Dashboard() {
   useTranslation();
 
@@ -18,6 +19,7 @@ export default function Dashboard() {
   if (query.isLoading) return <Loading />;
   if (query.isError) return <Failure error={query.error} retry={() => void query.refetch()} />;
   const stats = query.data!;
+  if (!stats.totalCatches) return <FirstSteps hasLure={stats.totalLures > 0} />;
   return (
     <>
       <PageHeading
