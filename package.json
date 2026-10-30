@@ -17,6 +17,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "seed": "npm run build -w @lurelog/shared && npm run seed -w @lurelog/server",
+    "smtp:check": "npm run smtp:check -w @lurelog/server --",
     "start": "npm run start -w @lurelog/server",
     "db:local": "node scripts/dev-db.mjs"
   },

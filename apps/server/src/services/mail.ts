@@ -3,6 +3,24 @@ import path from 'node:path';
 import nodemailer from 'nodemailer';
 import { env } from '../config/env.js';
 
+export function createMailTransport() {
+  if (!env.SMTP_HOST || !env.SMTP_FROM)
+    throw new Error('Configure SMTP_HOST and SMTP_FROM before testing SMTP');
+  return nodemailer.createTransport({
+    host: env.SMTP_HOST,
+    port: env.SMTP_PORT,
+    secure: env.SMTP_SECURE === 'true',
+    requireTLS: env.SMTP_SECURE !== 'true',
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 20000,
+    dnsTimeout: 10000,
+    disableFileAccess: true,
+    disableUrlAccess: true,
+    ...(env.SMTP_USER ? { auth: { user: env.SMTP_USER, pass: env.SMTP_PASSWORD } } : {}),
+  });
+}
+
 export async function sendRecoveryEmail(email: string, token: string) {
   const url = new URL('/reset-password', env.CLIENT_ORIGIN);
   url.hash = token;
@@ -19,14 +37,7 @@ export async function sendRecoveryEmail(email: string, token: string) {
   }
   if (!env.SMTP_HOST || !env.SMTP_FROM)
     throw new Error('SMTP_HOST and SMTP_FROM must be configured');
-  const transport = nodemailer.createTransport({
-    host: env.SMTP_HOST,
-    port: env.SMTP_PORT,
-    secure: env.SMTP_SECURE === 'true',
-    requireTLS: !(env.SMTP_SECURE === 'true'),
-    ...(env.SMTP_USER ? { auth: { user: env.SMTP_USER, pass: env.SMTP_PASSWORD } } : {}),
-  });
-  await transport.sendMail({
+  await createMailTransport().sendMail({
     from: env.SMTP_FROM,
     to: email,
     subject: 'Reset your LureLog password',

@@ -6,7 +6,8 @@
     "dev": "tsx watch --env-file=../../.env src/server.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
-    "start": "node --env-file=../../.env dist/server.js",
+    "start": "node --env-file-if-exists=../../.env dist/server.js",
+    "smtp:check": "node --env-file-if-exists=../../.env dist/check-smtp.js",
     "seed": "tsx --env-file=../../.env src/seed.ts",
     "test": "vitest run"
   },
