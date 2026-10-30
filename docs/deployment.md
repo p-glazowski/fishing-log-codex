@@ -54,7 +54,7 @@ npm run smoke:production
 
 The smoke command builds the app, starts an isolated temporary MongoDB replica set, and checks the built SPA routes, headers, secure cookie attributes, registration/session, CSRF rejection, private endpoints and database-health failure. It never loads `.env`, sends email or contacts Cloudinary. It needs local socket access and may download MongoDB if not already cached.
 
-Production dependency audit passed on 30 October 2026: `npm audit --omit=dev --json` reported zero known vulnerabilities at every severity. The user explicitly approved sharing dependency names/versions with npm's official registry. This checks reported dependency advisories, not application security or future vulnerabilities.
+Production dependency audit passed on 30 October 2026: `npm audit --omit=dev --json` reported zero known vulnerabilities at every severity. This checks reported dependency advisories, not application security or future vulnerabilities.
 
 ## Before opening public registration
 

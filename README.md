@@ -80,7 +80,7 @@ Integration tests start their own isolated MongoDB replica set, require no runni
 
 ## Interface design
 
-The app follows the repository's [Frontend UI Engineering skill](.agents/skills/frontend-ui-engineering/SKILL.md). The [design contract](docs/design/ui-contract.md) records the visual direction, references, responsive rules, and session-aware navigation. The [verification report](docs/design/verification.md) records automated and browser checks, including accessibility checks and their boundaries.
+The [design contract](docs/design/ui-contract.md) records the visual direction, references, responsive rules, and session-aware navigation. The [verification report](docs/design/verification.md) records automated and browser checks, including accessibility checks and their boundaries.
 
 Shared interface elements are split into focused branding, navigation, media, feedback, card, form, and dashboard components. Record forms and detail views compose those components while keeping the existing API workflows. Signed-in landing-page visitors see their profile and workspace instead of registration/sign-in actions.
 
