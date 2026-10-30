@@ -42,7 +42,7 @@ Preserve real API persistence and ownership enforcement. Keep loading skeletons,
 
 ## Daily catch activity
 
-Keep the existing overview chart and semantic theme tokens. The primary action is Explore month: open the current month, view daily counts with zero days included, and navigate to adjacent months or back to the monthly overview. Offer the same drill-down through month names in the monthly data table. Keep UTC date boundaries consistent between monthly and daily statistics. Exact counts must be accessible in a labeled table, with explicit loading, retry, and empty-month states. Center the month label between previous/next arrows, with no month picker on either view. Month navigation must fit mobile widths without horizontal scrolling. Fetch one user-owned month at a time and invalidate with the dashboard stats cache after catch mutations.
+Keep the existing overview chart and semantic theme tokens. The primary action is Explore month: open the current month, view daily counts with zero days included, and navigate to adjacent months or back to the monthly overview. Offer the same drill-down through month names in the monthly data table. Keep browser-local date boundaries consistent between monthly and daily statistics; pass the same IANA time zone to both endpoints. Exact counts must be accessible in a labeled table, with explicit loading, retry, and empty-month states. Center the month label between previous/next arrows, with no month picker on either view. Month navigation must fit mobile widths without horizontal scrolling. Fetch one user-owned month at a time and invalidate with the dashboard stats cache after catch mutations.
 
 ## English and Polish
 
@@ -55,3 +55,7 @@ Keep individual-lure filtering with All lures as the default. Use a searchable c
 ## Catch photo positioning
 
 Retain edge-to-edge cover previews. Offer an optional inline crop-position editor for catch photos, with pointer dragging, accessible horizontal/vertical range inputs, a center reset, and wide/narrow previews. Use matching 3:2 editor/journal frames; Recent catches retains its narrow thumbnail. Save percentage positions with the catch through ownership-checked APIs. Center legacy/replacement photos by default, restore the original position if a pending replacement is removed, and preserve the full uncropped photo in catch details. Translate controls into English and Polish.
+
+## Pre-launch flows
+
+Empty accounts show lure-first onboarding, and the landing preview renders the same translated component. Profile actions live in the avatar menu. Journal filter state is preserved in the URL and detail/edit return links; browser Back restores the list position. Protect unsaved record/profile changes, stage saved-photo removal until Save with Undo, and keep optional record fields collapsed until needed. Authentication uses plain validation, focus on the first invalid field, and return to the requested protected destination. Password recovery gives a non-enumerating confirmation, accepts a single-use reset link and returns to sign-in after reset.

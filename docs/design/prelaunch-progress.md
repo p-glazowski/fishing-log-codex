@@ -14,11 +14,20 @@ Completed and independently committed:
 
 Each item passed relevant frontend tests, production compilation, and lint before its commit. Server suite passed 23 tests after image-removal work. Last full frontend suite is being rerun; use `npm run test -w @lurelog/client -- --maxWorkers=2` to avoid excessive worker contention on this machine.
 
-Still required to complete the user's request:
+Latest local preparation (30 October 2026):
 
-1. Password recovery is implemented with expiring single-use links, session revocation, local development mail and configurable SMTP. Production delivery still needs SMTP credentials and an end-to-end provider check.
-2. Landing page preview, copy, and signup wording are implemented. Lure detail editing and catch preview polish are also complete.
-3. Update README/UI contract/verification documentation for final behavior, remove obsolete UTC descriptions, run final full checks, and smoke-test production configuration when hosting is available.
+- Production now requires complete authenticated SMTP settings, validates TLS/origin configuration and rejects known placeholder JWT secrets.
+- `npm run smtp:check` verifies SMTP without sending; supplying a recipient sends one diagnostic message. No real delivery has been tested yet.
+- Environment-injected hosting no longer requires a local `.env` file for `npm start`.
+- Isolated production smoke passed against the built application; 85 frontend and 32 backend tests passed, plus lint, typecheck and build.
+- README/UI contract updated for current onboarding, recovery and local-time behavior. See [launch runbook](../deployment.md).
+
+Remaining launch work:
+
+1. Choose/provision hosting, buy a domain and verify a sender; configure SMTP, MongoDB and durable photo storage secrets.
+2. Send a real diagnostic email to the user-authorized recipient (kept in chat, not in tracked configuration), confirm inbox delivery and exercise the real recovery workflow.
+3. Run hosted HTTPS/proxy/cookie and Cloudinary checks, configure monitoring/backups, and verify restoration/redeployment.
+4. Dependency audit is pending explicit approval: automatic review rejected sending dependency metadata to npm.
 
 Temporary local QA account (agent-created, safe to remove after remaining work): `prelaunch-qa-20261029@example.test`, id `6ae3763f7132a03cd8b18f13`. It owns lure `6ae376947132a03cd8b18f14` and catch `6ae377a37132a03cd8b18f15`; the catch contains a bundled sample tackle-box image. Do not change other users' records. Credentials are available in the preceding chat tool calls. Existing Mobile Review account was only viewed.
 
