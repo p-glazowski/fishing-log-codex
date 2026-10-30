@@ -34,6 +34,42 @@ const catchRecord: FishCatch = {
   photo,
   photoPosition: { x: 20, y: 70 },
 };
+it('allows undoing saved-photo removal and sends deletion only when the edit is saved', async () => {
+  vi.mocked(api.lure).mockResolvedValue({
+    _id: String(catchRecord.lureId),
+    name: 'Aglia',
+    brand: 'Mepps',
+    type: 'Spinner',
+    lengthMm: 45,
+    catchCount: 1,
+    createdAt: '2026-10-01',
+  });
+  vi.mocked(api.lures).mockResolvedValue({ data: [], total: 0, page: 1, pages: 0 });
+  vi.mocked(data).mockResolvedValue(catchRecord);
+  const user = userEvent.setup();
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  render(
+    <QueryClientProvider client={client}>
+      <MemoryRouter initialEntries={['/edit']}>
+        <Routes>
+          <Route path="/edit" element={<RecordForm kind="catch" initial={catchRecord} />} />
+          <Route path={`/catches/${catchRecord._id}`} element={<h1>Saved without photo</h1>} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+  await user.click(screen.getByRole('button', { name: 'Remove photo' }));
+  expect(screen.getByRole('status')).toHaveTextContent('Photo will be removed when you save.');
+  expect(data).not.toHaveBeenCalled();
+  await user.click(screen.getByRole('button', { name: 'Undo' }));
+  expect(screen.getByAltText('Selected upload preview')).toHaveAttribute('src', photo.url);
+  await user.click(screen.getByRole('button', { name: 'Remove photo' }));
+  await user.click(screen.getByRole('button', { name: 'Save changes' }));
+  expect(await screen.findByRole('heading', { name: 'Saved without photo' })).toBeVisible();
+  expect(data).toHaveBeenCalledWith(`/catches/${catchRecord._id}/photo`, { method: 'DELETE' });
+  expect(upload).not.toHaveBeenCalled();
+  client.clear();
+});
 function ControlledEditor() {
   const [value, onChange] = useState({ x: 50, y: 50 });
   return <PhotoPositionEditor src="/photo.webp" value={value} onChange={onChange} />;

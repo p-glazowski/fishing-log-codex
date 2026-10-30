@@ -11,6 +11,7 @@ export function ImageUpload({
   position,
   onPositionChange,
   compact = false,
+  onRemoveExisting,
 }: {
   file: File | null;
   onChange: (file: File | null) => void;
@@ -18,6 +19,7 @@ export function ImageUpload({
   position?: PhotoPosition;
   onPositionChange?: (position: PhotoPosition) => void;
   compact?: boolean;
+  onRemoveExisting?: () => void;
 }) {
   useTranslation();
 
@@ -108,7 +110,9 @@ export function ImageUpload({
             }}
           />
 
-          {(((preview || existing) && onPositionChange) || file) && (
+          {(((preview || existing) && onPositionChange) ||
+            file ||
+            (existing && onRemoveExisting)) && (
             <div className="upload-action-row">
               {(preview || existing) && onPositionChange && (
                 <Button
@@ -129,6 +133,12 @@ export function ImageUpload({
                 >
                   <X size={16} />
                   {t('Remove')}
+                </Button>
+              )}
+              {!file && existing && onRemoveExisting && (
+                <Button type="button" variant="outline" onClick={onRemoveExisting}>
+                  <X size={16} />
+                  {t('Remove photo')}
                 </Button>
               )}
             </div>

@@ -165,7 +165,7 @@ it('submits a Polish catch with a canonical species and the selected owned lure'
   setLanguage('pl');
   const user = userEvent.setup();
   mount(<Forms kind="catch" />, '/catches/new');
-  await user.click(screen.getByRole('combobox', { name: /Użyta przynęta/ }));
+  await user.click(await screen.findByRole('combobox', { name: /Użyta przynęta/ }));
   await user.click(await screen.findByRole('option', { name: /Savage Gear Original Floater/ }));
   await user.type(screen.getByLabelText(/Gatunek ryby/), 'Szczupak');
   await user.click(screen.getByRole('button', { name: 'Zapisz połów' }));

@@ -111,7 +111,7 @@ describe('searchable catch lure picker', () => {
     client.setQueryData(['lure-options', ''], { pages: [page([first])], pageParams: [1] });
     const user = userEvent.setup();
     mount('', client);
-    await user.click(screen.getByRole('combobox', { name: /Lure used/ }));
+    await user.click(await screen.findByRole('combobox', { name: /Lure used/ }));
     expect(screen.queryByRole('option', { name: /Rapala/ })).not.toBeInTheDocument();
     resolve(page([second]));
     expect(await screen.findByRole('option', { name: /Salmo/ })).toBeVisible();
@@ -154,7 +154,7 @@ describe('searchable catch lure picker', () => {
     );
     const user = userEvent.setup();
     mount();
-    await user.click(screen.getByRole('combobox', { name: /Lure used/ }));
+    await user.click(await screen.findByRole('combobox', { name: /Lure used/ }));
     await user.click(await screen.findByRole('button', { name: 'Load more lures' }));
     expect(await screen.findByRole('option', { name: /Salmo/ })).toBeVisible();
     expect(screen.getByRole('option', { name: /Rapala/ })).toBeVisible();
@@ -190,7 +190,7 @@ describe('searchable catch lure picker', () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    await user.click(screen.getByRole('combobox', { name: /Lure used/ }));
+    await user.click(await screen.findByRole('combobox', { name: /Lure used/ }));
     await user.click(await screen.findByRole('option', { name: /Rapala/ }));
     await waitFor(() =>
       expect(screen.getByRole('combobox', { name: /Lure used/ })).toHaveValue(

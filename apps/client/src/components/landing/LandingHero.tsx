@@ -19,15 +19,13 @@ export function LandingHero() {
           <em>{t('Track yours.')}</em>
         </h1>
         <p>
-          {t(
-            'Your tackle box, thoughtfully organized. Your catches, remembered in detail. A personal record of what works on the water.',
-          )}
+          {t('Organize your lures, record your catches, and discover what works on the water.')}
         </p>
         <div className="hero-actions">
           {!loading && !error && (
             <Button asChild>
               <Link to={user ? '/dashboard' : '/register'}>
-                {user ? t('Open your fishing log') : t('Start your fishing story')}
+                {user ? t('Open your fishing log') : t('Create your free account')}
                 <ArrowRight size={18} />
               </Link>
             </Button>

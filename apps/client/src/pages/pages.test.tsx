@@ -146,14 +146,18 @@ describe('record forms', () => {
     vi.mocked(data).mockResolvedValue({ _id: 'saved' });
     const user = userEvent.setup();
     mount(<Forms kind="catch" />, '/catches/new');
-    await user.click(screen.getByRole('combobox', { name: /Lure used/ }));
+    await user.click(await screen.findByRole('combobox', { name: /Lure used/ }));
     await screen.findByRole('option', { name: /Rapala Original Floater/ });
     await user.click(screen.getByRole('button', { name: 'Save catch' }));
     expect(await screen.findByText('Species is required')).toBeVisible();
     expect(data).not.toHaveBeenCalled();
-    await user.click(screen.getByRole('combobox', { name: /Lure used/ }));
+    await user.click(await screen.findByRole('combobox', { name: /Lure used/ }));
     await user.click(await screen.findByRole('option', { name: /Rapala Original Floater/ }));
     await user.type(screen.getByLabelText(/Fish species/), 'Wild River Char');
+    expect(screen.getByLabelText('Weather')).not.toBeVisible();
+    await user.click(screen.getByText('Additional details'));
+    await user.type(screen.getByLabelText('Weather'), 'Overcast');
+    await user.type(screen.getByLabelText('Your story'), 'Caught beside the reeds.');
     if (process.env.TZ === 'Europe/Warsaw') {
       fireEvent.change(screen.getByLabelText(/Date & time \(local\)/), {
         target: { value: '2026-03-29T02:30' },
@@ -170,6 +174,8 @@ describe('record forms', () => {
     const args = vi.mocked(data).mock.calls.find((c) => c[0] === '/catches');
     expect(JSON.parse(args![1]!.body as string)).toMatchObject({
       species: 'Wild River Char',
+      weather: 'Overcast',
+      notes: 'Caught beside the reeds.',
       lureId: lure._id,
       caughtAt: new Date('2026-07-15T14:30').toISOString(),
     });
@@ -177,10 +183,31 @@ describe('record forms', () => {
   it('shows a useful empty state before logging a catch without lures', async () => {
     vi.mocked(api.lures).mockResolvedValue({ data: [], total: 0, page: 1, pages: 0 });
     mount(<Forms kind="catch" />, '/catches/new');
-    expect(await screen.findByText('First, a lure for your story.')).toBeVisible();
+    expect(await screen.findByRole('heading', { name: 'First, add a lure.' })).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Add your first lure' })).toHaveAttribute(
+      'href',
+      '/lures/new?next=catch',
+    );
+    expect(screen.queryByRole('button', { name: 'Save catch' })).not.toBeInTheDocument();
   });
 });
 describe('collection synchronization', () => {
+  it('keeps the All lures count independent of the selected type', async () => {
+    vi.mocked(api.lures).mockImplementation(async (query) => ({
+      data: [lure],
+      total: new URLSearchParams(query).has('type') ? 1 : 4,
+      page: 1,
+      pages: 1,
+    }));
+    const user = userEvent.setup();
+    mount(<Collection />, '/lures');
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /All lures/ })).toHaveTextContent('4'),
+    );
+    await user.click(screen.getByRole('button', { name: 'Hard Bait' }));
+    await waitFor(() => expect(screen.getByText('1 lure in view')).toBeVisible());
+    expect(screen.getByRole('button', { name: /All lures/ })).toHaveTextContent('4');
+  });
   it('links the lure card and its catch action to their respective pages', async () => {
     mount(<Collection />, '/lures');
     expect(

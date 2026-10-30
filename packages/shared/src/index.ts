@@ -16,9 +16,9 @@ const positive = z.number().finite().positive();
 const date = z.string().refine((v) => !Number.isNaN(Date.parse(v)), 'Enter a valid date');
 export const registerSchema = z
   .object({
-    name: text(80).min(2),
+    name: text(80).min(2, 'Enter at least 2 characters for your name'),
     email: z
-      .email()
+      .email('Enter a valid email address')
       .max(254)
       .transform((v) => v.toLowerCase()),
     password: z
@@ -33,11 +33,18 @@ export const registerSchema = z
   .strict();
 export const loginSchema = registerSchema
   .pick({ email: true, password: true })
-  .extend({ password: z.string().min(1).max(128) });
+  .extend({ password: z.string().min(1, 'Enter your password').max(128) });
+export const forgotPasswordSchema = registerSchema.pick({ email: true });
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().regex(/^[a-f0-9]{64}$/),
+    password: registerSchema.shape.password,
+  })
+  .strict();
 export const profileSchema = registerSchema.pick({ name: true, email: true });
 export const passwordSchema = z
   .object({
-    currentPassword: z.string().min(1).max(128),
+    currentPassword: z.string().min(1, 'Enter your current password').max(128),
     newPassword: registerSchema.shape.password,
   })
   .strict();

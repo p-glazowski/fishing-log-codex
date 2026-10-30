@@ -1,6 +1,6 @@
 import { t, numberLabel, useTranslation } from '../../lib/i18n';
-import { useLayoutEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
+import { returnPath, backLabel } from '../../lib/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '../../components/ui/button';
 import { useDelete } from './useDelete';
@@ -19,13 +19,12 @@ export function LureDetails() {
   useTranslation();
 
   const { id } = useParams();
-  useLayoutEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-  }, [id]);
+  const location = useLocation();
+  const back = returnPath(location.state, '/lures');
   const query = useQuery({ queryKey: ['lure', id], queryFn: () => api.lure(id!) });
   const catches = useQuery({
     queryKey: ['lure-catches', id],
-    queryFn: () => api.catches(`lure=${id}&limit=100`),
+    queryFn: () => api.catches(`lure=${id}&limit=6`),
   });
   const deletion = useDelete(`/lures/${id}`, '/lures');
   if (query.isLoading) return <Loading />;
@@ -34,9 +33,9 @@ export function LureDetails() {
   const all = catches.data?.data ?? [];
   return (
     <>
-      <Link className="back-link" to="/lures">
+      <Link className="back-link" to={back}>
         <ArrowLeft size={16} />
-        {t('Back to collection')}
+        {t(backLabel(back))}
       </Link>
       <PageHeading
         eyebrow={lure.brand}
@@ -46,6 +45,12 @@ export function LureDetails() {
           date: dateLabel(lure.createdAt),
         })}
       >
+        <Button variant="outline" asChild>
+          <Link to={`/lures/${id}/edit`} state={location.state}>
+            <Pencil size={16} />
+            {t('Edit lure')}
+          </Link>
+        </Button>
         <Button asChild>
           <Link to={`/lures/${id}/catches/new`}>
             <Plus size={17} />
@@ -132,14 +137,6 @@ export function LureDetails() {
           label={t('Log a catch')}
         />
       )}
-      <div className="lure-edit-action">
-        <Button variant="outline" asChild>
-          <Link to={`/lures/${id}/edit`}>
-            <Pencil size={16} />
-            {t('Edit lure')}
-          </Link>
-        </Button>
-      </div>
       <div className="danger-zone">
         <div>
           <strong>{t('Remove from your collection')}</strong>

@@ -20,13 +20,16 @@ export default function Layout() {
   useEffect(() => {
     document.getElementById('main-content')?.focus({ preventScroll: true });
   }, [location.pathname]);
-  const section = location.pathname.startsWith('/lures')
-    ? t('Lure collection')
-    : location.pathname.startsWith('/catches')
-      ? t('Fishing journal')
-      : location.pathname === '/profile'
-        ? t('Account settings')
-        : t('Overview');
+  const catchEntry = location.pathname.endsWith('/catches/new');
+  const section = catchEntry
+    ? t('Fishing journal')
+    : location.pathname.startsWith('/lures')
+      ? t('Lure collection')
+      : location.pathname.startsWith('/catches')
+        ? t('Fishing journal')
+        : location.pathname === '/profile'
+          ? t('Account settings')
+          : t('Overview');
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">
@@ -89,7 +92,13 @@ export default function Layout() {
       </div>
       <nav className="bottom-nav" aria-label={t('Mobile navigation')}>
         {mainNavigation.map(([to, label, Icon]) => (
-          <NavLink to={to} key={to} end={to === '/catches' && location.pathname === '/catches/new'}>
+          <NavLink
+            to={to}
+            key={to}
+            end={to === '/catches' && catchEntry}
+            className={({ isActive }) => (isActive && !catchEntry ? 'active' : '')}
+            aria-current={catchEntry ? false : undefined}
+          >
             <Icon size={20} />
             <span>
               {label === 'Lure collection'
@@ -100,10 +109,14 @@ export default function Layout() {
             </span>
           </NavLink>
         ))}
-        <NavLink to="/catches/new">
+        <Link
+          to="/catches/new"
+          className={catchEntry ? 'active' : ''}
+          aria-current={catchEntry ? 'page' : undefined}
+        >
           <Plus size={20} />
           <span>{t('Log catch')}</span>
-        </NavLink>
+        </Link>
       </nav>
     </div>
   );

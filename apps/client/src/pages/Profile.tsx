@@ -12,12 +12,16 @@ import { PageHeading, ImageUpload } from '../components/common';
 import { Button } from '../components/ui/button';
 import { LanguageSettings } from '../components/settings/LanguageSettings';
 import { AppearanceSettings } from '../components/settings/AppearanceSettings';
+import { useUnsavedChanges } from '../components/navigation/UnsavedChanges';
+import { PasswordField } from '../components/forms/PasswordField';
+import { PhotoRemovalNotice } from '../components/media/PhotoRemovalNotice';
 export default function Profile() {
   useTranslation();
 
   const { user, refresh } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [imageBusy, setImageBusy] = useState(false);
+  const [removeAvatar, setRemoveAvatar] = useState(false);
   const profile = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: { name: user?.name, email: user?.email },
@@ -25,10 +29,17 @@ export default function Profile() {
   const password = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
   });
+  useUnsavedChanges(
+    Object.keys(profile.formState.dirtyFields).length > 0 ||
+      Object.keys(password.formState.dirtyFields).length > 0 ||
+      !!file ||
+      removeAvatar,
+  );
   async function saveProfile(values: z.infer<typeof profileSchema>) {
     try {
       await data('/users/me', { method: 'PATCH', body: json(values) });
       await refresh();
+      profile.reset(values);
       toast.success(t('Profile updated'));
     } catch (e) {
       profile.setError('root', { message: errorMessage(e) });
@@ -44,12 +55,14 @@ export default function Profile() {
     }
   }
   async function saveAvatar() {
-    if (!file) return;
+    if (!file && !removeAvatar) return;
     setImageBusy(true);
     try {
-      await upload('/users/me/avatar', file);
+      if (file) await upload('/users/me/avatar', file);
+      else await data('/users/me/avatar', { method: 'DELETE' });
       await refresh();
       setFile(null);
+      setRemoveAvatar(false);
       toast.success(t('Avatar updated'));
     } catch (e) {
       toast.error(t(errorMessage(e)));
@@ -115,8 +128,14 @@ export default function Profile() {
         <section className="panel form-section">
           <h2>{t('Your avatar')}</h2>
           <p className="muted">{t('Put a face to your fishing story.')}</p>
-          <ImageUpload file={file} onChange={setFile} existing={user?.avatar?.url} />
-          {file && (
+          <ImageUpload
+            file={file}
+            onChange={setFile}
+            existing={removeAvatar ? undefined : user?.avatar?.url}
+            onRemoveExisting={() => setRemoveAvatar(true)}
+          />
+          {removeAvatar && !file && <PhotoRemovalNotice onUndo={() => setRemoveAvatar(false)} />}
+          {(file || removeAvatar) && (
             <Button onClick={saveAvatar} disabled={imageBusy}>
               {imageBusy ? t('Uploading…') : t('Save avatar')}
             </Button>
@@ -133,29 +152,18 @@ export default function Profile() {
             </div>
           </div>
           <form noValidate onSubmit={password.handleSubmit(changePassword)}>
-            <label>
-              {t('Current password')}
-              <input
-                type="password"
-                autoComplete="current-password"
-                {...password.register('currentPassword')}
-              />
-              <span className="field-error">
-                {validationMessage(password.formState.errors.currentPassword?.message)}
-              </span>
-            </label>
-            <label>
-              {t('New password')}
-              <input
-                type="password"
-                autoComplete="new-password"
-                placeholder={t('At least 12 characters')}
-                {...password.register('newPassword')}
-              />
-              <span className="field-error">
-                {validationMessage(password.formState.errors.newPassword?.message)}
-              </span>
-            </label>
+            <PasswordField
+              label={t('Current password')}
+              registration={password.register('currentPassword')}
+              error={password.formState.errors.currentPassword?.message}
+            />
+            <PasswordField
+              label={t('New password')}
+              registration={password.register('newPassword')}
+              error={password.formState.errors.newPassword?.message}
+              autoComplete="new-password"
+              placeholder={t('At least 12 characters')}
+            />
             {password.formState.errors.root && (
               <p role="alert" className="error-banner">
                 {t(password.formState.errors.root.message)}

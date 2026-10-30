@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Fish, BookOpen, ChartNoAxesCombined } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { Button } from '../ui/button';
+import { FirstSteps } from '../dashboard/FirstSteps';
 const features = [
   {
     number: '01',
     Icon: Fish,
     title: 'A place for every lure.',
-    text: 'Model, size, color, and the small details that matter. Search your collection and find the right lure before your next trip.',
+    text: 'Save your lures and find them by name, type, or size.',
     label: 'Your collection',
     path: '/lures',
   },
@@ -16,7 +17,7 @@ const features = [
     number: '02',
     Icon: BookOpen,
     title: 'More than a fish photo.',
-    text: 'The lure you used. The weather that morning. The stretch of water. Keep the whole story together, one catch at a time.',
+    text: 'Record each catch with its lure, photo, and the details you want to remember.',
     label: 'Your fishing journal',
     path: '/catches',
   },
@@ -24,7 +25,7 @@ const features = [
     number: '03',
     Icon: ChartNoAxesCombined,
     title: 'Learn from your own water.',
-    text: 'See which lures deliver, the species you catch, and how your fishing changes through the seasons. All from your own records.',
+    text: 'See your catch activity, species, and most successful lures.',
     label: 'Your fishing insights',
     path: '/dashboard',
   },
@@ -60,6 +61,34 @@ export function LandingFeatures() {
             </div>
           </article>
         ))}
+      </div>
+    </section>
+  );
+}
+export function LandingPreview() {
+  useTranslation();
+  const { user, loading, error } = useAuth();
+  return (
+    <section className="landing-preview" aria-labelledby="preview-title">
+      <div>
+        <span className="eyebrow">{t('A LOOK INSIDE LURELOG')}</span>
+        <h2 id="preview-title">{t('Start with your first lure.')}</h2>
+        <p>
+          {t(
+            'Add a lure to your collection, then link your first catch to it. Your dashboard guides you through both steps.',
+          )}
+        </p>
+        <a className="hero-explore" href="#how">
+          {t('See how it works')} <ArrowRight size={16} aria-hidden="true" />
+        </a>
+      </div>
+      <div className="landing-preview-example">
+        <FirstSteps
+          preview
+          previewLink={user ? '/lures/new' : '/register'}
+          showAction={!loading && !error}
+        />
+        <p className="landing-preview-caption">{t('The first steps in your fishing log')}</p>
       </div>
     </section>
   );

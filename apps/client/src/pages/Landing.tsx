@@ -5,6 +5,7 @@ import { LandingNavigation } from '../components/navigation/LandingNavigation';
 import { LandingHero } from '../components/landing/LandingHero';
 import {
   LandingFeatures,
+  LandingPreview,
   LandingSteps,
   LandingCallToAction,
 } from '../components/landing/LandingSections';
@@ -19,6 +20,7 @@ export default function Landing() {
       <LandingNavigation />
       <main id="landing-content">
         <LandingHero />
+        <LandingPreview />
         <LandingFeatures />
         <LandingSteps />
         <LandingCallToAction />

@@ -2,6 +2,12 @@
 
 A private fishing tackle collection and catch journal, built with React, TypeScript, Express, and MongoDB. Real accounts, real persistence, private image delivery, and statistics calculated from your own catches.
 
+## Password recovery
+
+Account records and bcrypt password hashes are stored in MongoDB; plaintext passwords are never stored. A reset link expires after 30 minutes and can be used once. Resetting a password signs out all existing sessions.
+
+For local development without SMTP, recovery messages are written to `apps/server/uploads/dev-mail` (or `dev-mail` beneath the configured `UPLOAD_DIR`). These files contain usable reset links: keep them private and delete them after testing. To send real emails, configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, and `SMTP_FROM` in `.env`. Use port 587 with `SMTP_SECURE=false` for STARTTLS or port 465 with `SMTP_SECURE=true` for implicit TLS. Production requires SMTP configuration for recovery; delivery failures are logged server-side while the response remains the same for existing and nonexistent accounts. Run `npm run build`, then `npm run smtp:check` to check connection/TLS/authentication without sending. Add `-- recipient@example.com` to send one diagnostic email. Confirm actual inbox delivery separately. Production refuses incomplete SMTP configuration. See the [launch runbook](docs/deployment.md) for domain verification, secrets and end-to-end checks.
+
 ## Run locally
 
 Requires Node **22.12+** (Node 24 LTS recommended) and npm 10+. Use the committed lockfile for reproducible versions.
@@ -63,7 +69,7 @@ Integration tests start their own isolated MongoDB replica set, require no runni
 
 ## Features
 
-- Registration, login, seven-day HTTP-only cookie sessions, logout, profile/avatar editing, and password changes that invalidate other sessions.
+- Registration, login, seven-day HTTP-only cookie sessions, logout, profile/avatar editing, password changes, and email-based password recovery that invalidates existing sessions.
 - Lure create/read/edit/delete, personal collection cards, name/brand search, brand/type/size filters, sorting, and server pagination.
 - Lure details with exact all-time catch counts, species count, largest length, technical specs, notes, and recent catch history. Open the journal link for the complete paginated history.
 - Multiple catches per lure, custom species, catch date/time, lengths, weights, locations, weather, water conditions, and notes.
@@ -107,22 +113,22 @@ The UI uses React Router, TanStack Query, React Hook Form, Zod, Lucide, Motion, 
 
 All JSON success responses use `{ "data": ... }`. List endpoints additionally return `total`, `page`, and `pages`. Deletes return 204. Failures use `{ "error": { "code": "...", "message": "...", "details": ... } }` (details only for validation).
 
-| Method             | Route (prefix `/api/v1`)                                             |
-| ------------------ | -------------------------------------------------------------------- |
-| GET                | `/csrf`, `/health`                                                   |
-| POST               | `/auth/register`, `/auth/login`, `/auth/logout`                      |
-| GET                | `/auth/me`, `/users/me`                                              |
-| PATCH              | `/auth/password`, `/users/me`                                        |
-| GET, POST          | `/lures`, `/catches`                                                 |
-| GET, PATCH, DELETE | `/lures/:id`, `/catches/:id`                                         |
-| GET                | `/lures/:id/catches`, `/lure-filters`, `/config`, `/dashboard/stats` |
-| POST multipart     | `/lures/:id/image`, `/catches/:id/photo`, `/users/me/avatar`         |
+| Method             | Route (prefix `/api/v1`)                                                                         |
+| ------------------ | ------------------------------------------------------------------------------------------------ |
+| GET                | `/csrf`, `/health`                                                                               |
+| POST               | `/auth/register`, `/auth/login`, `/auth/logout`, `/auth/forgot-password`, `/auth/reset-password` |
+| GET                | `/auth/me`, `/users/me`                                                                          |
+| PATCH              | `/auth/password`, `/users/me`                                                                    |
+| GET, POST          | `/lures`, `/catches`                                                                             |
+| GET, PATCH, DELETE | `/lures/:id`, `/catches/:id`                                                                     |
+| GET                | `/lures/:id/catches`, `/lure-filters`, `/config`, `/dashboard/stats`                             |
+| POST multipart     | `/lures/:id/image`, `/catches/:id/photo`, `/users/me/avatar`                                     |
 
 Uploads use a single multipart field named `image`. `/media/:imageId` is an authenticated, ownership-checked image endpoint outside the API prefix. It never exposes an uploads directory or Cloudinary credentials/URLs.
 
 Lure queries: `search`, `brand`, `type`, `minSize`, `maxSize`, `sort=newest|name|catches`, `page`, `limit` (max 100).
 
-Catch queries: `search` (species substring), `species` (exact), `lure` (ObjectId), `from` and `to` (`YYYY-MM-DD`, inclusive UTC), `sort=date|length|weight`, `page`, `limit`.
+Catch queries: `search` (species substring), `species` (exact), `lure` (ObjectId), `from` and `to` (`YYYY-MM-DD`, legacy inclusive UTC), `fromInstant` and `toExclusive` (ISO instants for local-day boundaries, used by the browser), `sort=date|length|weight`, `page`, `limit`.
 
 For direct API clients: obtain `/api/v1/csrf`, keep the response cookie jar, and send the returned token in `X-CSRF-Token` plus an `Origin` header matching `CLIENT_ORIGIN` for every mutation, including login and logout. The browser client handles this automatically.
 
@@ -141,6 +147,8 @@ A storage write followed by a process crash before its database attachment may l
 
 ## Production deployment
 
+Follow the [launch runbook](docs/deployment.md) and [.env.production.example](.env.production.example). Real SMTP, Cloudinary and hosted-origin checks remain required before launch. `npm run smoke:production` verifies the built app in isolation without loading your `.env` or contacting those providers.
+
 Deploy the frontend and API on the **same HTTPS origin**. The built Express application serves `apps/client/dist`, including SPA route fallbacks; `/api` and `/media` remain backend routes.
 
 1. Provision a MongoDB replica set (for example MongoDB Atlas), enable database authentication, and restrict network access. Never expose the unauthenticated development MongoDB container publicly.
@@ -153,6 +161,12 @@ Deploy the frontend and API on the **same HTTPS origin**. The built Express appl
    CLIENT_ORIGIN=https://lurelog.example.com
    MONGODB_URI=mongodb+srv://...
    JWT_SECRET=<cryptographically random secret, 32+ characters>
+   SMTP_HOST=<provider SMTP hostname>
+   SMTP_PORT=587
+   SMTP_SECURE=false
+   SMTP_USER=<provider SMTP username>
+   SMTP_PASSWORD=<provider SMTP credential>
+   SMTP_FROM=noreply@<verified-domain>
    STORAGE_PROVIDER=cloudinary
    CLOUDINARY_CLOUD_NAME=...
    CLOUDINARY_API_KEY=...
@@ -171,13 +185,13 @@ For multiple Node replicas, replace in-process rate-limit storage with a shared 
 
 The repository includes real backend integration tests for authentication, guards, lure/catch CRUD, validation, image content and size checks, image privacy, cross-user access, dashboard counts, profile/password changes, and cascade/cleanup. Frontend tests exercise login/registration validation, session synchronization, lure/catch forms, custom species, filters, async/error states, and photo validation.
 
-Live Cloudinary requires your account credentials and must be smoke-tested in that environment. Mobile camera behavior requires a physical device. Password recovery and email verification are outside the requested scope; there is no email delivery integration. Prices intentionally use your own currency without conversion; timestamps are entered in UTC and displayed in your browser’s locale.
+Live Cloudinary requires your account credentials and must be smoke-tested in that environment. Mobile camera behavior requires a physical device. Password recovery is implemented with configurable SMTP; real delivery still needs provider setup and verification. Email ownership verification is not implemented. Prices use your own currency without conversion. Catch timestamps are entered and displayed in local time and stored as UTC instants; journal date filters use local-day boundaries.
 
 ### Daily catch activity
 
-On Overview, select **Explore month** under Catch activity to see the current month’s daily catch counts, including days with no catches. Use the arrows beside the centered month heading to explore other months; **Monthly view** returns to the overview. Expand **View daily catch totals** for exact counts. All activity dates use UTC.
+On Overview, select **Explore month** under Catch activity to see the current month’s daily catch counts, including days with no catches. Use the arrows beside the centered month heading to explore other months; **Monthly view** returns to the overview. Expand **View daily catch totals** for exact counts. Activity buckets use the browser’s time zone, sent as the `timeZone` query parameter; direct API calls default to UTC.
 
-The authenticated `GET /api/v1/dashboard/activity?month=YYYY-MM` endpoint returns `{ data: { month, total, days: [{ date, count }] } }`. Counts are scoped to the current user and bounded to that month; invalid or missing months return 422.
+The authenticated `GET /api/v1/dashboard/activity?month=YYYY-MM&timeZone=Europe%2FWarsaw` endpoint returns `{ data: { month, total, days: [{ date, count }] } }`. Counts are scoped to the current user and bounded to that month; invalid or missing months return 422.
 
 ### Languages
 
