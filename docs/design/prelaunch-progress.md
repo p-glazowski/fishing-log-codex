@@ -18,6 +18,7 @@ Latest local preparation (30 October 2026):
 
 - Production now requires complete authenticated SMTP settings, validates TLS/origin configuration and rejects known placeholder JWT secrets.
 - `npm run smtp:check` verifies SMTP without sending; supplying a recipient sends one diagnostic message. No real delivery has been tested yet.
+- Production dependency audit passed after explicit user approval: zero known vulnerabilities reported by `npm audit --omit=dev --json`.
 - Environment-injected hosting no longer requires a local `.env` file for `npm start`.
 - Isolated production smoke passed against the built application; 85 frontend and 32 backend tests passed, plus lint, typecheck and build.
 - README/UI contract updated for current onboarding, recovery and local-time behavior. See [launch runbook](../deployment.md).
@@ -27,7 +28,6 @@ Remaining launch work:
 1. Choose/provision hosting, buy a domain and verify a sender; configure SMTP, MongoDB and durable photo storage secrets.
 2. Send a real diagnostic email to the user-authorized recipient (kept in chat, not in tracked configuration), confirm inbox delivery and exercise the real recovery workflow.
 3. Run hosted HTTPS/proxy/cookie and Cloudinary checks, configure monitoring/backups, and verify restoration/redeployment.
-4. Dependency audit is pending explicit approval: automatic review rejected sending dependency metadata to npm.
 
 Temporary local QA account (agent-created, safe to remove after remaining work): `prelaunch-qa-20261029@example.test`, id `6ae3763f7132a03cd8b18f13`. It owns lure `6ae376947132a03cd8b18f14` and catch `6ae377a37132a03cd8b18f15`; the catch contains a bundled sample tackle-box image. Do not change other users' records. Credentials are available in the preceding chat tool calls. Existing Mobile Review account was only viewed.
 
