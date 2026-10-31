@@ -67,6 +67,26 @@ This creates a separate Alex Fisher account with 9 realistic lures and 26 catche
 
 Integration tests start their own isolated MongoDB replica set, require no running development database, and remove their own files. First run requires network access to download MongoDB and OS permission to listen on loopback. They never connect to `MONGODB_URI` from your development `.env`.
 
+## Development workflow
+
+Create a short-lived branch from the latest `main` for each feature or fix. Push that branch and open a pull request targeting `main`; include the problem, resulting behavior, and validation results. Merge after review and passing checks, then delete the completed branch. `main` is the production branch: merging can release the change to the live app.
+
+The [CI workflow](.github/workflows/ci.yml) runs on pull requests into `main`, pushes to `main`, and manual dispatches. Its **Verify** job uses Node 22, matching the current Render runtime, and runs:
+
+```bash
+npm ci --include=dev --no-audit --no-fund
+npm run lint
+npm run typecheck
+npm test
+npm run smoke:production
+```
+
+The last command builds all workspaces and checks production routing, security headers, cookies, sessions, CSRF, and database health against a temporary MongoDB replica set. CI needs no repository secrets, production database, SMTP account, or Cloudinary account. GitHub Actions downloads an official MongoDB binary for the isolated tests.
+
+After the first successful CI run, configure the repository's `main` protection to require pull requests and the **Verify** status check. Configure Render auto-deploy to **After CI Checks Pass** once this workflow is on `main`; it also runs after merging so Render can check the actual production commit. These settings are configured separately from the workflow file. Check the deploy result and affected live behavior after releasing.
+
+Use separate test credentials, databases, and image storage for staging or preview environments. A staging environment does not require a permanent `develop` branch.
+
 ## Features
 
 - Registration, login, seven-day HTTP-only cookie sessions, logout, profile/avatar editing, password changes, and email-based password recovery that invalidates existing sessions.
